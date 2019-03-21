@@ -139,10 +139,11 @@ export default {
       color: rgba(255, 255, 255, 0.25);
       user-select: none;
     }
+    .version-label,
     .version-number,
     .version-label {
       display: inline-block;
-      margin: 0;
+      margin: 2px;
       padding: 0;
     }
     .version-label {
@@ -150,9 +151,10 @@ export default {
       font-size: 0.9em;
     }
     .version-number {
-      margin-left: -5px;
+      margin-left: -1px;
     }
     .version-release {
+      margin-left: 2px;
       font-size: 0.75em;
       font-weight: 500;
       letter-spacing: 0px;
