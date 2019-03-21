@@ -19,7 +19,13 @@ import router from './router'
 import App from './App'
 
 Vue.use(Quasar, {
-  config: {},
+  config: {
+    loadingBar: {
+      position: 'top',
+      color: 'green',
+      skipHijack: true,
+    },
+  },
   lang,
   iconSet,
 })
@@ -55,7 +61,7 @@ function init() {
       console.debug('authState updated. rendering bumpmap')
       app = new Vue({
         router,
-        render: h => h(App),
+        render: (h) => h(App),
       }).$mount('#app')
     }
   })

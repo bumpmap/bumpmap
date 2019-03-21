@@ -56,8 +56,9 @@
         <div class="field center">
           <button
             class="btn-large waves-effect waves-light green darken-3"
+            v-bind:class="buttonClass"
             @click.prevent="signup"
-          >Join</button>
+          >{{renderButtonText()}}</button>
         </div>
       </form>
     </div>
@@ -97,7 +98,18 @@ export default {
         confirm: null,
         alias: null,
       },
+      status: {
+        valid: false,
+        sending: false,
+      },
     }
+  },
+  computed: {
+    buttonClass: function() {
+      return {
+        disabled: !this.status.valid,
+      }
+    },
   },
   methods: {
     async aliasIsAvailable(alias) {
@@ -105,7 +117,14 @@ export default {
       const slug = toSlug(alias)
       const ref = db.collection('users').doc(slug)
       const doc = await ref.get()
+      this.$q.loadingBar.stop()
       return !doc.exists
+    },
+    startSending() {
+      this.status.sending = true
+    },
+    stopSending() {
+      this.status.sending = false
     },
     generateAlias(email) {
       let result = ''
@@ -118,7 +137,14 @@ export default {
       }
       return result
     },
-    validateForm: debounce(async function $validate() {
+    renderButtonText() {
+      if (this.sending) {
+        return 'loading'
+      }
+      return 'join bumpmap'
+    },
+    async validateForm() {
+      this.$q.loadingBar.stop()
       let result = true
       console.log(this)
       const { email, password, confirm, alias } = this.formData
@@ -196,11 +222,14 @@ export default {
           console.error('alias is NOT AVAILABLE!')
         }
       }
-
+      this.status.valid = result
       return result
-    }, 500),
+    },
     async signup() {
+      this.$q.loadingBar.stop()
+      this.startSending()
       const valid = await this.validateForm()
+      this.status.valid = valid
       const { email, alias, password } = this.formData
 
       if (valid && !!email && !!alias && !!password) {
@@ -224,13 +253,19 @@ export default {
 
           const done = await ref.set(newUserData)
           console.debug('done', done)
+          this.sending = false
           this.$router.push({ name: 'Map' })
+          return
         } catch (e) {
           alert('Signup Error')
+          this.stopSending()
           console.error(e)
+          return
         }
       } else {
+        this.stopSending()
         console.error('Cannot signup:', this.errors)
+        return
       }
     },
   },
