@@ -25,7 +25,9 @@
         :draggable="true"
         @click="centerAt(m.position)"
       />
+
       <GmapMarker
+        ref="newPinRef"
         v-if="newPin.exists"
         :position="newPin.position"
         :clickable="true"
@@ -136,10 +138,17 @@ export default {
 
     this.$subscribeTo(interval(3333), () => {
       console.debug(
-        `newPin.position =\t${this.newPin.position.lat} t${
+        `newPin.position =\t${this.newPin.position.lat} ${
           this.newPin.position.lng
         }`,
       )
+      if (this.$refs.newPinRef) {
+        const { $markerObject } = this.$refs.newPinRef
+        const { position } = $markerObject
+        const lat = position.lat()
+        const lng = position.lng()
+        console.log(`ref pos:\t${lat} ${lng}`)
+      }
     })
 
     getGeoLocation().then(
