@@ -6,6 +6,7 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import { $authState, $user } from '@/firebase/init'
 import App from './App'
 import router from './router'
+import './registerServiceWorker'
 
 let app = null
 
@@ -37,11 +38,9 @@ function init() {
     if (!app) {
       console.debug('authState updated. rendering bumpmap')
       app = new Vue({
-        el: '#app',
         router,
-        components: { App },
-        template: '<App/>',
-      })
+        render: h => h(App),
+      }).$mount('#app')
     }
   })
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="welcome container">
-    <img src="/static/logo/logo-square_animated.svg" alt="bumpmap logo">
+    <img src="/img/logo/logo-square_animated.svg" alt="bumpmap logo">
     <div class="card">
       <div class="card-content">
         <h1>Welcome</h1>

@@ -5,8 +5,8 @@
         <div class="brand-logo left">
           <router-link :to="{name: 'Map'}">
             <div class="brand-logo-wrapper">
-              <img class="emblem" src="/static/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
-              <img class="logotext" src="/static/logo/bumpmap-light.svg" alt="bumpmap">
+              <img class="emblem" src="/img/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
+              <img class="logotext" src="/img/logo/bumpmap-light.svg" alt="bumpmap">
             </div>
           </router-link>
           <span class="version">
