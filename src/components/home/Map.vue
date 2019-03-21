@@ -16,7 +16,16 @@
   z-index: -1;
   padding-top: 50px;"
       v-bind:options="mapStyle"
-    ></GmapMap>
+    >
+      <GmapMarker
+        :key="index"
+        v-for="(m, index) in fakePins"
+        :position="m.position"
+        :clickable="true"
+        :draggable="true"
+        @click="centerAt(m.position)"
+      />
+    </GmapMap>
   </div>
 </template>
 
@@ -25,6 +34,7 @@
 import { GMapMap } from 'vue2-google-maps'
 import { interval } from 'rxjs'
 import styles from './mapstyles'
+import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
 import { dispatch } from '@/state/store'
 
@@ -47,9 +57,15 @@ export default {
         mapTypeControl: false,
       },
       sessionLength: 0,
+      fakePins,
     }
   },
   methods: {
+    centerAt({ lat, lng }) {
+      this.zoom += 2
+      this.lat = lat
+      this.lng = lng
+    },
     clickMap(event) {
       const { latLng } = event
       const { lat, lng } = latLng
@@ -60,6 +76,7 @@ export default {
     },
   },
   mounted() {
+    console.log('fake pins: ', this.fakePins)
     this.$subscribeTo(interval(60000), () => {
       this.sessionLength += 1
       this.printSessionLength()
