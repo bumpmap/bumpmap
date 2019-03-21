@@ -4,6 +4,7 @@
       <form @submit.prevent="signup" class="card-panel" @keyup="validateForm">
         <AuthLogo/>
         <h2 class="center">Join</h2>
+
         <div class="field">
           <label class="grey-text" for="email">Email:</label>
           <input
@@ -120,9 +121,7 @@ export default {
     validateForm: debounce(async function $validate() {
       let result = true
       console.log(this)
-      const {
-        email, password, confirm, alias,
-      } = this.formData
+      const { email, password, confirm, alias } = this.formData
       if (!email) {
         this.errors.email = 'Please enter your email.'
         result = false
@@ -137,7 +136,8 @@ export default {
         this.errors.password = 'Please enter your password.'
         result = false
       } else if (!password.match(PASSWORD)) {
-        this.errors.password = 'Please enter a password with at least 8 characters and at least 3 of the following: uppercase letters, lowercase letters, numbers, and special characters.'
+        this.errors.password =
+          'Please enter a password with at least 8 characters and at least 3 of the following: uppercase letters, lowercase letters, numbers, and special characters.'
         result = false
       } else {
         this.errors.password = null
@@ -147,7 +147,8 @@ export default {
         this.errors.confirm = 'Please repeat your chosen password.'
         result = false
       } else if (password !== confirm) {
-        this.errors.password = 'Does not match below! Please enter your password again.'
+        this.errors.password =
+          'Does not match below! Please enter your password again.'
         this.errors.confirm = 'Does not match above! Please try again.'
         result = false
       } else {
@@ -155,29 +156,33 @@ export default {
       }
 
       if (!alias) {
-        this.errors.alias = 'Please choose an alias/username. You will be able to post anonymously and with your chosen username.'
+        this.errors.alias =
+          'Please choose an alias/username. You will be able to post anonymously and with your chosen username.'
         result = false
       } else if (alias.length < 3) {
         this.errors.alias = 'Please choose an alias with at least 3 characters'
         result = false
       } else if (alias.length > 24) {
-        this.errors.alias = 'Please choose an alias with no more than 24 characters'
+        this.errors.alias =
+          'Please choose an alias with no more than 24 characters'
         result = false
       } else if (
-        startsWith('_')(alias)
-        || startsWith(' ')(alias)
-        || endsWith('_')(alias)
-        || endsWith(' ')(alias)
+        startsWith('_')(alias) ||
+        startsWith(' ')(alias) ||
+        endsWith('_')(alias) ||
+        endsWith(' ')(alias)
       ) {
         this.errors.alias = 'Cannot start or end with a space or underscore'
       } else if (
-        contains('  ')(alias)
-        || contains('__')(alias)
-        || contains('..')(alias)
+        contains('  ')(alias) ||
+        contains('__')(alias) ||
+        contains('..')(alias)
       ) {
-        this.errors.alias = 'Cannot use two spaces, dots, or underscores in a row'
+        this.errors.alias =
+          'Cannot use two spaces, dots, or underscores in a row'
       } else if (!alias.match(ALIAS)) {
-        this.errors.alias = "Only letters, numbers, spaces, dots ('.') and underscores ('_') allowed"
+        this.errors.alias =
+          "Only letters, numbers, spaces, dots ('.') and underscores ('_') allowed"
         result = false
       } else {
         this.errors.alias = null
