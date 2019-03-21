@@ -58,7 +58,7 @@
             class="btn-large waves-effect waves-light green darken-3"
             v-bind:class="buttonClass"
             @click.prevent="signup"
-          >{{renderButtonText()}}</button>
+          >{{buttonText}}</button>
         </div>
       </form>
     </div>
@@ -110,6 +110,9 @@ export default {
         disabled: !this.status.valid,
       }
     },
+    buttonText: function() {
+      return this.status.sending ? 'sending' : 'join bumpmap'
+    },
   },
   methods: {
     async aliasIsAvailable(alias) {
@@ -136,12 +139,6 @@ export default {
         this.formData.alias = result
       }
       return result
-    },
-    renderButtonText() {
-      if (this.sending) {
-        return 'loading'
-      }
-      return 'join bumpmap'
     },
     async validateForm() {
       this.$q.loadingBar.stop()
@@ -226,45 +223,51 @@ export default {
       return result
     },
     async signup() {
-      this.$q.loadingBar.stop()
-      this.startSending()
-      const valid = await this.validateForm()
-      this.status.valid = valid
-      const { email, alias, password } = this.formData
+      if (!this.status.sending) {
+        this.$q.loadingBar.start()
+        this.startSending()
+        const valid = await this.validateForm()
+        this.status.valid = valid
+        const { email, alias, password } = this.formData
 
-      if (valid && !!email && !!alias && !!password) {
-        const slug = toSlug(alias)
-        const ref = db.collection('users').doc(slug)
-        try {
-          const cred = await firebase
-            .auth()
-            .createUserWithEmailAndPassword(email, password)
-          console.debug('cred', cred)
-          console.table(cred)
-          const { user } = cred
-          console.debug('user', user)
-          const newUserData = {
-            alias,
-            home: null,
-            user_id: user.uid,
+        if (valid && !!email && !!alias && !!password) {
+          const slug = toSlug(alias)
+          const ref = db.collection('users').doc(slug)
+          try {
+            const cred = await firebase
+              .auth()
+              .createUserWithEmailAndPassword(email, password)
+            console.debug('cred', cred)
+            console.table(cred)
+            const { user } = cred
+            console.debug('user', user)
+            const newUserData = {
+              alias,
+              home: null,
+              user_id: user.uid,
+            }
+
+            console.debug('newUserData:', newUserData)
+
+            const done = await ref.set(newUserData)
+            console.debug('done', done)
+            this.sending = false
+            this.$q.loadingBar.stop()
+            this.$router.push({ name: 'Map' })
+          } catch (e) {
+            alert('Signup Error')
+            this.stopSending()
+            console.error(e)
           }
-
-          console.debug('newUserData:', newUserData)
-
-          const done = await ref.set(newUserData)
-          console.debug('done', done)
-          this.sending = false
-          this.$router.push({ name: 'Map' })
-          return
-        } catch (e) {
-          alert('Signup Error')
+        } else {
           this.stopSending()
-          console.error(e)
-          return
+          console.error('Cannot signup:', this.errors)
         }
+
+        this.$q.loadingBar.stop()
+        return
       } else {
-        this.stopSending()
-        console.error('Cannot signup:', this.errors)
+        console.debug('already sending signup form')
         return
       }
     },
