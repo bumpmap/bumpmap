@@ -4,9 +4,25 @@ import Vue from 'vue'
 import VueRx from 'vue-rx'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import { $authState, $user } from '@/firebase/init'
-import App from './App'
-import router from './router'
 import './registerServiceWorker'
+
+import './styles/quasar.styl'
+import 'quasar/dist/quasar.ie.polyfills'
+import iconSet from 'quasar/icon-set/fontawesome-v5.js'
+import lang from 'quasar/lang/en-gb.js'
+import '@quasar/extras/material-icons/material-icons.css'
+import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
+import '@quasar/extras/ionicons-v4/ionicons-v4.css'
+import '@quasar/extras/eva-icons/eva-icons.css'
+import Quasar from 'quasar'
+import router from './router'
+import App from './App'
+
+Vue.use(Quasar, {
+  config: {},
+  lang,
+  iconSet,
+})
 
 let app = null
 

@@ -2,13 +2,13 @@ export function getGeoLocation() {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        pos => {
+        (pos) => {
           console.debug('got pos: ', pos)
           const lat = pos.coords.latitude
           const lng = pos.coords.longitude
           resolve({ lat, lng })
         },
-        err => {
+        (err) => {
           reject(err)
         },
       )

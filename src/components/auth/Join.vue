@@ -4,6 +4,7 @@
       <form @submit.prevent="signup" class="card-panel" @keyup="validateForm">
         <AuthLogo/>
         <h2 class="center">Join</h2>
+
         <div class="field">
           <label class="grey-text" for="email">Email:</label>
           <input
