@@ -25,6 +25,13 @@
         :draggable="true"
         @click="centerAt(m.position)"
       />
+      <GmapMarker
+        v-if="newPin.exists"
+        :position="newPin.position"
+        :clickable="true"
+        :draggable="true"
+        @click="centerAt(newPin.position)"
+      />
     </GmapMap>
   </div>
 </template>
@@ -58,11 +65,51 @@ export default {
       },
       sessionLength: 0,
       fakePins,
+      newPin: {
+        exists: false,
+        topic: null,
+        body: null,
+        createdAt: null,
+        author: null,
+        score: null,
+        position: {
+          lat: 53,
+          lng: -2,
+        },
+      },
     }
   },
   methods: {
+    placePin(lat, lng) {
+      this.newPin = {
+        exists: true,
+        topic: `New Pin`,
+        body: `Insert text here.`,
+        createdAt: Date.now(),
+        author: 'rai',
+        score: Math.round(Math.random() * 100),
+        position: {
+          lat: lat,
+          lng: lng,
+        },
+      }
+    },
+    cancelPlacePin() {
+      this.newPin = {
+        exists: false,
+        topic: null,
+        body: null,
+        createdAt: null,
+        author: null,
+        score: null,
+        position: {
+          lat: 53,
+          lng: -2,
+        },
+      }
+    },
     centerAt({ lat, lng }) {
-      this.zoom += 2
+      this.zoom = 7
       this.lat = lat
       this.lng = lng
     },
@@ -70,6 +117,7 @@ export default {
       const { latLng } = event
       const { lat, lng } = latLng
       console.log(`map clicked @ (${lat()}, ${lng()})`)
+      this.placePin(lat(), lng())
     },
     printSessionLength() {
       console.debug(`map session length: ${this.sessionLength} minute`)
@@ -84,6 +132,14 @@ export default {
 
     this.$subscribeTo(interval(10000), () => {
       dispatch({ type: 'BUMPMAP_TEST', sessionLength: this.sessionLength })
+    })
+
+    this.$subscribeTo(interval(3333), () => {
+      console.debug(
+        `newPin.position =\t${this.newPin.position.lat} t${
+          this.newPin.position.lng
+        }`,
+      )
     })
 
     getGeoLocation().then(
