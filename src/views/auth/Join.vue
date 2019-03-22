@@ -143,7 +143,6 @@ export default {
     async validateForm() {
       this.$q.loadingBar.stop()
       let result = true
-      console.log(this)
       const { email, password, confirm, alias } = this.formData
       if (!email) {
         this.errors.email = 'Please enter your email.'

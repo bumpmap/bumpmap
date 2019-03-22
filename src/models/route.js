@@ -1,3 +1,5 @@
+import router from '@/router'
+
 export const initialState = {
   name: '',
 }
@@ -13,6 +15,12 @@ export const route = {
       return state
     },
   },
+  effects: dispatch => ({
+    goTo(destination) {
+      console.log(`\n\ngoing to ${destination.name}\n\n`)
+      router.push(destination)
+    },
+  }),
 }
 
 export default {

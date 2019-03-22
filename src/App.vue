@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <q-layout view="hHh lpR fFf">
-      <Navbar :currentRoute="currentRoute"/>
+      <Navbar/>
 
       <q-drawer v-model="left" side="left" bordered>
         <!-- drawer content -->
@@ -31,20 +31,17 @@ export default {
   },
   data() {
     return {
-      currentRoute: { name: '' },
       left: null,
       right: null,
     }
   },
   watch: {
     $route(to, from) {
-      this.currentRoute = to
       dispatch.route.update(to)
     },
   },
   mounted() {
     dispatch.route.update(this.$route)
-    this.currentRoute = this.$route
   },
 }
 </script>

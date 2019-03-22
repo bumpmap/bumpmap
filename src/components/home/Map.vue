@@ -25,7 +25,6 @@
 
         <GmapMarker
           ref="newPinRef"
-          v-if="newPin.exists"
           :position="newPin.position"
           :clickable="true"
           :draggable="true"
@@ -156,7 +155,7 @@ export default {
         this.lat = lat || this.lat
         this.lng = lng || this.lng
       },
-      (error) => {
+      error => {
         console.error('geolocation get error', error)
       },
     )

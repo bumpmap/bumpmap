@@ -1,5 +1,5 @@
 import { init } from '@rematch/core'
-import { route, layout } from '@/models'
+import { user, explorer, route, layout } from '@/models'
 import { createLogger } from 'redux-logger'
 import { withDefaultReducers } from 'rematch-default-reducers'
 
@@ -13,6 +13,8 @@ export const store = init({
   models: withDefaultReducers({
     route,
     layout,
+    user,
+    explorer,
   }),
   redux: {
     middlewares,
@@ -21,4 +23,4 @@ export const store = init({
 
 export const { dispatch } = store
 
-export default { store, dispatch }
+// export default { store, dispatch }
