@@ -1,49 +1,13 @@
 <template>
-  <!-- <div class="auth-form">
-    <div class="container">
-      <form @submit.prevent="login" class="card-panel">
-        <AuthLogo/>
-        <h2 class="grey-text text-lighten-3 center">Login</h2>
-        <p class="center grey-text text-lighten-2">Welcome back!</p>
-        <div class="field">
-          <q-input dark
-            class="grey-text text-lighten-4"
-            type="email"
-            name="email"
-            v-model="formData.email"
-          >
-          <p class="error-text red-text" v-if="errors.email">{{errors.email}}</p>
-        </div>
-        <div class="field">
-          <q-input dark
-            class="grey-text text-lighten-4"
-            type="password"
-            name="password"
-            v-model="formData.password"
-            autocomplete="off"
-          >
-          <p class="error-text red-text" v-if="errors.password">{{errors.password}}</p>
-        </div>
-        <div class="field center">
-          <button
-            class="btn-large waves-effect waves-light green darken-3"
-            @click.prevent="login"
-          >Let's Go</button>
-          <p class="error-text red-text" v-if="errors.login">{{errors.login}}</p>
-        </div>
-      </form>
-    </div>
-  </div>-->
-
   <q-page>
     <div class="auth-form">
-      <q-card dark class="card-panel" bordered>
+      <q-card dark class="q-pa-md q-ma-md card-panel" bordered>
         <q-card-section class="summary">
           <AuthLogo/>
           <h2>Welcome Back!</h2>
         </q-card-section>
         <q-card-section>
-          <form @submit.prevent="login">
+          <form @submit.prevent="login" @keyup="validateForm">
             <div class="field">
               <q-input
                 dark
@@ -90,7 +54,20 @@
               </q-input>
             </div>
             <div class="field center">
-              <q-btn color="green" size="xl" class="full-width" @click.prevent="login">Let's Go</q-btn>
+              <q-btn
+                :loading="submitting"
+                :color="valid ? 'green' : 'grey'"
+                size="xl"
+                class="full-width"
+                @click.prevent="login"
+                type="submit"
+                :disable="!valid"
+                :label="valid ? `Let's Go` : `Login` "
+              >
+                <template v-slot:loading>
+                  <q-spinner/>
+                </template>
+              </q-btn>
               <p class="error-text text-red" v-if="errors.login">{{errors.login}}</p>
             </div>
           </form>
@@ -123,6 +100,8 @@ export default {
         password: null,
         login: null,
       },
+      submitting: false,
+      valid: false,
     }
   },
   methods: {
@@ -137,15 +116,16 @@ export default {
         this.errors.password = 'Please enter your password.'
         result = false
       }
-
+      this.valid = result
       return result
     },
-    login: debounce(async function $login() {
+    async login() {
       const { email, password } = this.formData
 
       const valid = this.validateForm()
 
-      if (valid) {
+      if (valid && !this.submitting) {
+        this.submitting = true
         console.debug('Logging in.', this.formData)
         try {
           const cred = await firebase
@@ -153,6 +133,7 @@ export default {
             .signInWithEmailAndPassword(email, password)
           const { user } = cred
           console.debug(`logged in as user ${user.uid}`)
+          this.submitting = false
           this.$router.push({ name: 'Explorer' })
         } catch (error) {
           alert('could not login!')
@@ -160,11 +141,14 @@ export default {
           this.errors.email = null
           this.errors.password = null
           this.errors.login = error.message
+          this.submitting = false
         }
+      } else if (!submitting) {
+        console.error('already submitting')
       } else {
         console.error('Cannot log in', this.errors)
       }
-    }, 500),
+    },
   },
 }
 </script>

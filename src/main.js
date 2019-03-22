@@ -54,7 +54,14 @@ function init() {
   console.debug('initialising bumpmap')
   $authState.subscribe(user => {
     if (user) {
-      store.dispatch.user.setExists(true)
+      const { uid, email } = user
+      store.dispatch.user.set({
+        exists: true,
+        id: uid,
+        data: {
+          email,
+        },
+      })
     } else {
       store.dispatch.user.reset()
     }

@@ -20,8 +20,10 @@
         </q-toolbar-title>
 
         <div class="auth-buttons">
-          <transition name="fade">
-            <div v-show="!user.exists">
+          <transition name="bounce">
+            <div
+              v-show="!user.exists && ((route.name === 'Explorer' && !explorer.welcome) || (route.name !== 'Explorer'))"
+            >
               <router-link v-if="!user.exists" :to="{name: 'Join'}">
                 <q-btn
                   class="auth-button"
@@ -49,7 +51,7 @@
               </router-link>
             </div>
           </transition>
-          <transition name="fade">
+          <transition name="bounce">
             <div v-show="user.exists">
               <span class="user-email" v-if="user.exists">{{user.data.email}}</span>
               <q-btn
@@ -67,15 +69,18 @@
             </div>
           </transition>
         </div>
-        <q-btn
-          round
-          flat
-          size="small"
-          color="white"
-          no-caps
-          icon="fas fa-question-circle"
-          @click="showWelcome"
-        />
+        <transition name="quickfade">
+          <q-btn
+            v-show="!user.exists && route.name === 'Explorer'"
+            round
+            flat
+            size="small"
+            color="white"
+            no-caps
+            icon="fas fa-question-circle"
+            @click="showWelcome"
+          />
+        </transition>
         <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
       </q-toolbar>
 
