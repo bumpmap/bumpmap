@@ -1,5 +1,5 @@
 import { init } from '@rematch/core'
-import * as models from '@/models'
+import { route } from '@/models/route'
 import { createLogger } from 'redux-logger'
 
 const logger = createLogger({
@@ -9,7 +9,9 @@ const logger = createLogger({
 const middlewares = [logger]
 
 export const store = init({
-  models,
+  models: {
+    route,
+  },
   redux: {
     middlewares,
   },

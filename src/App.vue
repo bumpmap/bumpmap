@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { dispatch } from '@/state'
 import Navbar from '@/components/layout/Navbar'
 
 export default {
@@ -30,9 +31,11 @@ export default {
   watch: {
     $route(to, from) {
       this.currentRoute = to
+      dispatch.route.update(to)
     },
   },
   mounted() {
+    dispatch.route.update(this.$route)
     this.currentRoute = this.$route
   },
 }

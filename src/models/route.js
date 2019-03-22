@@ -1,24 +1,18 @@
 export const initialState = {
-  count: 0,
+  name: '',
 }
 
 export const route = {
   state: { ...initialState }, // initial state
   reducers: {
     // handle state changes with pure functions
-    increment(state, payload) {
-      const { count } = state
-      return { ...state, count: count + payload }
+    update(state, payload) {
+      if (payload !== state) {
+        return payload
+      }
+      return state
     },
   },
-  effects: (dispatch) => ({
-    // handle state changes with impure functions.
-    // use async/await for async actions
-    async incrementAsync(payload, rootState) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      dispatch.route.increment(payload)
-    },
-  }),
 }
 
 export default {
