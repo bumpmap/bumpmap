@@ -62,6 +62,7 @@ export default {
         minZoom: 3,
         streetViewControl: false,
         fullscreenControl: false,
+        scaleControl: true,
         mapTypeControl: false,
       },
       sessionLength: 0,
