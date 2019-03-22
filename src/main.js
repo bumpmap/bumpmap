@@ -15,8 +15,12 @@ import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
 import '@quasar/extras/ionicons-v4/ionicons-v4.css'
 import '@quasar/extras/eva-icons/eva-icons.css'
 import Quasar from 'quasar'
+import { connect } from 'redux-vuex'
 import router from './router'
 import App from './App.vue'
+import { store } from '@/state'
+
+connect({ Vue, store })
 
 Vue.use(Quasar, {
   config: {

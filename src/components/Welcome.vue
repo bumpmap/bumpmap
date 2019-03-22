@@ -11,7 +11,7 @@
           </div>
 
           <div class="col-auto">
-            <q-btn color="grey-7" round flat icon="close"></q-btn>
+            <q-btn color="grey-7" round flat icon="close" @click="hideWelcome"></q-btn>
           </div>
         </div>
       </q-card-section>
@@ -71,6 +71,7 @@
 
 <script>
 import Logo from '@/components/Logo.vue'
+import { dispatch } from '@/state'
 
 export default {
   name: 'Welcome',
@@ -79,6 +80,11 @@ export default {
   },
   data() {
     return {}
+  },
+  methods: {
+    hideWelcome() {
+      dispatch.explorer.setWelcome(false)
+    },
   },
 }
 </script>

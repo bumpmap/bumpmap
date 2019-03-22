@@ -1,7 +1,7 @@
 <template>
   <div class="bumpmap-explorer">
     <div id="ui">
-      <Welcome/>
+      <Welcome v-if="explorer.welcome"/>
     </div>
     <div id="map">
       <Map/>
@@ -18,6 +18,14 @@ export default {
   components: {
     Map,
     Welcome,
+  },
+  data() {
+    return {
+      foo: 'bar',
+      ...this.mapState({
+        explorer: 'explorer',
+      }),
+    }
   },
   mounted() {},
 }

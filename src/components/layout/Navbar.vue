@@ -20,8 +20,8 @@
         </q-toolbar-title>
 
         <div class="auth-buttons">
-          <span class="user-email" v-if="fbUser">{{fbUser.email}}</span>
-          <router-link v-if="!user  " :to="{name: 'Join'}">
+          <span class="user-email" v-if="user.exists">{{user.data.email}}</span>
+          <router-link v-if="!user.exists" :to="{name: 'Join'}">
             <q-btn
               class="auth-button"
               rounded
@@ -34,7 +34,7 @@
             />
           </router-link>
 
-          <router-link v-if="!user  " :to="{name: 'Login'}">
+          <router-link v-if="!user.exists" :to="{name: 'Login'}">
             <q-btn
               class="auth-button"
               rounded
@@ -52,7 +52,7 @@
             flat
             rounded
             size="small"
-            v-if="user  "
+            v-if="user.exists"
             @click="logout"
             color="white"
             no-caps
@@ -67,7 +67,7 @@
           color="white"
           no-caps
           icon="fas fa-question-circle"
-          @click="logUser"
+          @click="showWelcome"
         />
         <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
       </q-toolbar>
@@ -88,21 +88,22 @@ import { dispatch } from '@/state'
 
 export default {
   name: 'Navbar',
-  props: ['route', 'layout', 'explorer', 'user', 'goTo'],
   data() {
     const { version, release } = bumpmapAppData
     return {
       version,
       release,
-      fbUser: {
-        email: 'lol',
-      },
+      ...this.mapState({
+        user: 'user',
+        route: 'route',
+        layout: 'layout',
+        explorer: 'explorer',
+      }),
     }
   },
   methods: {
-    logUser() {
-      debugger
-      console.log('user', this.user)
+    showWelcome() {
+      dispatch.explorer.setWelcome(true)
     },
     async logout() {
       const result = await firebase.auth().signOut()
@@ -111,15 +112,6 @@ export default {
     toggleRightMenu() {
       dispatch.layout.toggleMenu('right')
     },
-  },
-  created() {
-    firebase.auth().onAuthStateChanged(fbUser => {
-      if (fbUser) {
-        this.fbUser = fbUser
-      } else {
-        this.fbUser = null
-      }
-    })
   },
 }
 </script>

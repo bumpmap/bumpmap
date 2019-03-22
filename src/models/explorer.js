@@ -1,5 +1,6 @@
 export const initialState = {
   count: 0,
+  welcome: true,
 }
 
 export const explorer = {
