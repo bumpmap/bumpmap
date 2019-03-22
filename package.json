@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
@@ -11,7 +13,6 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
-    "all-the-cities": "^2.0.1",
     "firebase": "^5.9.0",
     "lodash": "^4.17.11",
     "quasar": "^1.0.0-beta.1",
