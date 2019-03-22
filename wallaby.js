@@ -1,8 +1,19 @@
-module.exports = function(wallaby) {
-  return {
-    files: ['src/**/*', 'test/unit/*.js', 'package.json'],
+module.exports = (wallaby) => {
+  process.env.VUE_CLI_BABEL_TRANSPILE_MODULES = true
 
-    tests: ['test/**/*.spec.js'],
+  const compiler = wallaby.compilers.babel({
+    presets: [['@vue/app', { modules: 'commonjs' }]],
+  })
+
+  return {
+    files: [
+      'src/**/*',
+      'jest.config.js',
+      'package.json',
+      '!src/**/__tests__/*.spec.js',
+    ],
+
+    tests: ['tests/**/*.spec.js', 'src/**/__tests__/*.spec.js'],
 
     env: {
       type: 'node',
@@ -10,17 +21,17 @@ module.exports = function(wallaby) {
     },
 
     compilers: {
-      '**/*.js': wallaby.compilers.babel(),
-      '**/*.vue': require('wallaby-vue-compiler')(wallaby.compilers.babel({})),
+      '**/*.js': compiler,
+      '**/*.vue': require('wallaby-vue-compiler')(compiler),
     },
 
     preprocessors: {
-      '**/*.vue': file => require('vue-jest').process(file.content, file.path),
+      '**/*.vue': (file) =>
+        require('vue-jest').process(file.content, file.path),
     },
 
     setup: function(wallaby) {
-      const jestConfig =
-        require('./package').jest || require('./test/unit/jest.conf')
+      const jestConfig = require('./package').jest || require('./jest.config')
       jestConfig.transform = {}
       wallaby.testFramework.configure(jestConfig)
     },

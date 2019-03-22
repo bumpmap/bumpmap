@@ -45,7 +45,6 @@ import { interval } from 'rxjs'
 import styles from './mapstyles'
 import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
-import { dispatch } from '@/state/store'
 
 export default {
   name: 'GMap',
@@ -130,10 +129,6 @@ export default {
     this.$subscribeTo(interval(60000), () => {
       this.sessionLength += 1
       this.printSessionLength()
-    })
-
-    this.$subscribeTo(interval(10000), () => {
-      dispatch({ type: 'BUMPMAP_TEST', sessionLength: this.sessionLength })
     })
 
     this.$subscribeTo(interval(3333), () => {
