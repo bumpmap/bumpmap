@@ -3,7 +3,7 @@
     <div class="container">
       <form @submit.prevent="signup" class="card-panel" @keyup="validateForm">
         <AuthLogo/>
-        <h2 class="center">Join</h2>
+        <h2 class="center">Join the Conversation</h2>
 
         <div class="field">
           <label class="grey-text" for="email">Email:</label>
@@ -111,7 +111,7 @@ export default {
       }
     },
     buttonText: function() {
-      return this.status.sending ? 'sending' : 'join bumpmap'
+      return this.status.sending ? 'sending' : `it's bumping time`
     },
   },
   methods: {

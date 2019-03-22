@@ -25,6 +25,15 @@
         :draggable="true"
         @click="centerAt(m.position)"
       />
+
+      <GmapMarker
+        ref="newPinRef"
+        v-if="newPin.exists"
+        :position="newPin.position"
+        :clickable="true"
+        :draggable="true"
+        @click="centerAt(newPin.position)"
+      />
     </GmapMap>
   </div>
 </template>
@@ -36,7 +45,6 @@ import { interval } from 'rxjs'
 import styles from './mapstyles'
 import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
-import { dispatch } from '@/state/store'
 
 export default {
   name: 'GMap',
@@ -58,11 +66,51 @@ export default {
       },
       sessionLength: 0,
       fakePins,
+      newPin: {
+        exists: false,
+        topic: null,
+        body: null,
+        createdAt: null,
+        author: null,
+        score: null,
+        position: {
+          lat: 53,
+          lng: -2,
+        },
+      },
     }
   },
   methods: {
+    placePin(lat, lng) {
+      this.newPin = {
+        exists: true,
+        topic: `New Pin`,
+        body: `Insert text here.`,
+        createdAt: Date.now(),
+        author: 'rai',
+        score: Math.round(Math.random() * 100),
+        position: {
+          lat: lat,
+          lng: lng,
+        },
+      }
+    },
+    cancelPlacePin() {
+      this.newPin = {
+        exists: false,
+        topic: null,
+        body: null,
+        createdAt: null,
+        author: null,
+        score: null,
+        position: {
+          lat: 53,
+          lng: -2,
+        },
+      }
+    },
     centerAt({ lat, lng }) {
-      this.zoom += 2
+      this.zoom = 7
       this.lat = lat
       this.lng = lng
     },
@@ -70,6 +118,7 @@ export default {
       const { latLng } = event
       const { lat, lng } = latLng
       console.log(`map clicked @ (${lat()}, ${lng()})`)
+      this.placePin(lat(), lng())
     },
     printSessionLength() {
       console.debug(`map session length: ${this.sessionLength} minute`)
@@ -82,8 +131,19 @@ export default {
       this.printSessionLength()
     })
 
-    this.$subscribeTo(interval(10000), () => {
-      dispatch({ type: 'BUMPMAP_TEST', sessionLength: this.sessionLength })
+    this.$subscribeTo(interval(3333), () => {
+      console.debug(
+        `newPin.position =\t${this.newPin.position.lat} ${
+          this.newPin.position.lng
+        }`,
+      )
+      if (this.$refs.newPinRef) {
+        const { $markerObject } = this.$refs.newPinRef
+        const { position } = $markerObject
+        const lat = position.lat()
+        const lng = position.lng()
+        console.log(`ref pos:\t${lat} ${lng}`)
+      }
     })
 
     getGeoLocation().then(
