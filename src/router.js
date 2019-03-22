@@ -14,7 +14,7 @@ export default new Router({
     {
       path: '/',
       name: 'Explorer',
-      component: Map,
+      component: Explorer,
     },
     {
       path: '/join',
