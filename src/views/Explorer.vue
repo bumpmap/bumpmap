@@ -4,6 +4,9 @@
       <transition name="bounce" enter-active-class="bounceInDown" leave-active-class="bounceOutUp">
         <Welcome v-show="explorer.welcome"/>
       </transition>
+      <transition name="bounce" enter-active-class="bounceInDown" leave-active-class="bounceOutUp">
+        <Searchbox/>
+      </transition>
     </div>
     <div id="map">
       <Map/>
@@ -14,6 +17,7 @@
 <script>
 import Map from '@/components/home/Map.vue'
 import Welcome from '@/components/Welcome.vue'
+import Searchbox from '@/components/home/Searchbox.vue'
 import { dispatch } from '@/state'
 
 export default {
@@ -21,6 +25,7 @@ export default {
   components: {
     Map,
     Welcome,
+    Searchbox,
   },
   data() {
     return {
