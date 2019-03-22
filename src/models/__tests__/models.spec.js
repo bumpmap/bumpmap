@@ -1,22 +1,53 @@
-import * as models from '@/models'
+import {
+  home,
+  login,
+  maps,
+  messages,
+  notifications,
+  pins,
+  post,
+  preferences,
+  route,
+  search,
+  signup,
+  user,
+} from '@/models'
 
 describe('models', () => {
-  it('exports login', () => {
-    expect(models.login).toBeDefined()
+  it('exports home', () => {
+    expect(home).toBeDefined()
   })
-  it('exports signup', () => {
-    expect(models.signup).toBeDefined()
+  it('exports login', () => {
+    expect(login).toBeDefined()
   })
   it('exports maps', () => {
-    expect(models.maps).toBeDefined()
+    expect(maps).toBeDefined()
   })
   it('exports messages', () => {
-    expect(models.messages).toBeDefined()
+    expect(messages).toBeDefined()
   })
   it('exports notifications', () => {
-    expect(models.notifications).toBeDefined()
+    expect(notifications).toBeDefined()
+  })
+  it('exports pins', () => {
+    expect(pins).toBeDefined()
+  })
+  it('exports post', () => {
+    expect(post).toBeDefined()
+  })
+  it('exports preferences', () => {
+    expect(preferences).toBeDefined()
+  })
+  it('exports route', () => {
+    expect(route).toBeDefined()
   })
   it('exports search', () => {
-    expect(models.search).toBeDefined()
+    expect(search).toBeDefined()
+  })
+  it('exports signup', () => {
+    expect(signup).toBeDefined()
+  })
+  it('exports user', () => {
+    expect(user).toBeDefined()
   })
 })
