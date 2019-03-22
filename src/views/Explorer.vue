@@ -1,7 +1,9 @@
 <template>
   <div class="bumpmap-explorer">
     <div id="ui">
-      <Welcome v-if="explorer.welcome"/>
+      <transition name="bounce" enter-active-class="bounceInDown" leave-active-class="bounceOutUp">
+        <Welcome v-show="explorer.welcome"/>
+      </transition>
     </div>
     <div id="map">
       <Map/>
@@ -12,6 +14,7 @@
 <script>
 import Map from '@/components/home/Map.vue'
 import Welcome from '@/components/Welcome.vue'
+import { dispatch } from '@/state'
 
 export default {
   name: 'Explorer',
@@ -28,6 +31,9 @@ export default {
     }
   },
   mounted() {},
+  destroyed() {
+    dispatch.explorer.resetWelcome()
+  },
 }
 </script>
 

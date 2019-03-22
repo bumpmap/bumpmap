@@ -10,6 +10,7 @@ import './styles/quasar.styl'
 import 'quasar/dist/quasar.ie.polyfills'
 import iconSet from 'quasar/icon-set/fontawesome-v5'
 import lang from 'quasar/lang/en-gb'
+import 'vue2-animate/dist/vue2-animate.min.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
 import '@quasar/extras/ionicons-v4/ionicons-v4.css'
@@ -52,11 +53,20 @@ Vue.use(VueGoogleMaps, {
 function init() {
   console.debug('initialising bumpmap')
   $authState.subscribe(user => {
-    console.info('$authState change:', user)
+    if (user) {
+      store.dispatch.user.setExists(true)
+    } else {
+      store.dispatch.user.reset()
+    }
   })
 
   $user.subscribe(user => {
-    console.info('$user change:', user)
+    //console.info('$user change:', user)
+    if (user) {
+      store.dispatch.user.setExists(true)
+    } else {
+      store.dispatch.user.reset()
+    }
   })
 
   $authState.subscribe(() => {

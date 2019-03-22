@@ -12,7 +12,7 @@
       </q-drawer>
 
       <q-page-container>
-        <transition name="fade">
+        <transition name="quickfade">
           <router-view/>
         </transition>
       </q-page-container>
@@ -48,6 +48,7 @@ export default {
 
 <style lang="scss">
 #app {
+  background-color: rgba(20, 20, 20, 0.95);
   .app-navbar {
     position: absolute;
     top: 0;
@@ -83,15 +84,15 @@ export default {
     pointer-events: auto;
   }
 
-  .fade-enter-active {
+  .quickfade-enter-active {
     transition: opacity 0.6s ease-in-out;
   }
-  .fade-leave-active {
+  .quickfade-leave-active {
     transition: opacity 0.2s ease-in-out;
   }
 
-  .fade-enter,
-  .fade-leave-to {
+  .quickfade-enter,
+  .quickfade-leave-to {
     opacity: 0;
   }
 

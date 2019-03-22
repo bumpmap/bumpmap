@@ -1,13 +1,12 @@
 <template>
-  <div class="auth-form">
+  <!-- <div class="auth-form">
     <div class="container">
       <form @submit.prevent="login" class="card-panel">
         <AuthLogo/>
         <h2 class="grey-text text-lighten-3 center">Login</h2>
         <p class="center grey-text text-lighten-2">Welcome back!</p>
         <div class="field">
-          <label class="grey-text" for="email">Email:</label>
-          <input
+          <q-input dark
             class="grey-text text-lighten-4"
             type="email"
             name="email"
@@ -16,8 +15,7 @@
           <p class="error-text red-text" v-if="errors.email">{{errors.email}}</p>
         </div>
         <div class="field">
-          <label class="grey-text" for="password">Password:</label>
-          <input
+          <q-input dark
             class="grey-text text-lighten-4"
             type="password"
             name="password"
@@ -35,7 +33,71 @@
         </div>
       </form>
     </div>
-  </div>
+  </div>-->
+
+  <q-page>
+    <div class="auth-form">
+      <q-card dark class="card-panel" bordered>
+        <q-card-section class="summary">
+          <AuthLogo/>
+          <h2>Welcome Back!</h2>
+        </q-card-section>
+        <q-card-section>
+          <form @submit.prevent="login">
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                class="grey-text text-lighten-4"
+                type="email"
+                name="email"
+                label="Email"
+                v-model="formData.email"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.email">{{errors.email}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-envelope"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                label="Password"
+                class="grey-text text-lighten-4"
+                type="password"
+                name="password"
+                v-model="formData.password"
+                autocomplete="off"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.password">{{errors.password}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-key"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="field center">
+              <q-btn color="green" size="xl" class="full-width" @click.prevent="login">Let's Go</q-btn>
+              <p class="error-text text-red" v-if="errors.login">{{errors.login}}</p>
+            </div>
+          </form>
+        </q-card-section>
+      </q-card>
+    </div>
+  </q-page>
 </template>
 
 

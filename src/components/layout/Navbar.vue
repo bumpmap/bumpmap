@@ -20,45 +20,52 @@
         </q-toolbar-title>
 
         <div class="auth-buttons">
-          <span class="user-email" v-if="user.exists">{{user.data.email}}</span>
-          <router-link v-if="!user.exists" :to="{name: 'Join'}">
-            <q-btn
-              class="auth-button"
-              rounded
-              flat
-              size="small"
-              color="green"
-              no-caps
-              icon="fas fa-user-plus"
-              label="Join"
-            />
-          </router-link>
+          <transition name="fade">
+            <div v-show="!user.exists">
+              <router-link v-if="!user.exists" :to="{name: 'Join'}">
+                <q-btn
+                  class="auth-button"
+                  rounded
+                  flat
+                  size="small"
+                  color="green"
+                  no-caps
+                  icon="fas fa-user-plus"
+                  label="Join"
+                />
+              </router-link>
 
-          <router-link v-if="!user.exists" :to="{name: 'Login'}">
-            <q-btn
-              class="auth-button"
-              rounded
-              flat
-              size="small"
-              color="blue"
-              no-caps
-              icon="fas fa-sign-in-alt"
-              label="Login"
-            />
-          </router-link>
-
-          <q-btn
-            class="auth-button"
-            flat
-            rounded
-            size="small"
-            v-if="user.exists"
-            @click="logout"
-            color="white"
-            no-caps
-            icon="fas fa-sign-out-alt"
-            label="Logout"
-          />
+              <router-link v-if="!user.exists" :to="{name: 'Login'}">
+                <q-btn
+                  class="auth-button"
+                  rounded
+                  flat
+                  size="small"
+                  color="blue"
+                  no-caps
+                  icon="fas fa-sign-in-alt"
+                  label="Login"
+                />
+              </router-link>
+            </div>
+          </transition>
+          <transition name="fade">
+            <div v-show="user.exists">
+              <span class="user-email" v-if="user.exists">{{user.data.email}}</span>
+              <q-btn
+                class="auth-button"
+                flat
+                rounded
+                size="small"
+                v-if="user.exists"
+                @click="logout"
+                color="white"
+                no-caps
+                icon="fas fa-sign-out-alt"
+                label="Logout"
+              />
+            </div>
+          </transition>
         </div>
         <q-btn
           round
