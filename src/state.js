@@ -1,6 +1,7 @@
 import { init } from '@rematch/core'
 import { route } from '@/models/route'
 import { createLogger } from 'redux-logger'
+import { withDefaultReducers } from 'rematch-default-reducers'
 
 const logger = createLogger({
   collapsed: true,
@@ -9,9 +10,9 @@ const logger = createLogger({
 const middlewares = [logger]
 
 export const store = init({
-  models: {
+  models: withDefaultReducers({
     route,
-  },
+  }),
   redux: {
     middlewares,
   },

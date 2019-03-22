@@ -9060,6 +9060,16 @@ rambda@^2.4.1:
   resolved "https://registry.yarnpkg.com/rambda/-/rambda-2.4.1.tgz#fa7cca42205dcaa9de855f990ffca03a1bca267f"
   integrity sha512-wmY04DwL1Ooz7Me4vCd+QWjzziE05Y5A/2RQ1MokfhDYYz7YNVWVgtsLGK/p4UVSVZUshxJFXQsTytRjid5iXA==
 
+ramda-adjunct@^2.9.0:
+  version "2.16.1"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-2.16.1.tgz#19af36ed58bc1b7bc90c16c4d814bbd5f16ce64c"
+  integrity sha512-0fvgqMLpRbXrDq2V/FhR1m0gEDCO2ANANXBBbhQrZYYHDLfJUDuLAiuE2fnbjM5HkCaFbL7MfATkafkyxp2AAw==
+
+ramda@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
+  integrity sha512-GXpfrYVPwx3K7RQ6aYT8KPS8XViSXUVJT1ONhoKPE9VAleW42YE+U+8VEyGWt41EnEQW7gwecYJriTI0pKoecQ==
+
 randomatic@^3.0.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/randomatic/-/randomatic-3.1.1.tgz#b776efc59375984e36c537b2f51a1f0aff0da1ed"
@@ -9346,6 +9356,15 @@ relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
   integrity sha1-VNvzd+UUQKypCkzSdGANP/LYiKk=
+
+rematch-default-reducers@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/rematch-default-reducers/-/rematch-default-reducers-1.2.0.tgz#b1b177f3350752d651960201a96e682494341dc2"
+  integrity sha512-GNv54P3IeQnmy5eVMMn8n4FRxisbgb9DQsV1SIBkQlXHsyNZfKVRLT+ZmITv4kW/HGuVpN+RIQAC9FXm6GFpOQ==
+  dependencies:
+    pluralize "^7.0.0"
+    ramda "^0.25.0"
+    ramda-adjunct "^2.9.0"
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
