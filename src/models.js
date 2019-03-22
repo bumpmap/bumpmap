@@ -10,6 +10,7 @@ import { route as routeModel } from '@/models/route'
 import { search as searchModel } from '@/models/search'
 import { signup as signupModel } from '@/models/signup'
 import { user as userModel } from '@/models/user'
+import { layout as layoutModel } from '@/models/layout'
 
 export const home = homeModel
 export const login = loginModel
@@ -23,6 +24,7 @@ export const route = routeModel
 export const search = searchModel
 export const signup = signupModel
 export const user = userModel
+export const layout = layoutModel
 
 export default {
   home,
@@ -37,4 +39,5 @@ export default {
   search,
   signup,
   user,
+  layout,
 }

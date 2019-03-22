@@ -1,16 +1,22 @@
 <template>
   <div id="app">
-    <div class="app-navbar">
+    <q-layout view="hHh lpR fFf">
       <Navbar :currentRoute="currentRoute"/>
-    </div>
-    <div class="app-bg">
-      <div class="app-view">
+
+      <q-drawer v-model="left" side="left" bordered>
+        <!-- drawer content -->
+      </q-drawer>
+
+      <q-drawer v-model="right" side="right" behavior="mobile" elevated>
+        <!-- drawer content -->
+      </q-drawer>
+
+      <q-page-container>
         <transition name="fade">
           <router-view/>
         </transition>
-      </div>
-      <div class="app-view-bg"/>
-    </div>
+      </q-page-container>
+    </q-layout>
   </div>
 </template>
 
@@ -26,6 +32,8 @@ export default {
   data() {
     return {
       currentRoute: { name: '' },
+      left: null,
+      right: null,
     }
   },
   watch: {
@@ -95,6 +103,7 @@ export default {
 
   .vue-map img[src="https://maps.gstatic.com/mapfiles/api-3/images/google_white5.png"] {
     pointer-events: none;
+
     opacity: 0;
   }
 
