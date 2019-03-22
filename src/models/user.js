@@ -1,5 +1,13 @@
 export const initialState = {
-  count: 0,
+  exists: false,
+  id: '',
+  data: {
+    alias: '',
+    slug: '',
+    email: '',
+    isAdmin: false,
+  },
+  banned: false,
 }
 
 export const user = {
@@ -11,11 +19,11 @@ export const user = {
       return { ...state, count: count + payload }
     },
   },
-  effects: (dispatch) => ({
+  effects: dispatch => ({
     // handle state changes with impure functions.
     // use async/await for async actions
     async incrementAsync(payload, rootState) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, 1000))
       dispatch.user.increment(payload)
     },
   }),

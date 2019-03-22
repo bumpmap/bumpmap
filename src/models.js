@@ -1,4 +1,4 @@
-import { home as homeModel } from '@/models/home'
+import { explorer as explorerModel } from '@/models/explorer'
 import { login as loginModel } from '@/models/login'
 import { maps as mapsModel } from '@/models/maps'
 import { messages as messagesModel } from '@/models/messages'
@@ -12,7 +12,7 @@ import { signup as signupModel } from '@/models/signup'
 import { user as userModel } from '@/models/user'
 import { layout as layoutModel } from '@/models/layout'
 
-export const home = homeModel
+export const explorer = explorerModel
 export const login = loginModel
 export const maps = mapsModel
 export const messages = messagesModel
@@ -27,7 +27,7 @@ export const user = userModel
 export const layout = layoutModel
 
 export default {
-  home,
+  explorer,
   login,
   maps,
   messages,

@@ -11133,6 +11133,11 @@ vue@^2.6.6:
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
+vuejs-redux@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/vuejs-redux/-/vuejs-redux-2.3.1.tgz#d58dd3844594e098c436b9110aaecba269c98673"
+  integrity sha512-l/frH+UlFonpK/pIQbOPKeK5bDMoyqaDSWJykFoWnU8e/D0u2/jhLdufDQf6p/2wvOA+TlHHspBSgsOtKwt15g==
+
 w3c-hr-time@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/w3c-hr-time/-/w3c-hr-time-1.0.1.tgz#82ac2bff63d950ea9e3189a58a65625fedf19045"
