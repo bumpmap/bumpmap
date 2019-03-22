@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "@rematch/core": "^1.1.0",
+    "core-js": "2",
     "firebase": "^5.9.0",
     "lodash": "^4.17.11",
     "quasar": "^1.0.0-beta.1",
