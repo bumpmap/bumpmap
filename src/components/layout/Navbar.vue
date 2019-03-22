@@ -19,18 +19,26 @@
           </div>
         </q-toolbar-title>
 
-        <ul class="right">
-          <li class="user-email" v-if="user">{{user.email}}</li>
-          <li v-if="!user">
-            <router-link :to="{name: 'Join'}">Join</router-link>
-          </li>
-          <li v-if="!user">
-            <router-link :to="{name: 'Login'}">Login</router-link>
-          </li>
-          <li v-if="user">
-            <a @click="logout">Logout</a>
-          </li>
-        </ul>
+        <span class="user-email" v-if="user">{{user.email}}</span>
+        <router-link class="auth-shortcut" v-if="!user" :to="{name: 'Join'}">
+          <q-btn rounded flat color="white" no-caps icon="fas fa-user-plus" label="Join"/>
+        </router-link>
+
+        <router-link class="auth-shortcut" v-if="!user" :to="{name: 'Login'}">
+          <q-btn rounded flat color="white" no-caps icon="fas fa-sign-in-alt" label="Login"/>
+        </router-link>
+
+        <q-btn
+          class="auth-shortcut"
+          flat
+          rounded
+          v-if="user"
+          @click="logout"
+          color="white"
+          no-caps
+          icon="fas fa-sign-out-alt"
+          label="Logout"
+        />
 
         <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
       </q-toolbar>
@@ -66,7 +74,7 @@ export default {
       this.$router.push({ name: 'Login' })
     },
     toggleRightMenu() {
-      console.debug(dispatch.layout)
+      dispatch.layout.toggleMenu('right')
     },
   },
   created() {
@@ -196,6 +204,10 @@ export default {
       top: 6px;
       transform: scale(0.6);
     }
+  }
+
+  .auth-shortcut {
+    margin: 0 5px;
   }
 }
 </style>
