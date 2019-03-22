@@ -44,7 +44,7 @@ import debounce from 'lodash/debounce'
 // import db from '@/firebase/init'
 import firebase from 'firebase'
 import { EMAIL, PASSWORD } from '@/utils/regex-patterns'
-import AuthLogo from '@/components/auth/AuthLogo'
+import AuthLogo from '@/views/auth/AuthLogo'
 
 export default {
   name: 'Login',

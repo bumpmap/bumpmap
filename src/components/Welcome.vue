@@ -45,11 +45,19 @@
 
       <q-card-actions>
         <router-link :to="{name: 'Join'}">
-          <q-btn class="welcome-actions" rounded icon="fas fa-user-plus" no-caps color="green">Join</q-btn>
+          <q-btn
+            class="auth-button"
+            size="large"
+            rounded
+            icon="fas fa-user-plus"
+            no-caps
+            color="green"
+          >Join</q-btn>
         </router-link>
         <router-link :to="{name: 'Login'}">
           <q-btn
-            class="welcome-actions"
+            class="auth-button"
+            size="large"
             rounded
             icon="fas fa-sign-in-alt"
             no-caps
@@ -101,7 +109,7 @@ export default {
     }
   }
 
-  .welcome-actions {
+  .auth-button {
     margin: 2px 5px;
     padding-left: 15px;
     padding-right: 15px;

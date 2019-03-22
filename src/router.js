@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Map from '@/components/home/Map.vue'
-import Join from '@/components/auth/Join.vue'
-import Login from '@/components/auth/Login.vue'
+import Join from '@/views/auth/Join.vue'
+import Login from '@/views/auth/Login.vue'
 import Explorer from '@/views/Explorer.vue'
 
 Vue.use(Router)

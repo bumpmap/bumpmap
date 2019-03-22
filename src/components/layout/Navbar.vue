@@ -19,25 +19,56 @@
           </div>
         </q-toolbar-title>
 
-        <span class="user-email" v-if="user">{{user.email}}</span>
-        <router-link class="auth-shortcut" v-if="!user" :to="{name: 'Join'}">
-          <q-btn rounded flat color="white" no-caps icon="fas fa-user-plus" label="Join"/>
-        </router-link>
+        <div class="auth-buttons">
+          <span class="user-email" v-if="user">{{user.email}}</span>
+          <router-link v-if="!user" :to="{name: 'Join'}">
+            <q-btn
+              class="auth-button"
+              rounded
+              flat
+              size="small"
+              color="green"
+              no-caps
+              icon="fas fa-user-plus"
+              label="Join"
+            />
+          </router-link>
 
-        <router-link class="auth-shortcut" v-if="!user" :to="{name: 'Login'}">
-          <q-btn rounded flat color="white" no-caps icon="fas fa-sign-in-alt" label="Login"/>
-        </router-link>
+          <router-link v-if="!user" :to="{name: 'Login'}">
+            <q-btn
+              class="auth-button"
+              rounded
+              flat
+              size="small"
+              color="blue"
+              no-caps
+              icon="fas fa-sign-in-alt"
+              label="Login"
+            />
+          </router-link>
+
+          <q-btn
+            class="auth-button"
+            flat
+            rounded
+            size="small"
+            v-if="user"
+            @click="logout"
+            color="white"
+            no-caps
+            icon="fas fa-sign-out-alt"
+            label="Logout"
+          />
+        </div>
 
         <q-btn
-          class="auth-shortcut"
+          class="auth-button"
+          round
           flat
-          rounded
-          v-if="user"
-          @click="logout"
+          size="small"
           color="white"
           no-caps
-          icon="fas fa-sign-out-alt"
-          label="Logout"
+          icon="fas fa-question-circle"
         />
 
         <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
@@ -78,7 +109,7 @@ export default {
     },
   },
   created() {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.user = user
       } else {
@@ -206,8 +237,15 @@ export default {
     }
   }
 
-  .auth-shortcut {
-    margin: 0 5px;
+  .auth-button {
+    margin: 2px 4px;
+    padding-left: 15px;
+    padding-right: 15px;
+    .fas {
+      margin-right: 5px;
+      transform-origin: center center;
+      transform: scale(0.8);
+    }
   }
 }
 </style>
