@@ -1,5 +1,5 @@
 <template>
-  <div class="auth-form white-text">
+  <!-- <div class="auth-form white-text">
     <div class="container">
       <form @submit.prevent="signup" class="card-panel" @keyup="validateForm">
         <AuthLogo/>
@@ -63,6 +63,150 @@
       </form>
     </div>
   </div>
+  -->
+  <q-page>
+    <div class="auth-form">
+      <q-card dark class="q-pa-md card-panel" bordered>
+        <q-card-section class="summary">
+          <AuthLogo/>
+          <h2>Join the Conversation</h2>
+        </q-card-section>
+        <q-card-section>
+          <form @submit.prevent="signup" @keyup="validateForm">
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                class="grey-text text-lighten-4"
+                type="email"
+                name="email"
+                label="Email"
+                v-model="formData.email"
+                @change="generateAlias(formData.email)"
+                @keyup="generateAlias(formData.email)"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.email">{{errors.email}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-envelope"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                class="grey-text text-lighten-4"
+                type="text"
+                name="alias"
+                label="Alias"
+                @focus="dirty.alias = true"
+                @blur="dirty.alias = !!formData.alias"
+                @change="validateForm"
+                v-model="formData.alias"
+                autocomplete="off"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.alias">{{errors.alias}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-user"/>
+                </template>
+
+                <template v-slot:append>
+                  <q-spinner v-if="checkingAlias"/>
+                  <div v-if="!checkingAlias">
+                    <transition name="fade">
+                      <q-icon v-if="formData.alias && errors.alias" color="red" name="fas fa-ban"/>
+                    </transition>
+                    <transition name="fade">
+                      <q-icon
+                        color="green"
+                        v-if="formData.alias && !errors.alias && availableAlias === formData.alias"
+                        name="fas fa-check"
+                      />
+                    </transition>
+                  </div>
+                </template>
+              </q-input>
+            </div>
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                label="Password"
+                class="grey-text text-lighten-4"
+                type="password"
+                name="password"
+                v-model="formData.password"
+                autocomplete="off"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.password">{{errors.password}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-key"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="field">
+              <q-input
+                dark
+                standout
+                bottom-slots
+                label="Confirm Password"
+                class="grey-text text-lighten-4"
+                type="password"
+                name="password"
+                v-model="formData.confirm"
+                autocomplete="off"
+              >
+                <template v-slot:hint>
+                  <transition name="bounce">
+                    <p class="text-red" v-if="errors.confirm">{{errors.confirm}}</p>
+                  </transition>
+                </template>
+
+                <template v-slot:prepend>
+                  <q-icon name="fas fa-key"/>
+                </template>
+              </q-input>
+            </div>
+            <div class="field center">
+              <q-btn
+                type="submit"
+                :loading="status.sending"
+                :color="status.valid ? 'green' : 'grey'"
+                :disable="!status.valid"
+                size="xl"
+                class="full-width"
+                @click.prevent="signup"
+              >
+                {{buttonText}}
+                <template v-slot:loading>
+                  <q-spinner/>
+                </template>
+              </q-btn>
+              <p class="error-text text-red" v-if="errors.signup">{{errors.signup}}</p>
+            </div>
+          </form>
+        </q-card-section>
+      </q-card>
+    </div>
+  </q-page>
 </template>
 
 
@@ -73,7 +217,7 @@ import { toSlug } from '@/utils/alias'
 import { db } from '@/firebase/init'
 import firebase from 'firebase'
 import { EMAIL, ALIAS, PASSWORD } from '@/utils/regex-patterns'
-import AuthLogo from '@/components/auth/AuthLogo'
+import AuthLogo from '@/views/auth/AuthLogo'
 
 export default {
   name: 'join',
@@ -97,11 +241,15 @@ export default {
         password: null,
         confirm: null,
         alias: null,
+        signup: null,
       },
       status: {
         valid: false,
         sending: false,
       },
+      availableAlias: null,
+      unavailableAlias: null,
+      checkingAlias: false,
     }
   },
   computed: {
@@ -111,17 +259,33 @@ export default {
       }
     },
     buttonText: function() {
-      return this.status.sending ? 'sending' : `it's bumping time`
+      return this.status.valid ? 'ready' : `join`
     },
   },
   methods: {
-    async aliasIsAvailable(alias) {
-      console.debug('aliasIsAvailable?')
+    async checkAlias(alias) {
+      this.checkingAlias = true
+      if (this.unavailableAlias === alias) {
+        console.log('already know this is unavailable')
+        this.checkingAlias = false
+        return false
+      }
+      console.debug('checkAlias?')
       const slug = toSlug(alias)
       const ref = db.collection('users').doc(slug)
       const doc = await ref.get()
-      this.$q.loadingBar.stop()
-      return !doc.exists
+
+      if (doc.exists) {
+        this.checkingAlias = false
+        this.availableAlias = null
+        this.unavailableAlias = alias
+        return false
+      } else {
+        this.checkingAlias = false
+        this.availableAlias = alias
+        this.unavailableAlias = null
+        return alias
+      }
     },
     startSending() {
       this.status.sending = true
@@ -143,7 +307,6 @@ export default {
     async validateForm() {
       this.$q.loadingBar.stop()
       let result = true
-      console.log(this)
       const { email, password, confirm, alias } = this.formData
       if (!email) {
         this.errors.email = 'Please enter your email.'
@@ -158,9 +321,8 @@ export default {
       if (!password) {
         this.errors.password = 'Please enter your password.'
         result = false
-      } else if (!password.match(PASSWORD)) {
-        this.errors.password =
-          'Please enter a password with at least 8 characters and at least 3 of the following: uppercase letters, lowercase letters, numbers, and special characters.'
+      } else if (password.length < 8) {
+        this.errors.password = 'Please enter at least 8 characters'
         result = false
       } else {
         this.errors.password = null
@@ -207,11 +369,12 @@ export default {
         this.errors.alias =
           "Only letters, numbers, spaces, dots ('.') and underscores ('_') allowed"
         result = false
-      } else {
+      } else if (alias !== this.availableAlias) {
         this.errors.alias = null
         console.debug('alias valid. checking if available')
-        const available = await this.aliasIsAvailable(alias)
-        if (available) {
+        await this.checkAlias(alias)
+        this.checkingAlias = false
+        if (this.availableAlias) {
           this.errors.alias = null
           console.debug('alias is AVAILABLE!')
         } else {
@@ -253,11 +416,13 @@ export default {
             console.debug('done', done)
             this.sending = false
             this.$q.loadingBar.stop()
-            this.$router.push({ name: 'Map' })
+            this.$router.push({ name: 'Explorer' })
           } catch (e) {
             alert('Signup Error')
             this.stopSending()
             console.error(e)
+            this.errors.signup = e.message
+            this.status.valid = false
           }
         } else {
           this.stopSending()

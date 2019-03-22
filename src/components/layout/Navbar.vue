@@ -1,68 +1,129 @@
 <template>
   <div class="navbar">
-    <nav class="gray darken-4 bumpmap-navbar">
-      <div class="container">
-        <div class="brand-logo left">
-          <router-link :to="{name: 'Map'}">
-            <div class="brand-logo-wrapper">
-              <img class="emblem" src="/img/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
-              <img class="logotext" src="/img/logo/bumpmap-light.svg" alt="bumpmap">
-            </div>
-          </router-link>
-          <span class="version">
-            <span class="version-label">v</span>
-            <span class="version-number">{{version}}</span>
-            <!-- <span class="version-release" v-if="currentRoute">{{currentRoute.name}}</span> -->
-            <span class="version-release" v-if="release.phase">{{release.phase}}</span>
-          </span>
-        </div>
+    <q-header class="bg-special text-white">
+      <q-toolbar>
+        <q-toolbar-title>
+          <div class="brand-logo">
+            <router-link :to="{name: 'Explorer'}">
+              <div class="brand-logo-wrapper">
+                <img class="emblem" src="/img/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
+                <img class="logotext" src="/img/logo/bumpmap-light.svg" alt="bumpmap">
+              </div>
+            </router-link>
+            <span class="version">
+              <span class="version-label">v</span>
+              <span class="version-number">{{version}}</span>
+              <!-- <span class="version-release" v-if="currentRoute">{{currentRoute.name}}</span> -->
+              <span class="version-release" v-if="release.phase">{{release.phase}}</span>
+            </span>
+          </div>
+        </q-toolbar-title>
 
-        <ul class="right">
-          <li class="user-email" v-if="user">{{user.email}}</li>
-          <li v-if="!user">
-            <router-link :to="{name: 'Join'}">Join</router-link>
-          </li>
-          <li v-if="!user">
-            <router-link :to="{name: 'Login'}">Login</router-link>
-          </li>
-          <li v-if="user">
-            <a @click="logout">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+        <div class="auth-buttons">
+          <transition name="bounce">
+            <div
+              v-show="!user.exists && ((route.name === 'Explorer' && !explorer.welcome) || (route.name !== 'Explorer'))"
+            >
+              <router-link v-if="!user.exists" :to="{name: 'Join'}">
+                <q-btn
+                  class="auth-button"
+                  rounded
+                  flat
+                  size="small"
+                  color="green"
+                  no-caps
+                  icon="fas fa-user-plus"
+                  label="Join"
+                />
+              </router-link>
+
+              <router-link v-if="!user.exists" :to="{name: 'Login'}">
+                <q-btn
+                  class="auth-button"
+                  rounded
+                  flat
+                  size="small"
+                  color="blue"
+                  no-caps
+                  icon="fas fa-sign-in-alt"
+                  label="Login"
+                />
+              </router-link>
+            </div>
+          </transition>
+          <transition name="bounce">
+            <div v-show="user.exists">
+              <span class="user-email" v-if="user.exists">{{user.data.email}}</span>
+              <q-btn
+                class="auth-button"
+                flat
+                rounded
+                size="small"
+                v-if="user.exists"
+                @click="logout"
+                color="white"
+                no-caps
+                icon="fas fa-sign-out-alt"
+                label="Logout"
+              />
+            </div>
+          </transition>
+        </div>
+        <transition name="quickfade">
+          <q-btn
+            v-show="!user.exists && route.name === 'Explorer'"
+            round
+            flat
+            size="small"
+            color="white"
+            no-caps
+            icon="fas fa-question-circle"
+            @click="showWelcome"
+          />
+        </transition>
+        <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
+      </q-toolbar>
+
+      <!-- <q-tabs align="left">
+        <q-route-tab to="/page1" label="Page One"/>
+        <q-route-tab to="/page2" label="Page Two"/>
+        <q-route-tab to="/page3" label="Page Three"/>
+      </q-tabs>-->
+    </q-header>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import bumpmapAppData from '@/utils/app-data'
+import { dispatch } from '@/state'
 
 export default {
   name: 'Navbar',
-  props: ['currentRoute'],
   data() {
     const { version, release } = bumpmapAppData
     return {
       version,
       release,
-      user: null,
+      ...this.mapState({
+        user: 'user',
+        route: 'route',
+        layout: 'layout',
+        explorer: 'explorer',
+      }),
     }
   },
   methods: {
+    showWelcome() {
+      dispatch.explorer.setWelcome(true)
+    },
     async logout() {
       const result = await firebase.auth().signOut()
       this.$router.push({ name: 'Login' })
     },
-  },
-  created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.user = user
-      } else {
-        this.user = null
-      }
-    })
+    toggleRightMenu() {
+      dispatch.layout.toggleMenu('right')
+    },
   },
 }
 </script>
@@ -72,6 +133,8 @@ export default {
   .brand-logo-wrapper {
     display: inline-block;
     transition: all 0.2s ease-in-out;
+    position: relative;
+    left: 5px;
     .emblem,
     .logotext {
       transform-origin: center center;
@@ -90,7 +153,7 @@ export default {
   .emblem {
     height: 42px;
     position: relative;
-    top: 8px;
+    top: 4px;
     @media screen and (max-width: 768px) {
       height: 30px;
       top: 3px;
@@ -100,11 +163,12 @@ export default {
   .logotext {
     height: 40px;
     position: relative;
-    top: 8.5px;
-    left: -5px;
+    top: 4px;
+    left: 0px;
     @media screen and (max-width: 768px) {
       height: 24px;
       top: 0px;
+      left: 0px;
     }
   }
 
@@ -115,8 +179,8 @@ export default {
     padding: 0;
   }
 
-  .gray.darken-4.bumpmap-navbar {
-    background-color: rgba(20, 20, 20, 0.8);
+  .bg-special {
+    background-color: rgba(20, 20, 20, 0.9);
   }
 
   .brand-logo {
@@ -128,13 +192,16 @@ export default {
         transform: scale(0.6);
       }
       cursor: help;
+      position: relative;
+      top: -8px;
+      left: 10px;
       display: inline-block;
       margin: 2px 5px;
       padding: 0;
-      font-size: 0.5em;
+      font-size: 1rem;
       font-weight: 150;
-      line-height: 64px;
-      vertical-align: top;
+
+      // vertical-align: top;
       letter-spacing: 2px;
       color: rgba(255, 255, 255, 0.25);
       user-select: none;
@@ -151,11 +218,11 @@ export default {
       font-size: 0.9em;
     }
     .version-number {
-      margin-left: -1px;
+      margin-left: 0px;
     }
     .version-release {
       margin-left: 2px;
-      font-size: 0.75em;
+      font-size: 0.9em;
       font-weight: 500;
       letter-spacing: 0px;
     }
@@ -175,6 +242,17 @@ export default {
       display: none;
       top: 6px;
       transform: scale(0.6);
+    }
+  }
+
+  .auth-button {
+    margin: 2px 4px;
+    padding-left: 15px;
+    padding-right: 15px;
+    .fas {
+      margin-right: 5px;
+      transform-origin: center center;
+      transform: scale(0.8);
     }
   }
 }

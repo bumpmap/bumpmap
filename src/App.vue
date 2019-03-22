@@ -1,16 +1,22 @@
 <template>
   <div id="app">
-    <div class="app-navbar">
-      <Navbar :currentRoute="currentRoute"/>
-    </div>
-    <div class="app-bg">
-      <div class="app-view">
-        <transition name="fade">
+    <q-layout view="hHh lpR fFf">
+      <Navbar/>
+
+      <q-drawer v-model="left" side="left" bordered>
+        <!-- drawer content -->
+      </q-drawer>
+
+      <q-drawer v-model="right" side="right" behavior="mobile" elevated>
+        <!-- drawer content -->
+      </q-drawer>
+
+      <q-page-container>
+        <transition name="quickfade">
           <router-view/>
         </transition>
-      </div>
-      <div class="app-view-bg"/>
-    </div>
+      </q-page-container>
+    </q-layout>
   </div>
 </template>
 
@@ -25,24 +31,24 @@ export default {
   },
   data() {
     return {
-      currentRoute: { name: '' },
+      left: null,
+      right: null,
     }
   },
   watch: {
     $route(to, from) {
-      this.currentRoute = to
       dispatch.route.update(to)
     },
   },
   mounted() {
     dispatch.route.update(this.$route)
-    this.currentRoute = this.$route
   },
 }
 </script>
 
 <style lang="scss">
 #app {
+  background-color: rgba(20, 20, 20, 0.95);
   .app-navbar {
     position: absolute;
     top: 0;
@@ -78,15 +84,15 @@ export default {
     pointer-events: auto;
   }
 
-  .fade-enter-active {
+  .quickfade-enter-active {
     transition: opacity 0.6s ease-in-out;
   }
-  .fade-leave-active {
+  .quickfade-leave-active {
     transition: opacity 0.2s ease-in-out;
   }
 
-  .fade-enter,
-  .fade-leave-to {
+  .quickfade-enter,
+  .quickfade-leave-to {
     opacity: 0;
   }
 
@@ -95,6 +101,7 @@ export default {
 
   .vue-map img[src="https://maps.gstatic.com/mapfiles/api-3/images/google_white5.png"] {
     pointer-events: none;
+
     opacity: 0;
   }
 

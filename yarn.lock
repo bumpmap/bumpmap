@@ -4881,6 +4881,13 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
+get-value@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/get-value/-/get-value-3.0.1.tgz#5efd2a157f1d6a516d7524e124ac52d0a39ef5a8"
+  integrity sha512-mKZj9JLQrwMBtj5wxi6MH8Z5eSKaERpAwjg43dPtlGI1ZVEgH/qC7T8/6R2OBSUA+zzHBZgICsVJaEIV2tKTDA==
+  dependencies:
+    isobject "^3.0.1"
+
 getpass@^0.1.1:
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
@@ -9230,6 +9237,14 @@ redux-observable@^1.0.0:
   resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-1.0.0.tgz#780ff2455493eedcef806616fe286b454fd15d91"
   integrity sha512-6bXnpqWTBeLaLQjXHyN1giXq4nLxCmv+SUkdmiwBgvmVxvDbdmydvL1Z7DGo0WItyzI/kqXQKiucUuTxnrPRkA==
 
+redux-vuex@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/redux-vuex/-/redux-vuex-0.1.3.tgz#76e387ba49800abc8e7942017b1c8f942cd3dad9"
+  integrity sha512-IjP41GE1a9e/cem3ekq6f7XJPOxZX9iOA1I9pbbFGKvrQjfU07gixxilLrIKFCEDSSZcPvptuYdnE4m2dwKhcg==
+  dependencies:
+    get-value "^3.0.1"
+    set-value "^3.0.0"
+
 redux@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.1.tgz#436cae6cc40fbe4727689d7c8fae44808f1bfef5"
@@ -9801,6 +9816,13 @@ set-value@^2.0.0:
     is-extendable "^0.1.1"
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
+
+set-value@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/set-value/-/set-value-3.0.0.tgz#bc021514f46effed8176fd5f0f67e9988531141f"
+  integrity sha512-tqkg9wJ2TOsxbzIMG5NMAmzjdbDTAD0in7XuUzmFpJE4Ipi2QFBfgC2Z1/gfxcAmWCPsuutiEJyDIMRsrjrMOQ==
+  dependencies:
+    is-plain-object "^2.0.4"
 
 setimmediate@^1.0.4:
   version "1.0.5"
@@ -11119,6 +11141,11 @@ vue-template-es2015-compiler@^1.6.0, vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+
+vue2-animate@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/vue2-animate/-/vue2-animate-2.1.0.tgz#93eee5f381d8d6493bae0507bcad6b615fdacb7f"
+  integrity sha512-OEuwx9Y2dmx3+hQ/K7zLc514v4xhc8tGDQl/ZTJh06r+/EG/oYQkhy2Fo4OOhDwiRJYFuTfkFhGlDtTnT4XGsw==
 
 vue2-google-maps@^0.10.6:
   version "0.10.6"
