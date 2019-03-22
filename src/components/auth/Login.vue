@@ -91,7 +91,7 @@ export default {
             .signInWithEmailAndPassword(email, password)
           const { user } = cred
           console.debug(`logged in as user ${user.uid}`)
-          this.$router.push({ name: 'Map' })
+          this.$router.push({ name: 'Explorer' })
         } catch (error) {
           alert('could not login!')
           console.error(error)

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Map from '@/components/home/Map.vue'
 import Join from '@/components/auth/Join.vue'
 import Login from '@/components/auth/Login.vue'
+import Explorer from '@/views/Explorer.vue'
 
 Vue.use(Router)
 
@@ -12,7 +13,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Map',
+      name: 'Explorer',
       component: Map,
     },
     {

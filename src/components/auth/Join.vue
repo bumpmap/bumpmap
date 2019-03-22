@@ -253,7 +253,7 @@ export default {
             console.debug('done', done)
             this.sending = false
             this.$q.loadingBar.stop()
-            this.$router.push({ name: 'Map' })
+            this.$router.push({ name: 'Explorer' })
           } catch (e) {
             alert('Signup Error')
             this.stopSending()

@@ -15,6 +15,7 @@ module.exports = {
       { code: 120, ignoreStrings: true, ignoreRegExpLiterals: true },
     ],
     'no-useless-escape': 'off',
+    'arrow-parens': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-toolbar-title>
           <div class="brand-logo">
-            <router-link :to="{name: 'Map'}">
+            <router-link :to="{name: 'Explorer'}">
               <div class="brand-logo-wrapper">
                 <img class="emblem" src="/img/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
                 <img class="logotext" src="/img/logo/bumpmap-light.svg" alt="bumpmap">

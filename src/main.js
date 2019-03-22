@@ -8,15 +8,15 @@ import './registerServiceWorker'
 
 import './styles/quasar.styl'
 import 'quasar/dist/quasar.ie.polyfills'
-import iconSet from 'quasar/icon-set/fontawesome-v5.js'
-import lang from 'quasar/lang/en-gb.js'
+import iconSet from 'quasar/icon-set/fontawesome-v5'
+import lang from 'quasar/lang/en-gb'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/fontawesome-v5/fontawesome-v5.css'
 import '@quasar/extras/ionicons-v4/ionicons-v4.css'
 import '@quasar/extras/eva-icons/eva-icons.css'
 import Quasar from 'quasar'
 import router from './router'
-import App from './App'
+import App from './App.vue'
 
 Vue.use(Quasar, {
   config: {
@@ -47,11 +47,11 @@ Vue.use(VueGoogleMaps, {
 
 function init() {
   console.debug('initialising bumpmap')
-  $authState.subscribe((user) => {
+  $authState.subscribe(user => {
     console.info('$authState change:', user)
   })
 
-  $user.subscribe((user) => {
+  $user.subscribe(user => {
     console.info('$user change:', user)
   })
 
@@ -61,7 +61,7 @@ function init() {
       console.debug('authState updated. rendering bumpmap')
       app = new Vue({
         router,
-        render: (h) => h(App),
+        render: h => h(App),
       }).$mount('#app')
     }
   })
