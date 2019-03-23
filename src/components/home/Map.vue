@@ -118,8 +118,8 @@ export default {
       this.lat = lat
       this.lng = lng
     },
-    clickMap(event) {
-      const { latLng } = event
+    clickMap(evt) {
+      const { latLng } = evt
       const { lat, lng } = latLng
       console.log(`map clicked @ (${lat()}, ${lng()})`)
       this.placePin(lat(), lng())

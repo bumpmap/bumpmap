@@ -1,5 +1,9 @@
 .auth-form {
   /* Change the white to any color ;) */
+
+  @media screen and (max-width: 420px) {
+    transform: scale(0.9);
+  }
   input:-webkit-autofill,
   input:-webkit-autofill:hover {
     transition: background-color 0s 50000s;
