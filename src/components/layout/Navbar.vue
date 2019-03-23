@@ -7,7 +7,7 @@
             <router-link :to="{name: 'Explorer'}">
               <div class="brand-logo-wrapper">
                 <img class="emblem" src="/img/logo/emblem-dark@0.5x.png" alt="bumpmap logo">
-                <img class="logotext" src="/img/logo/bumpmap-light.svg" alt="bumpmap">
+                <img class="logotext gt-sm" src="/img/logo/bumpmap-light.svg" alt="bumpmap">
               </div>
             </router-link>
             <span class="version">
@@ -81,7 +81,7 @@
             @click="showWelcome"
           />
         </transition>
-        <q-btn dense flat round icon="menu" @click="toggleRightMenu"/>
+        <q-btn v-show="user.exists" dense flat round icon="menu" @click="toggleRightMenu"/>
       </q-toolbar>
 
       <!-- <q-tabs align="left">
@@ -122,7 +122,7 @@ export default {
       this.$router.push({ name: 'Login' })
     },
     toggleRightMenu() {
-      dispatch.layout.toggleMenu('right')
+      dispatch.layout.openMenu('right')
     },
   },
 }

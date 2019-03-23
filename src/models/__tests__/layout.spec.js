@@ -17,6 +17,37 @@ describe('models/layout', () => {
   })
 
   describe('reducers', () => {
+    describe('open/closeMenu', () => {
+      it('should open and close left menu', () => {
+        const store = init({
+          models: { layout },
+        })
+
+        const initialValue = initialState.menus.left
+        expect(initialValue).toEqual(false)
+        store.dispatch.layout.openMenu('left')
+        let result = store.getState().layout.menus.left
+        expect(result).toEqual(true)
+        store.dispatch.layout.closeMenu('left')
+        result = store.getState().layout.menus.left
+        expect(result).toBe(false)
+      })
+
+      it('should open and close right menu', () => {
+        const store = init({
+          models: { layout },
+        })
+
+        const initialValue = initialState.menus.right
+        expect(initialValue).toEqual(false)
+        store.dispatch.layout.openMenu('right')
+        let result = store.getState().layout.menus.right
+        expect(result).toEqual(true)
+        store.dispatch.layout.closeMenu('right')
+        result = store.getState().layout.menus.right
+        expect(result).toBe(false)
+      })
+    })
     describe('toggleMenu', () => {
       it('should toggle left menu', () => {
         const store = init({
