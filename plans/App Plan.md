@@ -54,6 +54,7 @@ bumpmap.org/+/alias
 - Email
   - show on profile
 - Bio (max 140 chars)
+- Show NSFW pins
 - Home location
 - Country
   - show on profile?
