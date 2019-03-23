@@ -165,6 +165,9 @@ export default {
     position: relative;
     top: 4px;
     left: 0px;
+    @media screen and (max-width: 420px) {
+      display: none;
+    }
     @media screen and (max-width: 768px) {
       height: 24px;
       top: 0px;
