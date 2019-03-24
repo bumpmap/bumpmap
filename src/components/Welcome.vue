@@ -92,25 +92,41 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .welcome {
-  @media screen and (max-width: 420px) {
-    transform: scale(0.9);
-    transform-origin: center center;
-  }
+  .text-h5 {
+    @media screen and (max-width: 420px) {
+      position: relative;
 
+      font-size: 1.337em;
+    }
+  }
   .welcome-information {
+    @media screen and (max-width: 420px) {
+      padding-top: 0px;
+      font-size: 1em;
+    }
     padding-top: 8px;
     max-width: 420px;
     font-size: 1.2em;
   }
 
   .bumpmap-logo {
+    @media screen and (max-width: 420px) {
+      top: 8px;
+      left: 2px;
+    }
     display: inline-block;
     position: relative;
     top: 9px;
     .emblem {
       height: 40px;
+      @media screen and (max-width: 420px) {
+        height: 30px;
+      }
     }
     .logo-text {
+      @media screen and (max-width: 420px) {
+        height: 30px;
+      }
       height: 40px;
     }
   }

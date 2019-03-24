@@ -1,6 +1,6 @@
 <template>
   <AuthForm>
-    <q-card dark class="q-pa-md q-ma-md card-panel" bordered>
+    <q-card dark class="q-pa-md card-panel" bordered>
       <q-card-section class="summary">
         <AuthLogo/>
         <h2>Welcome Back!</h2>

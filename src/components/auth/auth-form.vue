@@ -9,7 +9,9 @@
 <script>
 export default {
   name: 'AuthForm',
-  data() {},
+  data() {
+    return {}
+  },
 }
 </script>
 
