@@ -79,7 +79,6 @@
 
 <script>
 import { dispatch } from '@/state'
-import { mapState } from 'redux-vuex'
 import Navbar from '@/components/layout/Navbar'
 
 export default {
@@ -87,9 +86,11 @@ export default {
   components: {
     Navbar,
   },
-  data: mapState('layout', 'user'),
+  data() {
+    return { ...this.mapState('layout', 'user') }
+  },
   watch: {
-    $route(to, from) {
+    $route(to) {
       dispatch.route.update(to)
     },
   },
@@ -118,40 +119,6 @@ export default {
 <style lang="scss">
 #app {
   background-color: rgba(20, 20, 20, 0.95);
-  .app-navbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none;
-    * {
-      pointer-events: auto;
-    }
-  }
-  .app-view-bg {
-    pointer-events: none;
-    background-color: rgba(0, 0, 0, 0.88);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
-
-  .app-view {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    margin: 0;
-    padding: 0;
-    z-index: 1;
-    pointer-events: auto;
-  }
 
   .quickfade-enter-active {
     transition: opacity 0.6s ease-in-out;
@@ -167,12 +134,6 @@ export default {
 
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-
-  .vue-map img[src="https://maps.gstatic.com/mapfiles/api-3/images/google_white5.png"] {
-    pointer-events: none;
-
-    opacity: 0;
-  }
 
   /*style the box which holds the text of the information window*/
   .gm-style-cc {
