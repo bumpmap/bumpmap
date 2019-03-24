@@ -3,6 +3,8 @@ import Vue from 'vue'
 const Explorer = () => import('@/views/Explorer.vue')
 const Join = () => import('@/views/auth/Join.vue')
 const Login = () => import('@/views/auth/Login.vue')
+import { store } from '@/state'
+import { contains } from 'rambda'
 
 Vue.use(Router)
 
@@ -29,7 +31,18 @@ const router = new Router({
 })
 
 export function redirectUsersAwayFromAuthForms(to, from, next) {
-  next()
+  const disallowedIfLoggedIn = ['Login', 'Join']
+
+  if (contains(to.name)(disallowedIfLoggedIn)) {
+    const { user } = store.getState()
+    if (user && user.exists) {
+      next({ name: 'Explorer' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 }
 
 router.beforeEach(redirectUsersAwayFromAuthForms)
