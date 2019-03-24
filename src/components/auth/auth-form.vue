@@ -1,7 +1,11 @@
 <template>
   <div class="auth-form">
     <q-page>
-      <slot></slot>
+      <div class="absolute-center">
+        <q-card dark class="q-pa-md card-panel" bordered>
+          <slot></slot>
+        </q-card>
+      </div>
     </q-page>
   </div>
 </template>
@@ -35,23 +39,25 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  .q-card__section:first-of-type {
+    padding: 0;
+  }
   .card-panel {
     background-color: rgba(255, 255, 255, 0.05);
-    max-width: 500px;
+    width: 90vw;
+    max-width: 600px;
+    border-radius: 20px;
   }
 
   .field {
-    margin-bottom: 1em;
     padding-left: 1em;
     padding-right: 1em;
   }
 
   h2 {
     font-size: 1.5em;
-
     font-weight: 400;
-    margin-bottom: 1em;
-    margin-top: 1em;
+    margin: 0 auto;
     @media screen and (max-width: 420px) {
       font-size: 1.1em;
       margin: 0;

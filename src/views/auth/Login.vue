@@ -1,79 +1,77 @@
 <template>
   <AuthForm>
-    <q-card dark class="q-pa-md card-panel" bordered>
-      <q-card-section class="summary">
-        <AuthLogo/>
-        <h2>Welcome Back!</h2>
-      </q-card-section>
-      <q-card-section>
-        <form @submit.prevent="login" @keyup="validateForm">
-          <div class="field">
-            <q-input
-              dark
-              standout
-              bottom-slots
-              class="grey-text text-lighten-4"
-              type="email"
-              name="email"
-              label="Email"
-              v-model="formData.email"
-            >
-              <template v-slot:hint>
-                <transition name="bounce">
-                  <p class="text-red" v-if="errors.email">{{errors.email}}</p>
-                </transition>
-              </template>
+    <q-card-section class="summary">
+      <AuthLogo/>
+      <h2>Welcome Back!</h2>
+    </q-card-section>
+    <q-card-section>
+      <form @submit.prevent="login" @keyup="validateForm">
+        <div class="q-my-lg q-px-md">
+          <q-input
+            dark
+            standout
+            bottom-slots
+            class="grey-text text-lighten-4"
+            type="email"
+            name="email"
+            label="Email"
+            v-model="formData.email"
+          >
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.email">{{errors.email}}</p>
+              </transition>
+            </template>
 
-              <template v-slot:prepend>
-                <q-icon name="fas fa-envelope"/>
-              </template>
-            </q-input>
-          </div>
-          <div class="field">
-            <q-input
-              dark
-              standout
-              bottom-slots
-              label="Password"
-              class="grey-text text-lighten-4"
-              type="password"
-              name="password"
-              v-model="formData.password"
-              autocomplete="off"
-            >
-              <template v-slot:hint>
-                <transition name="bounce">
-                  <p class="text-red" v-if="errors.password">{{errors.password}}</p>
-                </transition>
-              </template>
+            <template v-slot:prepend>
+              <q-icon name="fas fa-envelope"/>
+            </template>
+          </q-input>
+        </div>
+        <div class="q-my-lg q-px-md">
+          <q-input
+            dark
+            standout
+            bottom-slots
+            label="Password"
+            class="grey-text text-lighten-4"
+            type="password"
+            name="password"
+            v-model="formData.password"
+            autocomplete="off"
+          >
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.password">{{errors.password}}</p>
+              </transition>
+            </template>
 
-              <template v-slot:prepend>
-                <q-icon name="fas fa-key"/>
-              </template>
-            </q-input>
-          </div>
-          <div class="field center">
-            <q-btn
-              rounded
-              :outline="!valid"
-              :loading="submitting"
-              :color="valid ? 'green' : 'grey'"
-              size="xl"
-              class="full-width"
-              @click.prevent="login"
-              type="submit"
-              :disable="!valid"
-              :label="valid ? `Let's Go` : `Login` "
-            >
-              <template v-slot:loading>
-                <q-spinner/>
-              </template>
-            </q-btn>
-            <p class="error-text text-red" v-if="errors.login">{{errors.login}}</p>
-          </div>
-        </form>
-      </q-card-section>
-    </q-card>
+            <template v-slot:prepend>
+              <q-icon name="fas fa-key"/>
+            </template>
+          </q-input>
+        </div>
+        <div class="q-my-lg q-px-md center">
+          <q-btn
+            rounded
+            :outline="!valid"
+            :loading="submitting"
+            :color="valid ? 'green' : 'grey'"
+            size="xl"
+            class="full-width"
+            @click.prevent="login"
+            type="submit"
+            :disable="!valid"
+            :label="valid ? `Let's Go` : `Login` "
+          >
+            <template v-slot:loading>
+              <q-spinner/>
+            </template>
+          </q-btn>
+          <p class="error-text text-red" v-if="errors.login">{{errors.login}}</p>
+        </div>
+      </form>
+    </q-card-section>
   </AuthForm>
 </template>
 
