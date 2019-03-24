@@ -2,20 +2,22 @@
   <q-page>
     <div class="bumpmap-explorer">
       <div id="ui">
-        <transition
-          name="bounce"
-          enter-active-class="bounceInDown"
-          leave-active-class="bounceOutUp"
-        >
-          <Welcome v-show="explorer.welcome"/>
-        </transition>
-        <transition
-          name="bounce"
-          enter-active-class="bounceInDown"
-          leave-active-class="bounceOutUp"
-        >
-          <Searchbox/>
-        </transition>
+        <div class="q-pa-md">
+          <transition
+            name="bounce"
+            enter-active-class="bounceInDown"
+            leave-active-class="bounceOutUp"
+          >
+            <Welcome v-show="explorer.welcome"/>
+          </transition>
+          <transition
+            name="bounce"
+            enter-active-class="bounceInDown"
+            leave-active-class="bounceOutUp"
+          >
+            <Searchbox/>
+          </transition>
+        </div>
       </div>
       <div id="map">
         <Map/>
@@ -55,14 +57,12 @@ export default {
 <style lang="scss">
 .bumpmap-explorer {
   & > #ui {
+    position: absolute;
     top: 0;
     left: 0;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    margin: 0 auto;
     z-index: 10;
     pointer-events: none;
     * {
@@ -71,6 +71,7 @@ export default {
   }
   & > #map {
     overflow: auto;
+    top: 0px;
     position: absolute;
     top: 0;
     left: 0;

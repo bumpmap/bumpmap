@@ -38,7 +38,6 @@ export default {
   // bottom: 10vh;
 
   position: relative;
-  top: 50px;
   width: 90vw;
   max-width: 320px;
   display: none;

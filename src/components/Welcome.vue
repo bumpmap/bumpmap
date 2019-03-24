@@ -92,21 +92,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .welcome {
-  position: absolute;
-  // bottom: 10vh;
-  top: 100px;
-  right: 5vh;
-
   @media screen and (max-width: 420px) {
-    // top: 50px;
-    // right: 0;
-    // left: 0;
-    position: relative;
-    // top: 50px;
-    bottom: 0;
-    top: 35px;
-    left: 0;
-    right: 0;
     transform: scale(0.9);
     transform-origin: center center;
   }
