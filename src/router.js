@@ -1,13 +1,12 @@
-import Vue from 'vue'
 import Router from 'vue-router'
-import Map from '@/components/home/Map.vue'
-import Join from '@/views/auth/Join.vue'
-import Login from '@/views/auth/Login.vue'
-import Explorer from '@/views/Explorer.vue'
+import Vue from 'vue'
+const Explorer = () => import('@/views/Explorer.vue')
+const Join = () => import('@/views/auth/Join.vue')
+const Login = () => import('@/views/auth/Login.vue')
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -28,3 +27,11 @@ export default new Router({
     },
   ],
 })
+
+export function redirectUsersAwayFromAuthForms(to, from, next) {
+  next()
+}
+
+router.beforeEach(redirectUsersAwayFromAuthForms)
+
+export default router
