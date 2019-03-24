@@ -3,11 +3,9 @@
     <q-card-section class="summary">
       <AuthLogo/>
       <h2>Join the Conversation</h2>
-      <p>Available: {{this.available}}</p>
-      <p>Unavailable: {{this.unavailable}}</p>
     </q-card-section>
     <q-card-section>
-      <form @submit.prevent="signup" @keyup="validateForm">
+      <form @submit.prevent="signup" v-stream:keyup="{subject: formData$, data: this.formData}">
         <div class="field">
           <q-input
             dark
@@ -43,7 +41,6 @@
             label="Alias"
             @focus="dirty.alias = true"
             @blur="dirty.alias = !!formData.alias"
-            v-stream:change="{ subject: alias$ }"
             v-model="formData.alias"
             autocomplete="off"
           >
@@ -127,7 +124,7 @@
             type="submit"
             :loading="status.sending"
             :color="status.valid ? 'green' : 'grey'"
-            :disable="!status.valid"
+            :disable="!status.valid || status.sending"
             size="xl"
             class="full-width"
             @click.prevent="signup"
@@ -147,12 +144,12 @@
 
 <script>
 import {
-  debounce as rxDebounce,
+  debounceTime,
   distinctUntilChanged,
   pluck as rxPluck,
+  map,
 } from 'rxjs/operators'
 import { find, propEq, contains, startsWith, endsWith, pluck } from 'rambda'
-import debounce from 'lodash/debounce'
 import { toSlug } from '@/utils/alias'
 import { db } from '@/firebase/init'
 import firebase from 'firebase'
@@ -221,11 +218,17 @@ export default {
       return []
     },
   },
-  domStreams: ['alias$'],
+  domStreams: ['formData$'],
   mounted() {
-    this.$subscribeTo(this.alias$, alias => {
-      console.log('alias$ subscription. alias = ', alias)
-    })
+    this.$subscribeTo(
+      this.formData$.pipe(
+        distinctUntilChanged(),
+        debounceTime(500),
+      ),
+      ({ data }) => {
+        this.validateForm()
+      },
+    )
   },
   methods: {
     contains,
