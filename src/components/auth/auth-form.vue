@@ -40,7 +40,7 @@ export default {
   height: 100%;
   overflow: auto;
   .q-card__section:first-of-type {
-    padding: 0;
+    padding: 30px 0 0;
   }
   .card-panel {
     background-color: rgba(255, 255, 255, 0.05);

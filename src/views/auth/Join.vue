@@ -3,6 +3,8 @@
     <q-card-section class="summary">
       <AuthLogo/>
       <h2>Join the Conversation</h2>
+      <p>Available: {{this.available}}</p>
+      <p>Unavailable: {{this.unavailable}}</p>
     </q-card-section>
     <q-card-section>
       <form @submit.prevent="signup" @keyup="validateForm">
@@ -41,7 +43,7 @@
             label="Alias"
             @focus="dirty.alias = true"
             @blur="dirty.alias = !!formData.alias"
-            @change="validateForm"
+            v-stream:change="{ subject: alias$ }"
             v-model="formData.alias"
             autocomplete="off"
           >
@@ -64,7 +66,7 @@
                 <transition name="fade">
                   <q-icon
                     color="green"
-                    v-if="formData.alias && !errors.alias && availableAlias === formData.alias"
+                    v-if="formData.alias && !errors.alias && contains(formData.alias)(available)"
                     name="fas fa-check"
                   />
                 </transition>
@@ -144,7 +146,12 @@
 
 
 <script>
-import { contains, startsWith, endsWith } from 'rambda'
+import {
+  debounce as rxDebounce,
+  distinctUntilChanged,
+  pluck as rxPluck,
+} from 'rxjs/operators'
+import { find, propEq, contains, startsWith, endsWith, pluck } from 'rambda'
 import debounce from 'lodash/debounce'
 import { toSlug } from '@/utils/alias'
 import { db } from '@/firebase/init'
@@ -182,9 +189,8 @@ export default {
         valid: false,
         sending: false,
       },
-      availableAlias: null,
-      unavailableAlias: null,
       checkingAlias: false,
+      checked: [],
     }
   },
   computed: {
@@ -196,31 +202,49 @@ export default {
     buttonText: function() {
       return this.status.valid ? 'ready' : `join`
     },
+    available: function() {
+      if (this.checked && this.checked.length) {
+        const available = this.checked.filter(x => x.available)
+        if (available && available.length) {
+          return pluck('alias')(available)
+        }
+      }
+      return []
+    },
+    unavailable: function() {
+      if (this.checked && this.checked.length) {
+        const unavailable = this.checked.filter(x => !x.available)
+        if (unavailable && unavailable.length) {
+          return pluck('alias')(unavailable)
+        }
+      }
+      return []
+    },
+  },
+  domStreams: ['alias$'],
+  mounted() {
+    this.$subscribeTo(this.alias$, alias => {
+      console.log('alias$ subscription. alias = ', alias)
+    })
   },
   methods: {
+    contains,
     async checkAlias(alias) {
       this.checkingAlias = true
-      if (this.unavailableAlias === alias) {
-        console.log('already know this is unavailable')
+      const cached = find(propEq('alias', alias))(this.checked)
+      if (cached) {
         this.checkingAlias = false
-        return false
+        return cached
       }
-      console.debug('checkAlias?')
+
       const slug = toSlug(alias)
       const ref = db.collection('users').doc(slug)
       const doc = await ref.get()
-
-      if (doc.exists) {
-        this.checkingAlias = false
-        this.availableAlias = null
-        this.unavailableAlias = alias
-        return false
-      } else {
-        this.checkingAlias = false
-        this.availableAlias = alias
-        this.unavailableAlias = null
-        return alias
-      }
+      const available = !doc.exists
+      const result = { alias, available }
+      this.checked = [...this.checked, result]
+      this.checkingAlias = false
+      return result
     },
     startSending() {
       this.status.sending = true
@@ -304,17 +328,28 @@ export default {
         this.errors.alias =
           "Only letters, numbers, spaces, dots ('.') and underscores ('_') allowed"
         result = false
-      } else if (alias !== this.availableAlias) {
-        this.errors.alias = null
-        console.debug('alias valid. checking if available')
-        await this.checkAlias(alias)
-        this.checkingAlias = false
-        if (this.availableAlias) {
+      } else {
+        console.debug('validateForm: checking if alias is available.')
+        const ALREADY_TAKEN_MSG = 'Sorry, that Alias has already been taken.'
+        const cached = find(propEq('alias', alias))(this.checked)
+        if (cached && cached.available) {
           this.errors.alias = null
-          console.debug('alias is AVAILABLE!')
-        } else {
-          this.errors.alias = 'Sorry, that Alias has already been taken.'
-          console.error('alias is NOT AVAILABLE!')
+        } else if (cached && !cached.available) {
+          this.errors.alias = ALREADY_TAKEN_MSG
+          result = false
+        } else if (!cached) {
+          console.debug('no cached information for alias.')
+          const response = await this.checkAlias(alias)
+          console.debug('response:', response)
+          const { available } = response
+          if (!available) {
+            console.debug('alias is unavailable. resetting this.errors.alias')
+            this.errors.alias = ALREADY_TAKEN_MSG
+            result = false
+          } else {
+            console.debug('alias is available. resetting this.errors.alias')
+            this.errors.alias = null
+          }
         }
       }
       this.status.valid = result
