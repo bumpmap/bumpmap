@@ -22,7 +22,7 @@
         <div class="auth-buttons">
           <transition name="bounce">
             <div
-              v-show="!user.exists && ((route.name === 'Explorer' && !explorer.welcome) || (route.name !== 'Explorer'))"
+              v-if="showAuthButtons && !user.exists && ((route.name === 'Explorer' && !explorer.welcome) || (route.name !== 'Explorer'))"
             >
               <router-link v-if="!user.exists" :to="{name: 'Join'}">
                 <q-btn
@@ -30,7 +30,7 @@
                   rounded
                   flat
                   size="small"
-                  color="green"
+                  color="positive"
                   no-caps
                   icon="fas fa-user-plus"
                   label="Join"
@@ -43,7 +43,7 @@
                   rounded
                   flat
                   size="small"
-                  color="blue"
+                  color="info"
                   no-caps
                   icon="fas fa-sign-in-alt"
                   label="Login"
@@ -103,6 +103,7 @@ export default {
   data() {
     const { version, release } = bumpmapAppData
     return {
+      showAuthButtons: false,
       version,
       release,
       ...this.mapState({
@@ -124,6 +125,12 @@ export default {
     toggleRightMenu() {
       dispatch.layout.openMenu('right')
     },
+  },
+  mounted() {
+    this.showAuthButtons = true
+  },
+  beforeDestroy() {
+    this.showAuthButtons = false
   },
 }
 </script>

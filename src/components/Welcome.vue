@@ -61,7 +61,7 @@
             rounded
             icon="fas fa-sign-in-alt"
             no-caps
-            color="blue"
+            color="info"
           >Login</q-btn>
         </router-link>
       </q-card-actions>
@@ -105,7 +105,7 @@ export default {
       font-size: 1em;
     }
     padding-top: 8px;
-    max-width: 420px;
+    max-width: 100ch;
     font-size: 1.2em;
   }
 
