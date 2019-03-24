@@ -1,17 +1,27 @@
 <template>
-  <div class="bumpmap-explorer">
-    <div id="ui">
-      <transition name="bounce" enter-active-class="bounceInDown" leave-active-class="bounceOutUp">
-        <Welcome v-show="explorer.welcome"/>
-      </transition>
-      <transition name="bounce" enter-active-class="bounceInDown" leave-active-class="bounceOutUp">
-        <Searchbox/>
-      </transition>
+  <q-page>
+    <div class="bumpmap-explorer">
+      <div id="ui">
+        <transition
+          name="bounce"
+          enter-active-class="bounceInDown"
+          leave-active-class="bounceOutUp"
+        >
+          <Welcome v-show="explorer.welcome"/>
+        </transition>
+        <transition
+          name="bounce"
+          enter-active-class="bounceInDown"
+          leave-active-class="bounceOutUp"
+        >
+          <Searchbox/>
+        </transition>
+      </div>
+      <div id="map">
+        <Map/>
+      </div>
     </div>
-    <div id="map">
-      <Map/>
-    </div>
-  </div>
+  </q-page>
 </template>
 
 <script>
@@ -47,9 +57,10 @@ export default {
   & > #ui {
     top: 0;
     left: 0;
+    padding: 0;
+    margin: 0;
     position: absolute;
     overflow: auto;
-    padding: 15px;
     width: 100%;
     height: 100%;
     z-index: 10;
@@ -59,12 +70,14 @@ export default {
     }
   }
   & > #map {
+    overflow: auto;
     position: absolute;
     top: 0;
     left: 0;
     overflow: auto;
     padding: 0px;
     width: 100%;
+    margin: 0;
     height: 100%;
     z-index: 1;
   }
