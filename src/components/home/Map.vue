@@ -38,6 +38,7 @@
         @update:zoom="zoomUpdated"
         @update:center="centerUpdated"
         @update:bounds="boundsUpdated"
+        worldCopyJump="true"
       >
         <div class="basetiles">
           <LTileLayer :url="baseUrl"></LTileLayer>
