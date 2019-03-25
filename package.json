@@ -31,8 +31,7 @@
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vue-rx": "^6.1.0",
-    "vue2-animate": "^2.1.0",
-    "vue2-google-maps": "^0.10.6"
+    "vue2-animate": "^2.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",

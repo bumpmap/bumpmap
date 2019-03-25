@@ -1,7 +1,7 @@
 <template>
   <q-page class="map-page" @style-fn="pageStyle">
     <div class="map">
-      <GmapMap
+      <!-- <GmapMap
         @click="clickMap"
         :center="{lat: this.lat, lng: this.lng}"
         :zoom="zoom"
@@ -30,14 +30,14 @@
           :draggable="true"
           @click="centerAt(newPin.position)"
         />
-      </GmapMap>
+      </GmapMap>-->
+      Map
     </div>
   </q-page>
 </template>
 
 
 <script>
-import { GMapMap } from 'vue2-google-maps'
 import { interval } from 'rxjs'
 import styles from './mapstyles'
 import fakePins from './fake-pins'
@@ -45,9 +45,7 @@ import { getGeoLocation } from '@/utils/geolocation'
 
 export default {
   name: 'GMap',
-  components: {
-    GMapMap,
-  },
+  components: {},
   data() {
     return {
       lat: 53,
@@ -169,7 +167,8 @@ export default {
   background-color: rgba(0, 0, 0, 1) !important;
 }
 .map {
-  background-color: rgba(0, 0, 0, 1);
+  background-color: #0f0f0f;
+  color: #fff;
   position: absolute;
   top: 0;
   left: 0;

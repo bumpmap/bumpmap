@@ -15,7 +15,7 @@ import Logo from '@/components/Logo.vue'
 import { dispatch } from '@/state'
 
 export default {
-  name: 'Welcome',
+  name: 'Searchbox',
   components: {
     Logo,
   },
@@ -55,34 +55,5 @@ export default {
     display: block;
   }
   margin: 10px auto;
-
-  .welcome-information {
-    padding-top: 8px;
-    max-width: 420px;
-    font-size: 1.2em;
-  }
-
-  .bumpmap-logo {
-    display: inline-block;
-    position: relative;
-    top: 9px;
-    .emblem {
-      height: 40px;
-    }
-    .logo-text {
-      height: 40px;
-    }
-  }
-
-  .auth-button {
-    margin: 2px 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    .fas {
-      margin-right: 5px;
-      transform-origin: center center;
-      transform: scale(0.8);
-    }
-  }
 }
 </style>

@@ -51,12 +51,13 @@ const cities = [
 ]
 
 function generateFakePins() {
-  return cities.map((city) => {
+  return cities.map(city => {
     const { name, latitude, longitude } = city
     return {
-      id: id++,
+      id: id + 1,
       topic: `Hello from ${name}`,
-      body: `Per ea omnis decore, eu mei appareat tincidunt. Te cum aeque repudiandae delicatissimi, cu populo dictas ponderum vel, dolor consequat ut vix.`,
+      body:
+        'Per ea omnis decore, eu mei appareat tincidunt. Te cum aeque repudiandae delicatissimi, cu populo dictas ponderum vel, dolor consequat ut vix.',
       createdAt: Date.now(),
       author: 'rai',
       score: Math.round(Math.random() * 100),
