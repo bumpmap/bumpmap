@@ -1,228 +1,167 @@
 <template>
-  <!-- <div class="auth-form white-text">
-    <div class="container">
-      <form @submit.prevent="signup" class="card-panel" @keyup="validateForm">
-        <AuthLogo/>
-        <h2 class="center">Join the Conversation</h2>
-
+  <AuthForm>
+    <q-card-section class="summary">
+      <AuthLogo/>
+      <h2>Join the Conversation</h2>
+    </q-card-section>
+    <q-card-section>
+      <form @submit.prevent="signup" v-stream:keyup="{subject: formData$, data: this.formData}">
         <div class="field">
-          <label class="grey-text" for="email">Email:</label>
-          <input
-            class="grey-text text-lighten-4"
+          <q-input
+            dark
+            standout
+            bottom-slots
+            class="q-my-lg grey-text text-lighten-4"
             type="email"
             name="email"
+            label="Email"
+            v-model="formData.email"
             @change="generateAlias(formData.email)"
             @keyup="generateAlias(formData.email)"
-            v-model="formData.email"
           >
-          <p class="error-text red-text text-lighten-1" v-if="errors.email">{{errors.email}}</p>
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.email">{{errors.email}}</p>
+              </transition>
+            </template>
+
+            <template v-slot:prepend>
+              <q-icon name="fas fa-envelope"/>
+            </template>
+          </q-input>
         </div>
         <div class="field">
-          <label class="grey-text" for="alias">Alias:</label>
-          <input
-            class="grey-text text-lighten-4"
+          <q-input
+            dark
+            standout
+            bottom-slots
+            class="q-my-lg grey-text text-lighten-4"
             type="text"
             name="alias"
+            label="Alias"
             @focus="dirty.alias = true"
             @blur="dirty.alias = !!formData.alias"
-            @change="validateForm"
             v-model="formData.alias"
             autocomplete="off"
           >
-          <p class="error-text red-text text-lighten-1" v-if="errors.alias">{{errors.alias}}</p>
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.alias">{{errors.alias}}</p>
+              </transition>
+            </template>
+
+            <template v-slot:prepend>
+              <q-icon name="fas fa-user"/>
+            </template>
+
+            <template v-slot:append>
+              <q-spinner v-if="checkingAlias"/>
+              <div v-if="!checkingAlias">
+                <transition name="fade">
+                  <q-icon v-if="formData.alias && errors.alias" color="red" name="fas fa-ban"/>
+                </transition>
+                <transition name="fade">
+                  <q-icon
+                    color="green"
+                    v-if="formData.alias && !errors.alias && contains(formData.alias)(available)"
+                    name="fas fa-check"
+                  />
+                </transition>
+              </div>
+            </template>
+          </q-input>
         </div>
         <div class="field">
-          <label class="grey-text" for="password">Password:</label>
-          <input
-            class="grey-text text-lighten-4"
+          <q-input
+            dark
+            standout
+            bottom-slots
+            label="Password"
+            class="q-my-lg grey-text text-lighten-4"
             type="password"
             name="password"
             v-model="formData.password"
             autocomplete="off"
           >
-          <p class="error-text red-text text-lighten-1" v-if="errors.password">{{errors.password}}</p>
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.password">{{errors.password}}</p>
+              </transition>
+            </template>
+
+            <template v-slot:prepend>
+              <q-icon name="fas fa-key"/>
+            </template>
+          </q-input>
         </div>
         <div class="field">
-          <label class="grey-text" for="password">Confirm Password:</label>
-          <input
-            class="grey-text text-lighten-4"
+          <q-input
+            dark
+            standout
+            bottom-slots
+            label="Confirm Password"
+            class="q-my-lg grey-text text-lighten-4"
             type="password"
-            name="confirm"
+            name="password"
             v-model="formData.confirm"
             autocomplete="off"
           >
-          <p class="error-text red-text text-lighten-1" v-if="errors.confirm">{{errors.confirm}}</p>
+            <template v-slot:hint>
+              <transition name="bounce">
+                <p class="text-red" v-if="errors.confirm">{{errors.confirm}}</p>
+              </transition>
+            </template>
+
+            <template v-slot:prepend>
+              <q-icon name="fas fa-key"/>
+            </template>
+          </q-input>
         </div>
         <div class="field center">
-          <button
-            class="btn-large waves-effect waves-light green darken-3"
-            v-bind:class="buttonClass"
+          <q-btn
+            rounded
+            :outline="!status.valid"
+            type="submit"
+            :loading="status.sending"
+            :color="status.valid ? 'green' : 'grey'"
+            :disable="!status.valid || status.sending"
+            size="xl"
+            class="full-width"
             @click.prevent="signup"
-          >{{buttonText}}</button>
+          >
+            {{buttonText}}
+            <template v-slot:loading>
+              <q-spinner/>
+            </template>
+          </q-btn>
+          <p class="error-text text-red" v-if="errors.signup">{{errors.signup}}</p>
         </div>
       </form>
-    </div>
-  </div>
-  -->
-  <q-page>
-    <div class="auth-form">
-      <q-card dark class="q-pa-md card-panel" bordered>
-        <q-card-section class="summary">
-          <AuthLogo/>
-          <h2>Join the Conversation</h2>
-        </q-card-section>
-        <q-card-section>
-          <form @submit.prevent="signup" @keyup="validateForm">
-            <div class="field">
-              <q-input
-                dark
-                standout
-                bottom-slots
-                class="grey-text text-lighten-4"
-                type="email"
-                name="email"
-                label="Email"
-                v-model="formData.email"
-                @change="generateAlias(formData.email)"
-                @keyup="generateAlias(formData.email)"
-              >
-                <template v-slot:hint>
-                  <transition name="bounce">
-                    <p class="text-red" v-if="errors.email">{{errors.email}}</p>
-                  </transition>
-                </template>
-
-                <template v-slot:prepend>
-                  <q-icon name="fas fa-envelope"/>
-                </template>
-              </q-input>
-            </div>
-            <div class="field">
-              <q-input
-                dark
-                standout
-                bottom-slots
-                class="grey-text text-lighten-4"
-                type="text"
-                name="alias"
-                label="Alias"
-                @focus="dirty.alias = true"
-                @blur="dirty.alias = !!formData.alias"
-                @change="validateForm"
-                v-model="formData.alias"
-                autocomplete="off"
-              >
-                <template v-slot:hint>
-                  <transition name="bounce">
-                    <p class="text-red" v-if="errors.alias">{{errors.alias}}</p>
-                  </transition>
-                </template>
-
-                <template v-slot:prepend>
-                  <q-icon name="fas fa-user"/>
-                </template>
-
-                <template v-slot:append>
-                  <q-spinner v-if="checkingAlias"/>
-                  <div v-if="!checkingAlias">
-                    <transition name="fade">
-                      <q-icon v-if="formData.alias && errors.alias" color="red" name="fas fa-ban"/>
-                    </transition>
-                    <transition name="fade">
-                      <q-icon
-                        color="green"
-                        v-if="formData.alias && !errors.alias && availableAlias === formData.alias"
-                        name="fas fa-check"
-                      />
-                    </transition>
-                  </div>
-                </template>
-              </q-input>
-            </div>
-            <div class="field">
-              <q-input
-                dark
-                standout
-                bottom-slots
-                label="Password"
-                class="grey-text text-lighten-4"
-                type="password"
-                name="password"
-                v-model="formData.password"
-                autocomplete="off"
-              >
-                <template v-slot:hint>
-                  <transition name="bounce">
-                    <p class="text-red" v-if="errors.password">{{errors.password}}</p>
-                  </transition>
-                </template>
-
-                <template v-slot:prepend>
-                  <q-icon name="fas fa-key"/>
-                </template>
-              </q-input>
-            </div>
-            <div class="field">
-              <q-input
-                dark
-                standout
-                bottom-slots
-                label="Confirm Password"
-                class="grey-text text-lighten-4"
-                type="password"
-                name="password"
-                v-model="formData.confirm"
-                autocomplete="off"
-              >
-                <template v-slot:hint>
-                  <transition name="bounce">
-                    <p class="text-red" v-if="errors.confirm">{{errors.confirm}}</p>
-                  </transition>
-                </template>
-
-                <template v-slot:prepend>
-                  <q-icon name="fas fa-key"/>
-                </template>
-              </q-input>
-            </div>
-            <div class="field center">
-              <q-btn
-                type="submit"
-                :loading="status.sending"
-                :color="status.valid ? 'green' : 'grey'"
-                :disable="!status.valid"
-                size="xl"
-                class="full-width"
-                @click.prevent="signup"
-              >
-                {{buttonText}}
-                <template v-slot:loading>
-                  <q-spinner/>
-                </template>
-              </q-btn>
-              <p class="error-text text-red" v-if="errors.signup">{{errors.signup}}</p>
-            </div>
-          </form>
-        </q-card-section>
-      </q-card>
-    </div>
-  </q-page>
+    </q-card-section>
+  </AuthForm>
 </template>
 
 
 <script>
-import { contains, startsWith, endsWith } from 'rambda'
-import debounce from 'lodash/debounce'
+import {
+  debounceTime,
+  distinctUntilChanged,
+  pluck as rxPluck,
+  map,
+} from 'rxjs/operators'
+import { find, propEq, contains, startsWith, endsWith, pluck } from 'rambda'
 import { toSlug } from '@/utils/alias'
 import { db } from '@/firebase/init'
 import firebase from 'firebase'
 import { EMAIL, ALIAS, PASSWORD } from '@/utils/regex-patterns'
-import AuthLogo from '@/views/auth/AuthLogo'
+import AuthLogo from '@/components/auth/auth-logo.vue'
+import AuthForm from '@/components/auth/auth-form.vue'
 
 export default {
   name: 'join',
   components: {
     AuthLogo,
+    AuthForm,
   },
   data() {
     return {
@@ -247,9 +186,8 @@ export default {
         valid: false,
         sending: false,
       },
-      availableAlias: null,
-      unavailableAlias: null,
       checkingAlias: false,
+      checked: [],
     }
   },
   computed: {
@@ -261,31 +199,55 @@ export default {
     buttonText: function() {
       return this.status.valid ? 'ready' : `join`
     },
+    available: function() {
+      if (this.checked && this.checked.length) {
+        const available = this.checked.filter(x => x.available)
+        if (available && available.length) {
+          return pluck('alias')(available)
+        }
+      }
+      return []
+    },
+    unavailable: function() {
+      if (this.checked && this.checked.length) {
+        const unavailable = this.checked.filter(x => !x.available)
+        if (unavailable && unavailable.length) {
+          return pluck('alias')(unavailable)
+        }
+      }
+      return []
+    },
+  },
+  domStreams: ['formData$'],
+  mounted() {
+    this.$subscribeTo(
+      this.formData$.pipe(
+        distinctUntilChanged(),
+        debounceTime(500),
+      ),
+      ({ data }) => {
+        this.validateForm()
+      },
+    )
   },
   methods: {
+    contains,
     async checkAlias(alias) {
       this.checkingAlias = true
-      if (this.unavailableAlias === alias) {
-        console.log('already know this is unavailable')
+      const cached = find(propEq('alias', alias))(this.checked)
+      if (cached) {
         this.checkingAlias = false
-        return false
+        return cached
       }
-      console.debug('checkAlias?')
+
       const slug = toSlug(alias)
       const ref = db.collection('users').doc(slug)
       const doc = await ref.get()
-
-      if (doc.exists) {
-        this.checkingAlias = false
-        this.availableAlias = null
-        this.unavailableAlias = alias
-        return false
-      } else {
-        this.checkingAlias = false
-        this.availableAlias = alias
-        this.unavailableAlias = null
-        return alias
-      }
+      const available = !doc.exists
+      const result = { alias, available }
+      this.checked = [...this.checked, result]
+      this.checkingAlias = false
+      return result
     },
     startSending() {
       this.status.sending = true
@@ -342,7 +304,7 @@ export default {
 
       if (!alias) {
         this.errors.alias =
-          'Please choose an alias/username. You will be able to post anonymously and with your chosen username.'
+          'Please choose an alias/username. You will be able to post anonymously.'
         result = false
       } else if (alias.length < 3) {
         this.errors.alias = 'Please choose an alias with at least 3 characters'
@@ -369,17 +331,28 @@ export default {
         this.errors.alias =
           "Only letters, numbers, spaces, dots ('.') and underscores ('_') allowed"
         result = false
-      } else if (alias !== this.availableAlias) {
-        this.errors.alias = null
-        console.debug('alias valid. checking if available')
-        await this.checkAlias(alias)
-        this.checkingAlias = false
-        if (this.availableAlias) {
+      } else {
+        console.debug('validateForm: checking if alias is available.')
+        const ALREADY_TAKEN_MSG = 'Sorry, that Alias has already been taken.'
+        const cached = find(propEq('alias', alias))(this.checked)
+        if (cached && cached.available) {
           this.errors.alias = null
-          console.debug('alias is AVAILABLE!')
-        } else {
-          this.errors.alias = 'Sorry, that Alias has already been taken.'
-          console.error('alias is NOT AVAILABLE!')
+        } else if (cached && !cached.available) {
+          this.errors.alias = ALREADY_TAKEN_MSG
+          result = false
+        } else if (!cached) {
+          console.debug('no cached information for alias.')
+          const response = await this.checkAlias(alias)
+          console.debug('response:', response)
+          const { available } = response
+          if (!available) {
+            console.debug('alias is unavailable. resetting this.errors.alias')
+            this.errors.alias = ALREADY_TAKEN_MSG
+            result = false
+          } else {
+            console.debug('alias is available. resetting this.errors.alias')
+            this.errors.alias = null
+          }
         }
       }
       this.status.valid = result
@@ -442,5 +415,4 @@ export default {
 
 
 <style lang="scss">
-@import './auth-form.scss';
 </style>

@@ -61,6 +61,7 @@ export default {
         fullscreenControl: false,
         scaleControl: true,
         mapTypeControl: false,
+        zoomControl: false,
       },
       sessionLength: 0,
       fakePins,

@@ -58,9 +58,7 @@ function init() {
       store.dispatch.user.set({
         exists: true,
         id: uid,
-        data: {
-          email,
-        },
+        email,
       })
     } else {
       store.dispatch.user.reset()

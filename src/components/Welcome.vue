@@ -61,7 +61,7 @@
             rounded
             icon="fas fa-sign-in-alt"
             no-caps
-            color="blue"
+            color="info"
           >Login</q-btn>
         </router-link>
       </q-card-actions>
@@ -92,39 +92,43 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .welcome {
-  position: absolute;
-  // bottom: 10vh;
-  top: 100px;
-  right: 5vh;
-
-  @media screen and (max-width: 420px) {
-    // top: 50px;
-    // right: 0;
-    // left: 0;
-    position: relative;
-    // top: 50px;
-    bottom: 0;
-    top: 35px;
-    left: 0;
-    right: 0;
-    transform: scale(0.9);
-    transform-origin: center center;
-  }
-
-  .welcome-information {
-    padding-top: 8px;
+  .q-card {
     max-width: 420px;
+  }
+  .text-h5 {
+    @media screen and (max-width: 420px) {
+      position: relative;
+      font-size: 1.337em;
+    }
+  }
+  .welcome-information {
+    @media screen and (max-width: 420px) {
+      padding-top: 0px;
+      font-size: 1em;
+    }
+    padding-top: 8px;
+    max-width: 100ch;
     font-size: 1.2em;
   }
 
   .bumpmap-logo {
+    @media screen and (max-width: 420px) {
+      top: 8px;
+      left: 2px;
+    }
     display: inline-block;
     position: relative;
     top: 9px;
     .emblem {
       height: 40px;
+      @media screen and (max-width: 420px) {
+        height: 30px;
+      }
     }
     .logo-text {
+      @media screen and (max-width: 420px) {
+        height: 30px;
+      }
       height: 40px;
     }
   }

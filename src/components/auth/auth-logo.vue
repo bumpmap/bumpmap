@@ -17,17 +17,21 @@ export default {
 <style lang="scss">
 .auth-logo {
   display: block;
-  @media screen and (max-width: 768px) {
-    display: none;
-  }
+
   img {
     margin: 0 auto;
   }
   .bumpmap-logo {
+    @media screen and (max-width: 768px) {
+      height: 25px;
+    }
     height: 50px;
     display: block;
   }
   .bumpmap-emblem {
+    @media screen and (max-width: 768px) {
+      height: 50px;
+    }
     height: 100px;
     display: block;
   }
