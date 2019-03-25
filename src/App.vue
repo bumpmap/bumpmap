@@ -74,7 +74,7 @@
         </transition>
       </q-page-container>
 
-      <q-footer elevated class="mobile-footer mobile-only lt-md" style="height: 16px;"></q-footer>
+      <q-footer class="mobile-footer mobile-only lt-md" style="height: 16px;"></q-footer>
     </q-layout>
   </div>
 </template>
@@ -121,7 +121,7 @@ export default {
 <style lang="scss">
 #app {
   .mobile-footer {
-    background-color: rgba(34, 30, 34, 1);
+    background-color: #151515;
   }
   background-color: rgba(20, 20, 20, 0.95);
 

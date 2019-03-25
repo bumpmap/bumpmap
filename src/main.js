@@ -82,6 +82,18 @@ function init() {
         router,
         render: h => h(App),
       }).$mount('#app')
+      if (window || global.window) {
+        document.addEventListener(
+          'touchmove',
+          function(event) {
+            event = event.originalEvent || event
+            if (event.scale !== 1) {
+              event.preventDefault()
+            }
+          },
+          false,
+        )
+      }
     }
   })
 }
