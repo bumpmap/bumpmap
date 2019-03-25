@@ -42,6 +42,24 @@
         <div class="basetiles">
           <LTileLayer :url="baseUrl"></LTileLayer>
         </div>
+
+        <LMarker
+          v-for="(m, index) in fakePins"
+          :key="index"
+          @click="centerAt(m.position)"
+          :lat-lng="m.position"
+        >
+          <LIcon
+            class="bumpmap-marker-wrapper"
+            :icon-size="dynamicSize"
+            :icon-anchor="dynamicAnchor"
+          >
+            <div class="bumpmap-marker" v-bind:class="m.color">
+              <img class="marker-bg" :src="m.background">
+              <div class="marker-image" v-bind:style="markerImageStyle(m)"/>
+            </div>
+          </LIcon>
+        </LMarker>
         <!-- <div class="lineTiles">
           <LTileLayer :url="linesUrl"></LTileLayer>
         </div>
@@ -57,7 +75,7 @@
 
 <script>
 import { interval } from 'rxjs'
-import { LMap, LTileLayer, LMarker } from 'vue2-leaflet'
+import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
@@ -68,12 +86,22 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
+    LIcon,
+  },
+  computed: {
+    dynamicSize() {
+      return [this.iconSize, this.iconSize * 1.15]
+    },
+    dynamicAnchor() {
+      return [this.iconSize / 2, this.iconSize * 1.15]
+    },
   },
   data() {
     return {
-      center: [-2, 53],
+      center: [53, -2],
       zoom: 3,
       bounds: null,
+      iconSize: 72,
       linesUrl:
         'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png',
       labelsUrl:
@@ -108,7 +136,32 @@ export default {
       },
     }
   },
+  watch: {
+    zoom: function(val) {
+      console.log(`zoom = ${val}`)
+      if (val < 3) {
+        this.iconSize = 48
+      } else if (val >= 3 && val < 9) {
+        this.iconSize = 64
+      } else if (val >= 9 && val < 12) {
+        this.iconSize = 72
+      } else if (val >= 12 && val < 16) {
+        this.iconSize = 128
+      } else if (val >= 16) {
+        this.iconSize = 256
+      }
+    },
+  },
   methods: {
+    markerImageStyle(marker) {
+      const diameter = 0.75 * this.iconSize
+      return {
+        top: '0px',
+        width: `${diameter}px`,
+        height: `${diameter}px`,
+        backgroundImage: `url(${marker.image ? marker.image : ''})`,
+      }
+    },
     basemapTileClass() {
       return 'basemap-tiles'
     },
@@ -157,8 +210,7 @@ export default {
     },
     centerAt({ lat, lng }) {
       this.zoom = 7
-      this.lat = lat
-      this.lng = lng
+      this.center = [lat, lng]
     },
     clickMap(evt) {
       const { latLng } = evt
@@ -194,8 +246,10 @@ export default {
 
     getGeoLocation().then(
       ({ lat, lng }) => {
-        this.lat = lat || this.lat
-        this.lng = lng || this.lng
+        const [currentLng, currentLat] = this.center
+        const latitude = lat || currentLat
+        const longitude = lng || currentLng
+        this.center = [longitude, latitude]
       },
       error => {
         console.error('geolocation get error', error)
@@ -207,6 +261,9 @@ export default {
 
 <style lang="scss">
 .map {
+  .marker-bg {
+    height: 100%;
+  }
   .leaflet-tile-container {
     img {
       // filter: grayscale(1) invert(0.95) brightness(0.37) contrast(2.2);
@@ -223,6 +280,83 @@ export default {
   height: 100%;
   .vue2leaflet-map {
     background-color: #191919;
+  }
+
+  .bumpmap-marker {
+    // transform: translateX(-50%) translateY(-50%);
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+    text-align: center;
+    transition: all 1s ease-in-out;
+  }
+  .leaflet-marker-icon {
+    // transform: translateX(-50%) translateY(-50%);
+  }
+
+  .marker-title {
+    display: inline-block;
+    font-size: 2em;
+    width: 100px;
+    position: relative;
+    top: -30px;
+    text-align: center;
+    transition: all 1s ease-in-out;
+  }
+
+  .marker-bg {
+    position: relative;
+    z-index: 5;
+    display: inline-block;
+    height: 100%;
+    margin: 0 auto;
+    transition: all 1s ease-in-out;
+  }
+
+  .purple .marker-image {
+    box-shadow: 0 0 0 2pt rgba(68, 53, 91, 1);
+  }
+  .white .marker-image {
+    box-shadow: 0 0 0 2pt rgba(255, 255, 255, 1);
+  }
+  .sky .marker-image {
+    box-shadow: 0 0 0 2pt rgba(54, 173, 216, 1);
+  }
+  .blue .marker-image {
+    box-shadow: 0 0 0 2pt rgba(45, 112, 249, 1);
+  }
+  .black .marker-image {
+    box-shadow: 0 0 0 2pt rgba(34, 30, 34, 1);
+  }
+  .darkgrey .marker-image {
+    box-shadow: 0 0 0 2pt rgba(76, 91, 92, 1);
+  }
+  .lightgrey .marker-image {
+    box-shadow: 0 0 0 2pt rgba(218, 219, 219, 1);
+  }
+  .yellow .marker-image {
+    box-shadow: 0 0 0 2pt rgba(249, 200, 14, 1);
+  }
+  .red .marker-image {
+    box-shadow: 0 0 0 2pt rgba(224, 26, 79, 1);
+  }
+  .orange .marker-image {
+    box-shadow: 0 0 0 2pt rgba(244, 96, 54, 1);
+  }
+  .green .marker-image {
+    box-shadow: 0 0 0 2pt rgba(151, 219, 79, 1);
+  }
+
+  .marker-image {
+    display: inline-block;
+    z-index: 6;
+    border-radius: 100%;
+    margin: 0 auto;
+    background-size: cover;
+    background-position: center;
+    top: 0;
+    position: absolute;
   }
 
   .leaflet-control-attribution.leaflet-control {
