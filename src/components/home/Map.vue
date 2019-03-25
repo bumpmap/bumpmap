@@ -31,7 +31,25 @@
           @click="centerAt(newPin.position)"
         />
       </GmapMap>-->
-      Map
+      <LMap
+        style="height: 100%; width: 100%"
+        :zoom="zoom"
+        :center="center"
+        @update:zoom="zoomUpdated"
+        @update:center="centerUpdated"
+        @update:bounds="boundsUpdated"
+      >
+        <div class="basetiles">
+          <LTileLayer :url="baseUrl"></LTileLayer>
+        </div>
+        <!-- <div class="lineTiles">
+          <LTileLayer :url="linesUrl"></LTileLayer>
+        </div>
+        -->
+        <div class="labelTiles">
+          <LTileLayer :url="labelsUrl" :opacity="0.7"></LTileLayer>
+        </div>
+      </LMap>
     </div>
   </q-page>
 </template>
@@ -39,18 +57,31 @@
 
 <script>
 import { interval } from 'rxjs'
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet'
 import styles from './mapstyles'
 import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
 
 export default {
   name: 'GMap',
-  components: {},
+  components: {
+    LMap,
+    LTileLayer,
+    LMarker,
+  },
   data() {
     return {
-      lat: 53,
-      lng: -2,
+      center: [-2, 53],
       zoom: 3,
+      bounds: null,
+      linesUrl:
+        'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png',
+      labelsUrl:
+        'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.png',
+      baseUrl:
+        // 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png',
+        'https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.png',
+
       mapStyle: {
         styles,
         maxZoom: 15,
@@ -78,6 +109,18 @@ export default {
     }
   },
   methods: {
+    basemapTileClass() {
+      return 'basemap-tiles'
+    },
+    zoomUpdated(zoom) {
+      this.zoom = zoom
+    },
+    centerUpdated(center) {
+      this.center = center
+    },
+    boundsUpdated(bounds) {
+      this.bounds = bounds
+    },
     pageStyle(offset) {
       // "offset" is a Number (pixels) that refers to the total
       // height of header + footer that occupies on screen,
@@ -163,10 +206,14 @@ export default {
 </script>
 
 <style lang="scss">
-.vue-map > div:first-child {
-  background-color: rgba(0, 0, 0, 1) !important;
-}
 .map {
+  .leaflet-tile-container {
+    img {
+      // filter: grayscale(1) invert(0.95) brightness(0.37) contrast(2.2);
+      // filter: grayscale(1) invert(0.95) brightness(2) contrast(1.1);
+      filter: contrast(0.6) brightness(0.8);
+    }
+  }
   background-color: #0f0f0f;
   color: #fff;
   position: absolute;
@@ -174,6 +221,9 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  .vue2leaflet-map {
+    background-color: #262626;
+  }
 }
 .map-page {
   position: static;
