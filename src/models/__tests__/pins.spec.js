@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
 
-describe('models/pins', () => {
+describe.skip('models/pins', () => {
   it('exists', () => {
     expect(pins).toBeDefined()
   })

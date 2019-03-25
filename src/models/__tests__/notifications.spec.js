@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { notifications, initialState } from '@/models/notifications'
 
-describe('models/notifications', () => {
+describe.skip('models/notifications', () => {
   it('exists', () => {
     expect(notifications).toBeDefined()
   })

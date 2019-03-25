@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { maps, initialState } from '@/models/maps'
 
-describe('models/maps', () => {
+describe.skip('models/maps', () => {
   it('exists', () => {
     expect(maps).toBeDefined()
   })

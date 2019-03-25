@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { search, initialState } from '@/models/search'
 
-describe('models/search', () => {
+describe.skip('models/search', () => {
   it('exists', () => {
     expect(search).toBeDefined()
   })

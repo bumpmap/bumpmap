@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { preferences, initialState } from '@/models/preferences'
 
-describe('models/preferences', () => {
+describe.skip('models/preferences', () => {
   it('exists', () => {
     expect(preferences).toBeDefined()
   })

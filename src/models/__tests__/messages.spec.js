@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { messages, initialState } from '@/models/messages'
 
-describe('models/messages', () => {
+describe.skip('models/messages', () => {
   it('exists', () => {
     expect(messages).toBeDefined()
   })
