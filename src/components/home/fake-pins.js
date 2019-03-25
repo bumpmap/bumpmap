@@ -1,5 +1,23 @@
 let id = 0
 
+import { words } from 'lodash'
+
+const colors = [
+  { color: 'white', name: 'marker-white' },
+  { color: 'red', name: 'marker-red' },
+  { color: 'green', name: 'marker-green' },
+  { color: 'yellow', name: 'marker-yellow' },
+  { color: 'sky', name: 'marker-sky' },
+  { color: 'blue', name: 'marker-blue' },
+  { color: 'orange', name: 'marker-orange' },
+]
+
+function getRandomColor() {
+  const index = Math.floor(Math.random() * colors.length)
+  console.log()
+  return colors[index]
+}
+
 const cities = [
   { name: 'London', latitude: 51.874444444444, longitude: -0.368333333333 },
   {
@@ -47,12 +65,15 @@ const cities = [
     latitude: 33.942499999999995,
     longitude: -118.40805555555556,
   },
-  { name: 'Lagos', latitude: 51.874444444444, longitude: -0.368333333333 },
 ]
 
 function generateFakePins() {
   return cities.map(city => {
     const { name, latitude, longitude } = city
+    const citySlug = words(name)[0]
+    const random = getRandomColor()
+    const { color } = random
+    const imageName = random.name
     return {
       id: id + 1,
       topic: `Hello from ${name}`,
@@ -65,6 +86,9 @@ function generateFakePins() {
         lat: latitude,
         lng: longitude,
       },
+      background: `/img/explorer/${imageName}.svg`,
+      image: `https://source.unsplash.com/random/?500x500/?${citySlug}`,
+      color,
     }
   })
 }
