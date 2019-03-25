@@ -1,6 +1,7 @@
 let id = 0
 
 import { words } from 'lodash'
+import { find, propEq, pluck } from 'rambda'
 
 const colors = [
   { color: 'white', name: 'marker-white' },
@@ -10,6 +11,20 @@ const colors = [
   { color: 'sky', name: 'marker-sky' },
   { color: 'blue', name: 'marker-blue' },
   { color: 'orange', name: 'marker-orange' },
+]
+
+const images = [
+  { name: 'London', url: '/img/dummy/1.gif' },
+
+  { name: 'Berlin', url: '/img/dummy/2.jpg' },
+  { name: 'Tokyo', url: '/img/dummy/3.jpg' },
+  { name: 'New York', url: '/img/dummy/8.jpg' },
+  { name: 'Manila', url: '/img/dummy/5.jpg' },
+  { name: 'Mumbai', url: '/img/dummy/10.png' },
+  { name: 'Moscow', url: '/img/dummy/7.png' },
+  { name: 'Rome', url: '/img/dummy/4.jpg' },
+  { name: 'Rio de Janeiro', url: '/img/dummy/9.png' },
+  { name: 'Los Angeles', url: '/img/dummy/6.png' },
 ]
 
 function getRandomColor() {
@@ -70,6 +85,8 @@ const cities = [
 function generateFakePins() {
   return cities.map(city => {
     const { name, latitude, longitude } = city
+    const { url } = find(propEq('name', name))(images)
+
     const citySlug = words(name)[0]
     const random = getRandomColor()
     const { color } = random
@@ -87,7 +104,8 @@ function generateFakePins() {
         lng: longitude,
       },
       background: `/img/explorer/${imageName}.svg`,
-      image: `https://source.unsplash.com/random/?500x500/?${citySlug}`,
+      // image: `https://source.unsplash.com/random/?500x500/?${citySlug}`,
+      image: url,
       color,
     }
   })
