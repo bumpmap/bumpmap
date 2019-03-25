@@ -46,9 +46,9 @@
           <LTileLayer :url="linesUrl"></LTileLayer>
         </div>
         -->
-        <div class="labelTiles">
+        <!-- <div class="labelTiles">
           <LTileLayer :url="labelsUrl" :opacity="0.7"></LTileLayer>
-        </div>
+        </div>-->
       </LMap>
     </div>
   </q-page>
@@ -214,7 +214,7 @@ export default {
       filter: contrast(0.6) brightness(0.8);
     }
   }
-  background-color: #0f0f0f;
+  background-color: rgba(41, 41, 41, 1);
   color: #fff;
   position: absolute;
   top: 0;
@@ -222,7 +222,11 @@ export default {
   width: 100%;
   height: 100%;
   .vue2leaflet-map {
-    background-color: #262626;
+    background-color: rgba(41, 41, 41, 1);
+  }
+
+  .leaflet-control-attribution.leaflet-control {
+    display: none !important;
   }
 }
 .map-page {
