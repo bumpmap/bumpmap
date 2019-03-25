@@ -92,10 +92,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .welcome {
+  .q-card {
+    max-width: 420px;
+  }
   .text-h5 {
     @media screen and (max-width: 420px) {
       position: relative;
-
       font-size: 1.337em;
     }
   }

@@ -73,6 +73,8 @@
           <router-view/>
         </transition>
       </q-page-container>
+
+      <q-footer elevated class="mobile-footer mobile-only lt-md" style="height: 16px;"></q-footer>
     </q-layout>
   </div>
 </template>
@@ -87,7 +89,7 @@ export default {
     Navbar,
   },
   data() {
-    return { ...this.mapState('layout', 'user') }
+    return { ...this.mapState('layout', 'user', 'explorer') }
   },
   watch: {
     $route(to) {
@@ -118,6 +120,9 @@ export default {
 
 <style lang="scss">
 #app {
+  .mobile-footer {
+    background-color: rgba(34, 30, 34, 1);
+  }
   background-color: rgba(20, 20, 20, 0.95);
 
   .quickfade-enter-active {

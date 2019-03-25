@@ -43,6 +43,11 @@ export default {
     padding: 30px 0 0;
   }
   .card-panel {
+    @media screen and (max-height: 600px) {
+      transform: scale(0.9);
+      transform-origin: bottom;
+      top: 30px;
+    }
     background-color: rgba(255, 255, 255, 0.05);
     width: 90vw;
     max-width: 600px;
