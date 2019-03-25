@@ -211,7 +211,7 @@ export default {
     img {
       // filter: grayscale(1) invert(0.95) brightness(0.37) contrast(2.2);
       // filter: grayscale(1) invert(0.95) brightness(2) contrast(1.1);
-      filter: contrast(0.6) brightness(0.8);
+      filter: contrast(0.5) brightness(0.4);
     }
   }
   background-color: rgba(41, 41, 41, 1);
@@ -222,7 +222,7 @@ export default {
   width: 100%;
   height: 100%;
   .vue2leaflet-map {
-    background-color: rgba(41, 41, 41, 1);
+    background-color: #191919;
   }
 
   .leaflet-control-attribution.leaflet-control {
