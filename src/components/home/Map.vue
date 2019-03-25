@@ -100,9 +100,9 @@ export default {
   data() {
     return {
       center: [53, -2],
-      zoom: 3,
+      zoom: 6,
       bounds: null,
-      iconSize: 72,
+      iconSize: 48,
       linesUrl:
         'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png',
       labelsUrl:
@@ -140,12 +140,12 @@ export default {
   watch: {
     zoom: function(val) {
       console.log(`zoom = ${val}`)
-      if (val < 3) {
+      if (val < 6) {
         this.iconSize = 48
-      } else if (val >= 3 && val < 9) {
+      } else if (val >= 6 && val < 9) {
         this.iconSize = 64
       } else if (val >= 9 && val < 12) {
-        this.iconSize = 72
+        this.iconSize = 96
       } else if (val >= 12 && val < 16) {
         this.iconSize = 128
       } else if (val >= 16) {
