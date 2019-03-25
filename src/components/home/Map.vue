@@ -1,41 +1,38 @@
 <template>
-  <div class="map">
-    <GmapMap
-      @click="clickMap"
-      :center="{lat: this.lat, lng: this.lng}"
-      :zoom="zoom"
-      map-type-id="roadmap"
-      class="google-map"
-      style="width: 100%;
-  height: 100%;
-  margin: 0 auto;
+  <q-page class="map-page" @style-fn="pageStyle">
+    <div class="map">
+      <GmapMap
+        @click="clickMap"
+        :center="{lat: this.lat, lng: this.lng}"
+        :zoom="zoom"
+        map-type-id="roadmap"
+        class="google-map"
+        style="
+      width: 100%;
+      height: 100%;
   background-color: #000000;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  padding-top: 50px;"
-      v-bind:options="mapStyle"
-    >
-      <GmapMarker
-        :key="index"
-        v-for="(m, index) in fakePins"
-        :position="m.position"
-        :clickable="true"
-        :draggable="true"
-        @click="centerAt(m.position)"
-      />
+  "
+        v-bind:options="mapStyle"
+      >
+        <GmapMarker
+          :key="index"
+          v-for="(m, index) in fakePins"
+          :position="m.position"
+          :clickable="true"
+          :draggable="true"
+          @click="centerAt(m.position)"
+        />
 
-      <GmapMarker
-        ref="newPinRef"
-        v-if="newPin.exists"
-        :position="newPin.position"
-        :clickable="true"
-        :draggable="true"
-        @click="centerAt(newPin.position)"
-      />
-    </GmapMap>
-  </div>
+        <GmapMarker
+          ref="newPinRef"
+          :position="newPin.position"
+          :clickable="true"
+          :draggable="true"
+          @click="centerAt(newPin.position)"
+        />
+      </GmapMap>
+    </div>
+  </q-page>
 </template>
 
 
@@ -62,7 +59,9 @@ export default {
         minZoom: 3,
         streetViewControl: false,
         fullscreenControl: false,
+        scaleControl: true,
         mapTypeControl: false,
+        zoomControl: false,
       },
       sessionLength: 0,
       fakePins,
@@ -81,6 +80,12 @@ export default {
     }
   },
   methods: {
+    pageStyle(offset) {
+      // "offset" is a Number (pixels) that refers to the total
+      // height of header + footer that occupies on screen,
+      // based on the QLayout "view" prop configuration
+      return '100vh'
+    },
     placePin(lat, lng) {
       this.newPin = {
         exists: true,
@@ -114,8 +119,8 @@ export default {
       this.lat = lat
       this.lng = lng
     },
-    clickMap(event) {
-      const { latLng } = event
+    clickMap(evt) {
+      const { latLng } = evt
       const { lat, lng } = latLng
       console.log(`map clicked @ (${lat()}, ${lng()})`)
       this.placePin(lat(), lng())
@@ -151,7 +156,7 @@ export default {
         this.lat = lat || this.lat
         this.lng = lng || this.lng
       },
-      (error) => {
+      error => {
         console.error('geolocation get error', error)
       },
     )
@@ -162,5 +167,16 @@ export default {
 <style lang="scss">
 .vue-map > div:first-child {
   background-color: rgba(0, 0, 0, 1) !important;
+}
+.map {
+  background-color: rgba(0, 0, 0, 1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.map-page {
+  position: static;
 }
 </style>

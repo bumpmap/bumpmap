@@ -1,4 +1,4 @@
-module.exports = (wallaby) => {
+module.exports = wallaby => {
   process.env.VUE_CLI_BABEL_TRANSPILE_MODULES = true
 
   const compiler = wallaby.compilers.babel({
@@ -7,6 +7,7 @@ module.exports = (wallaby) => {
 
   return {
     files: [
+      './jest-setup.js',
       'src/**/*',
       'jest.config.js',
       'package.json',
@@ -26,8 +27,7 @@ module.exports = (wallaby) => {
     },
 
     preprocessors: {
-      '**/*.vue': (file) =>
-        require('vue-jest').process(file.content, file.path),
+      '**/*.vue': file => require('vue-jest').process(file.content, file.path),
     },
 
     setup: function(wallaby) {

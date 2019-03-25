@@ -1,6 +1,6 @@
 {
   "name": "bumpmap",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -22,13 +22,16 @@
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-observable": "^1.0.0",
+    "redux-vuex": "^0.1.3",
     "register-service-worker": "^1.6.2",
+    "rematch-default-reducers": "^1.2.0",
     "rxfire": "^3.3.7",
     "rxjs": "^6.4.0",
     "slugify": "^1.3.4",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vue-rx": "^6.1.0",
+    "vue2-animate": "^2.1.0",
     "vue2-google-maps": "^0.10.6"
   },
   "devDependencies": {
@@ -50,6 +53,8 @@
     "eslint-plugin-vue": "^5.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "fibers": "^3.1.1",
+    "jest-chain": "^1.1.2",
+    "jest-extended": "^0.11.1",
     "lint-staged": "^8.1.4",
     "node-sass": "^4.11.0",
     "sass": "^1.17.2",
