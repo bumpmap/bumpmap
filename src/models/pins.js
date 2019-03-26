@@ -2,6 +2,21 @@ import { fetchAllPins } from '@/components/home/fake-pins.js'
 
 export const initialState = {
   all: [],
+  newPin: {
+    exists: false,
+    saved: false,
+    data: {
+      id: '',
+      topic: '',
+      body: '',
+      createdAt: Date.now(),
+      author: '',
+      score: 0,
+      coordinates: [-2, 53],
+      image: '',
+      color: 'white',
+    },
+  },
 }
 
 export const pins = {
