@@ -46,8 +46,8 @@
 
         <div v-if="processedPins && processedPins.length">
           <LMarker
-            v-for="(pin, index) in processedPins"
-            :key="index"
+            v-for="pin in processedPins"
+            :key="pin.id"
             @click="centerAt(pin.position)"
             :lat-lng="pin.coordinates"
           >
@@ -56,7 +56,6 @@
               :icon-size="dynamicSize"
               :icon-anchor="dynamicAnchor"
             >
-              <div>{{pin.distance}}</div>
               <div class="bumpmap-marker" v-bind:class="pin.color">
                 <img class="marker-bg" :src="pin.background">
                 <div class="marker-image" v-bind:style="markerImageStyle(pin)"/>
@@ -98,7 +97,7 @@ export default {
       const [x, y] = this.center
       const { all } = this.pins
       if (all) {
-        return map(pin => {
+        return all.map(pin => {
           const { coordinates } = pin
           const [pinX, pinY] = coordinates
           const dx = pinX - x
@@ -106,7 +105,7 @@ export default {
           const distance = Math.hypot(dx, dy)
 
           return { ...pin, distance }
-        })(all)
+        })
       } else {
         return []
       }
