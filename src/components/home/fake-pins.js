@@ -193,7 +193,6 @@ function generateFakePins() {
       author: 'rai',
       score: Math.round(Math.random() * 100),
       coordinates,
-      background: `/img/pins/marker/${imageName}.svg`,
       image: url,
       color,
     }
