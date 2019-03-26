@@ -15,10 +15,10 @@
             <LTileLayer :url="baseUrl"></LTileLayer>
           </div>
 
-          <div v-if="processedPins && processedPins.length">
+          <div v-if="filteredPins && filteredPins.length">
             <PinMarker
               served
-              v-for="pin in processedPins"
+              v-for="pin in filteredPins"
               :key="pin.id"
               :pin="pin"
               :onClick="centerAt"
@@ -44,7 +44,7 @@
 
 <script>
 import { interval } from 'rxjs'
-import { pluck, map, reduce, max, min, prop, sortBy } from 'rambda'
+import { pluck, map, reduce, max, min, prop, sortBy, filter } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
@@ -61,7 +61,7 @@ export default {
     PinMarker,
   },
   computed: {
-    processedPins() {
+    filteredPins() {
       const [x, y] = this.center
       const { all } = this.pins
       if (all) {
@@ -77,15 +77,44 @@ export default {
           return { ...pin, distance }
         })
 
-        const byDistance = sortBy(prop('distance'))
-        const sorted = byDistance(withDistance)
-        const addZIndex = (pin, index) => ({
-          ...pin,
-          zIndex: zIndexBase - index,
-        })
-        const withZIndex = map(addZIndex)(sorted)
+        // const byDistance = sortBy(prop('distance'))
+        // const sorted = byDistance(withDistance)
+        // const addZIndex = (pin, index) => ({
+        //   ...pin,
+        //   zIndex: zIndexBase - index,
+        // })
+        // const withZIndex = map(addZIndex)(sorted)
 
-        return withZIndex
+        const maxDistances = [
+          320,
+          320,
+          320,
+          160,
+          92,
+          46,
+          23,
+          12,
+          7,
+          4,
+          2,
+          1,
+          0.5,
+          0.25,
+          0.1,
+          0.05,
+          0.05,
+          0.02,
+          0.02,
+          0.02,
+        ]
+
+        const maxDistance = maxDistances[this.zoom]
+
+        const filteredByMaxDistance = filter(
+          ({ distance }) => distance <= maxDistance,
+        )(withDistance)
+
+        return filteredByMaxDistance
       } else {
         return []
       }

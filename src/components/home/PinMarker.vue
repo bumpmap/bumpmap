@@ -224,5 +224,15 @@ export default {
     top: 0;
     position: absolute;
   }
+
+  .distance {
+    position: absolute;
+    top: -25px;
+    font-weight: 600;
+    width: 100%;
+    text-align: center;
+    text-overflow: hidden;
+    margin: 0 auto;
+  }
 }
 </style>
