@@ -78,10 +78,11 @@
 
 <script>
 import { interval } from 'rxjs'
-import { pluck, map, reduce, max, min } from 'rambda'
+import { pluck, map, reduce, max, min, prop, sortBy } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
+
 import { dispatch } from '@/state'
 
 export default {
@@ -109,26 +110,15 @@ export default {
           return { ...pin, distance }
         })
 
-        const distances = pluck('distance')(withDistance)
+        const byDistance = sortBy(prop('distance'))
+        const sorted = byDistance(withDistance)
+        const addZIndex = (pin, index) => ({
+          ...pin,
+          zIndex: zIndexBase - index,
+        })
+        const withZIndex = map(addZIndex)(sorted)
 
-        const maxDistance = reduce(
-          (acc, x) => max(acc, x),
-          distances[0],
-          distances,
-        )
-        const minDistance = reduce(
-          (acc, x) => min(acc, x),
-          distances[0],
-          distances,
-        )
-
-        const distanceRange = maxDistance - minDistance
-
-        console.log(`max distance is ${maxDistance}`)
-        console.log(`min distance is ${minDistance}`)
-        console.log(`distance range is ${distanceRange}`)
-
-        return withDistance
+        return withZIndex
       } else {
         return []
       }

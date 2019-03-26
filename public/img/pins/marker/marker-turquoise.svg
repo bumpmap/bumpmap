@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="294px" height="411px" viewBox="0 0 294 411" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>marker-turquoise</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M146.916479,9 C72.3425237,9 11.8886697,61.3617656 11.8886697,125.953938 C11.8886697,223.622712 146.435172,397.345129 146.916479,397.329689 C147.490481,397.31116 281.942505,222.078664 281.942505,125.953938 C281.942505,61.3617656 221.490433,9 146.916479,9 Z" id="path-1"></path>
+        <filter x="-7.2%" y="-4.2%" width="114.4%" height="110.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="3" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.505293252 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="marker-turquoise" fill-rule="nonzero">
+            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+            <use fill="#50E3C2" xlink:href="#path-1"></use>
+        </g>
+    </g>
+</svg>
