@@ -139,7 +139,7 @@ export default {
       this.center = [lat, lng]
       dispatch.pins.updateContext({ center: [lat, lng] })
       console.log(`center updated to ${this.center}`)
-    }, 500),
+    }, 1500),
     boundsUpdated(bounds) {
       this.bounds = bounds
     },
