@@ -1,6 +1,8 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
 import { withDefaultReducers } from 'rematch-default-reducers'
+import { MAX_DISTANCES, withDistances, filterPinsByDistance } from '../pins'
+import { fakePins } from '@/components/home/fake-pins.js'
 
 describe('models/pins', () => {
   it('exists', () => {
@@ -15,6 +17,72 @@ describe('models/pins', () => {
     })
     const result = store.getState()
     expect(result.pins).toEqual(initialState)
+  })
+
+  describe('pin collection functions', () => {
+    let collection, center, zoom, maxDistances
+
+    beforeEach(() => {
+      maxDistances = [...MAX_DISTANCES]
+      collection = [...fakePins]
+      zoom = 6
+      center = [-2, 53]
+    })
+
+    describe('filterPinsByDistance', () => {
+      it('exists', () => {
+        expect(filterPinsByDistance)
+          .toBeDefined()
+          .toBeFunction()
+      })
+
+      it('returns the collection filtered by distance based off maxDistances and the current zoom level', () => {
+        collection = withDistances(collection, center)
+        expect(collection)
+          .toBeArray()
+          .not.toBeEmpty()
+        let result = filterPinsByDistance(collection, 4, maxDistances)
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length < collection.length).toBeTruthy()
+        let lastResult = result
+        result = filterPinsByDistance(collection, 5, maxDistances)
+
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length < lastResult.length).toBeTruthy()
+        lastResult = result
+        result = filterPinsByDistance(collection, 8, maxDistances)
+      })
+    })
+    describe('withDistances', () => {
+      it('exists', () => {
+        expect(withDistances)
+          .toBeDefined()
+          .toBeFunction()
+      })
+
+      it('returns the collection filtered by distance based off maxDistances', () => {
+        const result = withDistances(collection, center)
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length).toEqual(collection.length)
+        result.forEach(pin => {
+          expect(pin).toBeDefined()
+          expect(pin.distance)
+            .toBeDefined()
+            .toBeNumber()
+          expect(pin.distance > 0).toBeTruthy()
+          expect(pin.distance < 1000).toBeTruthy()
+        })
+      })
+    })
   })
 
   describe('reducers', () => {
