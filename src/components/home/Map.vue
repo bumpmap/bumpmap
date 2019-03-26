@@ -95,12 +95,12 @@ export default {
   },
   computed: {
     processedPins() {
+      const [x, y] = this.center
       const { all } = this.pins
       if (all) {
         return map(pin => {
           const { coordinates } = pin
           const [pinX, pinY] = coordinates
-          const [x, y] = this.center
           const dx = pinX - x
           const dy = pinY - y
           const distance = Math.hypot(dx, dy)
@@ -190,8 +190,9 @@ export default {
     zoomUpdated(zoom) {
       this.zoom = zoom
     },
-    centerUpdated(center) {
-      this.center = center
+    centerUpdated({ lat, lng }) {
+      this.center = [lat, lng]
+      console.log(`center updated to ${this.center}`)
     },
     boundsUpdated(bounds) {
       this.bounds = bounds
