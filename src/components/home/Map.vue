@@ -10,6 +10,8 @@
           @update:center="centerUpdated"
           @update:bounds="boundsUpdated"
           :worldCopyJump="true"
+          :minZoom="4"
+          :maxZoom="16"
         >
           <div class="basetiles">
             <LTileLayer :url="baseUrl"></LTileLayer>
@@ -44,6 +46,7 @@
 
 <script>
 import { interval } from 'rxjs'
+import debounce from 'lodash/debounce'
 import { pluck, map, reduce, max, min, prop, sortBy, filter } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
@@ -71,7 +74,7 @@ export default {
   data() {
     return {
       center: [53, -2],
-      zoom: 6,
+      zoom: 4,
       bounds: null,
       iconSize: 48,
       linesUrl:
@@ -126,12 +129,17 @@ export default {
       return 'basemap-tiles'
     },
     zoomUpdated(zoom) {
+      console.debug('zoomUpdated')
       this.zoom = zoom
+      if (this.zoom !== this.pins.zoom) {
+        dispatch.pins.updateContext({ zoom })
+      }
     },
-    centerUpdated({ lat, lng }) {
+    centerUpdated: debounce(function updateCenter({ lat, lng }) {
       this.center = [lat, lng]
+      dispatch.pins.updateContext({ center: [lat, lng] })
       console.log(`center updated to ${this.center}`)
-    },
+    }, 500),
     boundsUpdated(bounds) {
       this.bounds = bounds
     },

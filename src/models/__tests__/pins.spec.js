@@ -1,7 +1,7 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
 import { withDefaultReducers } from 'rematch-default-reducers'
-import { withDistances, filterPinsByDistance } from '../pins'
+import { MAX_DISTANCES, withDistances, filterPinsByDistance } from '../pins'
 import { fakePins } from '@/components/home/fake-pins.js'
 
 describe('models/pins', () => {
@@ -23,28 +23,7 @@ describe('models/pins', () => {
     let collection, center, zoom, maxDistances
 
     beforeEach(() => {
-      maxDistances = [
-        320,
-        320,
-        320,
-        160,
-        92,
-        46,
-        23,
-        12,
-        7,
-        4,
-        2,
-        1,
-        0.5,
-        0.25,
-        0.1,
-        0.05,
-        0.05,
-        0.02,
-        0.02,
-        0.02,
-      ]
+      maxDistances = [...MAX_DISTANCES]
       collection = [...fakePins]
       zoom = 6
       center = [-2, 53]
