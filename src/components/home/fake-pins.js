@@ -199,4 +199,9 @@ function generateFakePins() {
 }
 
 const fakePins = generateFakePins()
+
+export async function fetchAllPins() {
+  return fakePins
+}
+
 export default fakePins

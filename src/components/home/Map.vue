@@ -16,7 +16,7 @@
       >
         <GmapMarker
           :key="index"
-          v-for="(m, index) in fakePins"
+          v-for="(m, index) in pins"
           :position="m.position"
           :clickable="true"
           :draggable="true"
@@ -44,23 +44,25 @@
           <LTileLayer :url="baseUrl"></LTileLayer>
         </div>
 
-        <LMarker
-          v-for="(m, index) in fakePins"
-          :key="index"
-          @click="centerAt(m.position)"
-          :lat-lng="m.coordinates"
-        >
-          <LIcon
-            class="bumpmap-marker-wrapper"
-            :icon-size="dynamicSize"
-            :icon-anchor="dynamicAnchor"
+        <div v-if="processedPins && processedPins.length">
+          <LMarker
+            v-for="(pin, index) in processedPins"
+            :key="index"
+            @click="centerAt(pin.position)"
+            :lat-lng="pin.coordinates"
           >
-            <div class="bumpmap-marker" v-bind:class="m.color">
-              <img class="marker-bg" :src="m.background">
-              <div class="marker-image" v-bind:style="markerImageStyle(m)"/>
-            </div>
-          </LIcon>
-        </LMarker>
+            <LIcon
+              class="bumpmap-marker-wrapper"
+              :icon-size="dynamicSize"
+              :icon-anchor="dynamicAnchor"
+            >
+              <div class="bumpmap-marker" v-bind:class="pin.color">
+                <img class="marker-bg" :src="pin.background">
+                <div class="marker-image" v-bind:style="markerImageStyle(pin)"/>
+              </div>
+            </LIcon>
+          </LMarker>
+        </div>
         <!-- <div class="lineTiles">
           <LTileLayer :url="linesUrl"></LTileLayer>
         </div>
@@ -78,8 +80,8 @@
 import { interval } from 'rxjs'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
-import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
+import { dispatch } from '@/state'
 
 export default {
   name: 'GMap',
@@ -90,6 +92,9 @@ export default {
     LIcon,
   },
   computed: {
+    processedPins() {
+      return this.pins.all || []
+    },
     dynamicSize() {
       return [this.iconSize, this.iconSize * 1.15]
     },
@@ -122,7 +127,6 @@ export default {
         zoomControl: false,
       },
       sessionLength: 0,
-      fakePins,
       newPin: {
         exists: false,
         topic: null,
@@ -135,6 +139,7 @@ export default {
           lng: -2,
         },
       },
+      ...this.mapState('pins'),
     }
   },
   watch: {
@@ -224,7 +229,7 @@ export default {
     },
   },
   mounted() {
-    console.log('fake pins: ', this.fakePins)
+    console.log('fake pins: ', this.pins)
     this.$subscribeTo(interval(60000), () => {
       this.sessionLength += 1
       this.printSessionLength()
@@ -256,6 +261,7 @@ export default {
         console.error('geolocation get error', error)
       },
     )
+    dispatch.pins.fetchAll()
   },
 }
 </script>

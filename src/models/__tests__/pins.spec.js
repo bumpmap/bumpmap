@@ -1,7 +1,8 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
+import { withDefaultReducers } from 'rematch-default-reducers'
 
-describe.skip('models/pins', () => {
+describe('models/pins', () => {
   it('exists', () => {
     expect(pins).toBeDefined()
   })
@@ -10,17 +11,17 @@ describe.skip('models/pins', () => {
     expect(initialState).toBeDefined()
     expect(pins.state).toEqual(initialState)
     const store = init({
-      models: { pins },
+      models: withDefaultReducers({ pins }),
     })
     const result = store.getState()
     expect(result.pins).toEqual(initialState)
   })
 
   describe('reducers', () => {
-    describe('increment', () => {
+    describe.skip('increment', () => {
       it('reducer: my reducerName should do something', () => {
         const store = init({
-          models: { pins },
+          models: withDefaultReducers({ pins }),
         })
 
         const initialValue = initialState.count
@@ -40,23 +41,19 @@ describe.skip('models/pins', () => {
   })
 
   describe('effects', () => {
-    describe('incrementAsync', () => {
-      it('increments count by payload', async () => {
+    describe('fetchAll', () => {
+      it('fetches all pins and sets pins.all to result', async () => {
         const store = init({
-          models: { pins },
+          models: withDefaultReducers({ pins }),
         })
-
-        await store.dispatch.pins.incrementAsync(1)
+        expect(store.getState().pins.all).toBeDefined()
+        expect(store.getState().pins.all.length)
+          .toBeDefined()
+          .toEqual(0)
+        await store.dispatch.pins.fetchAll()
         let pinsData = store.getState().pins
-        expect(pinsData.count).toBe(1)
-        await store.dispatch.pins.incrementAsync(3)
-        pinsData = store.getState().pins
-        expect(pinsData.count).toBe(4)
+        expect(pinsData.all.length).not.toBe(0)
       })
     })
-  })
-
-  it('should have real tests', () => {
-    expect(false).toBeTruthy()
   })
 })

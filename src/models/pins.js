@@ -1,22 +1,24 @@
+import { fetchAllPins } from '@/components/home/fake-pins.js'
+
 export const initialState = {
-  count: 0,
+  all: [],
 }
 
 export const pins = {
   state: { ...initialState }, // initial state
-  reducers: {
-    // handle state changes with pure functions
-    increment(state, payload) {
-      const { count } = state
-      return { ...state, count: count + payload }
-    },
-  },
-  effects: (dispatch) => ({
+  // reducers: {
+  //   // handle state changes with pure functions
+  //   increment(state, payload) {
+  //     const { count } = state
+  //     return { ...state, count: count + payload }
+  //   },
+  // },
+  effects: dispatch => ({
     // handle state changes with impure functions.
     // use async/await for async actions
-    async incrementAsync(payload, rootState) {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      dispatch.pins.increment(payload)
+    async fetchAll(payload, rootState) {
+      const all = await fetchAllPins()
+      dispatch.pins.setAll(all)
     },
   }),
 }
