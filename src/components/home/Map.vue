@@ -78,7 +78,7 @@
 
 <script>
 import { interval } from 'rxjs'
-import { map } from 'rambda'
+import { pluck, map, reduce, max, min } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
@@ -97,7 +97,9 @@ export default {
       const [x, y] = this.center
       const { all } = this.pins
       if (all) {
-        return all.map(pin => {
+        const zIndexBase = 1000 + all.length
+
+        const withDistance = all.map(pin => {
           const { coordinates } = pin
           const [pinX, pinY] = coordinates
           const dx = pinX - x
@@ -106,6 +108,27 @@ export default {
 
           return { ...pin, distance }
         })
+
+        const distances = pluck('distance')(withDistance)
+
+        const maxDistance = reduce(
+          (acc, x) => max(acc, x),
+          distances[0],
+          distances,
+        )
+        const minDistance = reduce(
+          (acc, x) => min(acc, x),
+          distances[0],
+          distances,
+        )
+
+        const distanceRange = maxDistance - minDistance
+
+        console.log(`max distance is ${maxDistance}`)
+        console.log(`min distance is ${minDistance}`)
+        console.log(`distance range is ${distanceRange}`)
+
+        return withDistance
       } else {
         return []
       }
