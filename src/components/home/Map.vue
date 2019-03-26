@@ -15,10 +15,10 @@
             <LTileLayer :url="baseUrl"></LTileLayer>
           </div>
 
-          <div v-if="filteredPins && filteredPins.length">
+          <div v-if="pins.filtered && pins.filtered.length">
             <PinMarker
               served
-              v-for="pin in filteredPins"
+              v-for="pin in pins.filtered"
               :key="pin.id"
               :pin="pin"
               :onClick="centerAt"
@@ -61,64 +61,6 @@ export default {
     PinMarker,
   },
   computed: {
-    filteredPins() {
-      const [x, y] = this.center
-      const { all } = this.pins
-      if (all) {
-        const zIndexBase = all.length
-
-        const withDistance = all.map(pin => {
-          const { coordinates } = pin
-          const [pinX, pinY] = coordinates
-          const dx = pinX - x
-          const dy = pinY - y
-          const distance = Math.hypot(dx, dy)
-
-          return { ...pin, distance }
-        })
-
-        // const byDistance = sortBy(prop('distance'))
-        // const sorted = byDistance(withDistance)
-        // const addZIndex = (pin, index) => ({
-        //   ...pin,
-        //   zIndex: zIndexBase - index,
-        // })
-        // const withZIndex = map(addZIndex)(sorted)
-
-        const maxDistances = [
-          320,
-          320,
-          320,
-          160,
-          92,
-          46,
-          23,
-          12,
-          7,
-          4,
-          2,
-          1,
-          0.5,
-          0.25,
-          0.1,
-          0.05,
-          0.05,
-          0.02,
-          0.02,
-          0.02,
-        ]
-
-        const maxDistance = maxDistances[this.zoom]
-
-        const filteredByMaxDistance = filter(
-          ({ distance }) => distance <= maxDistance,
-        )(withDistance)
-
-        return filteredByMaxDistance
-      } else {
-        return []
-      }
-    },
     dynamicSize() {
       return [this.iconSize, this.iconSize * 1.15]
     },

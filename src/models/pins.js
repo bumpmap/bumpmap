@@ -1,7 +1,10 @@
 import { fetchAllPins } from '@/components/home/fake-pins.js'
 
 export const initialState = {
+  zoom: 6,
+  center: [-2, 53],
   all: [],
+  filtered: [],
   newPin: {
     exists: false,
     saved: false,
@@ -19,15 +22,42 @@ export const initialState = {
   },
 }
 
+/**
+ * adds distances to a list of pins relative to center coordinates
+ * @param {Pin[]} collection
+ * @param {Number[]} center
+ */
+export function withDistances(collection, [x, y]) {
+  if (!collection) {
+    return []
+  }
+
+  return collection.map(pin => {
+    const { coordinates } = pin
+    const [pinX, pinY] = coordinates
+    const dx = pinX - x
+    const dy = pinY - y
+    const distance = Math.hypot(dx, dy)
+
+    return { ...pin, distance }
+  })
+}
+
+/**
+ *
+ * @param {Pin[]} collection
+ * @param {*} distance
+ * @param {*} maxDistances
+ */
+export function filterPinsByDistance(collection, zoom, maxDistances) {
+  return collection.filter(({ distance }) => distance <= maxDistances[zoom])
+}
+
 export const pins = {
   state: { ...initialState }, // initial state
-  // reducers: {
-  //   // handle state changes with pure functions
-  //   increment(state, payload) {
-  //     const { count } = state
-  //     return { ...state, count: count + payload }
-  //   },
-  // },
+  reducers: {
+    addPins(state, payload) {},
+  },
   effects: dispatch => ({
     // handle state changes with impure functions.
     // use async/await for async actions
@@ -40,4 +70,5 @@ export const pins = {
 
 export default {
   pins,
+  filterPinsByDistance,
 }
