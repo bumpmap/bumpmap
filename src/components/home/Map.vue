@@ -48,7 +48,7 @@
           v-for="(m, index) in fakePins"
           :key="index"
           @click="centerAt(m.position)"
-          :lat-lng="m.position"
+          :lat-lng="m.coordinates"
         >
           <LIcon
             class="bumpmap-marker-wrapper"
@@ -250,7 +250,7 @@ export default {
         const [currentLng, currentLat] = this.center
         const latitude = lat || currentLat
         const longitude = lng || currentLng
-        this.center = [longitude, latitude]
+        this.center = [latitude, longitude]
       },
       error => {
         console.error('geolocation get error', error)
