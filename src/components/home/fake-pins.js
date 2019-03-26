@@ -1,5 +1,7 @@
 let id = 0
 
+import uuid from 'uuid/v4'
+
 import { words } from 'lodash'
 import { find, propEq, map } from 'rambda'
 
@@ -183,7 +185,7 @@ function generateFakePins() {
     const { color } = random
     const imageName = random.name
     return {
-      id: id + 1,
+      id: uuid(),
       topic: `Hello from ${name}`,
       body:
         'Per ea omnis decore, eu mei appareat tincidunt. Te cum aeque repudiandae delicatissimi, cu populo dictas ponderum vel, dolor consequat ut vix.',

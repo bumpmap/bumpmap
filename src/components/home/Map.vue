@@ -56,6 +56,7 @@
               :icon-size="dynamicSize"
               :icon-anchor="dynamicAnchor"
             >
+              <div>{{pin.distance}}</div>
               <div class="bumpmap-marker" v-bind:class="pin.color">
                 <img class="marker-bg" :src="pin.background">
                 <div class="marker-image" v-bind:style="markerImageStyle(pin)"/>
@@ -78,6 +79,7 @@
 
 <script>
 import { interval } from 'rxjs'
+import { map } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
@@ -93,7 +95,21 @@ export default {
   },
   computed: {
     processedPins() {
-      return this.pins.all || []
+      const { all } = this.pins
+      if (all) {
+        return map(pin => {
+          const { coordinates } = pin
+          const [pinX, pinY] = coordinates
+          const [x, y] = this.center
+          const dx = pinX - x
+          const dy = pinY - y
+          const distance = Math.hypot(dx, dy)
+
+          return { ...pin, distance }
+        })(all)
+      } else {
+        return []
+      }
     },
     dynamicSize() {
       return [this.iconSize, this.iconSize * 1.15]
