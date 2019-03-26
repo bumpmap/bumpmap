@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     markerImageStyle(marker) {
-      const diameter = 0.75 * this.iconSize
+      const diameter = 0.85 * this.iconSize
       return {
         top: '0px',
         width: `${diameter}px`,
