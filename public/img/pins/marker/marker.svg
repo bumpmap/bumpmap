@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="294px" height="411px" viewBox="0 0 294 411" version="1.1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+  <title>bumpmap-marker</title>
+  <defs>
+    <path d="M147.027809,9 C72.453854,9 12,61.3617656 12,125.953938 C12,223.622712 146.546503,397.345129 147.027809,397.329689 C147.601811,397.31116 282.053835,222.078664 282.053835,125.953938 C282.053835,61.3617656 221.601764,9 147.027809,9 Z" id="path-1"></path>
+    <filter x="-7.2%" y="-4.2%" width="114.4%" height="110.0%" filterUnits="objectBoundingBox" id="filter-2">
+      <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+      <feOffset dx="0" dy="3" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+      <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+      <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.505293252 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+    </filter>
+  </defs>
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="bumpmap-marker" fill-rule="nonzero">
+      <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+      <use class="bumpmap-marker-body" xlink:href="#path-1"></use>
+    </g>
+  </g>
+</svg>

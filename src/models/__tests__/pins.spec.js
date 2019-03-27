@@ -1,7 +1,10 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
+import { withDefaultReducers } from 'rematch-default-reducers'
+import { MAX_DISTANCES, withDistances, filterPinsByDistance } from '../pins'
+import { fakePins } from '@/components/home/fake-pins.js'
 
-describe.skip('models/pins', () => {
+describe('models/pins', () => {
   it('exists', () => {
     expect(pins).toBeDefined()
   })
@@ -10,17 +13,83 @@ describe.skip('models/pins', () => {
     expect(initialState).toBeDefined()
     expect(pins.state).toEqual(initialState)
     const store = init({
-      models: { pins },
+      models: withDefaultReducers({ pins }),
     })
     const result = store.getState()
     expect(result.pins).toEqual(initialState)
   })
 
+  describe('pin collection functions', () => {
+    let collection, center, zoom, maxDistances
+
+    beforeEach(() => {
+      maxDistances = [...MAX_DISTANCES]
+      collection = [...fakePins]
+      zoom = 6
+      center = [-2, 53]
+    })
+
+    describe('filterPinsByDistance', () => {
+      it('exists', () => {
+        expect(filterPinsByDistance)
+          .toBeDefined()
+          .toBeFunction()
+      })
+
+      it('returns the collection filtered by distance based off maxDistances and the current zoom level', () => {
+        collection = withDistances(collection, center)
+        expect(collection)
+          .toBeArray()
+          .not.toBeEmpty()
+        let result = filterPinsByDistance(collection, 4, maxDistances)
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length < collection.length).toBeTruthy()
+        let lastResult = result
+        result = filterPinsByDistance(collection, 5, maxDistances)
+
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length < lastResult.length).toBeTruthy()
+        lastResult = result
+        result = filterPinsByDistance(collection, 8, maxDistances)
+      })
+    })
+    describe('withDistances', () => {
+      it('exists', () => {
+        expect(withDistances)
+          .toBeDefined()
+          .toBeFunction()
+      })
+
+      it('returns the collection filtered by distance based off maxDistances', () => {
+        const result = withDistances(collection, center)
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length).toEqual(collection.length)
+        result.forEach(pin => {
+          expect(pin).toBeDefined()
+          expect(pin.distance)
+            .toBeDefined()
+            .toBeNumber()
+          expect(pin.distance > 0).toBeTruthy()
+          expect(pin.distance < 1000).toBeTruthy()
+        })
+      })
+    })
+  })
+
   describe('reducers', () => {
-    describe('increment', () => {
+    describe.skip('increment', () => {
       it('reducer: my reducerName should do something', () => {
         const store = init({
-          models: { pins },
+          models: withDefaultReducers({ pins }),
         })
 
         const initialValue = initialState.count
@@ -40,23 +109,19 @@ describe.skip('models/pins', () => {
   })
 
   describe('effects', () => {
-    describe('incrementAsync', () => {
-      it('increments count by payload', async () => {
+    describe('fetchAll', () => {
+      it('fetches all pins and sets pins.all to result', async () => {
         const store = init({
-          models: { pins },
+          models: withDefaultReducers({ pins }),
         })
-
-        await store.dispatch.pins.incrementAsync(1)
+        expect(store.getState().pins.all).toBeDefined()
+        expect(store.getState().pins.all.length)
+          .toBeDefined()
+          .toEqual(0)
+        await store.dispatch.pins.fetchAll()
         let pinsData = store.getState().pins
-        expect(pinsData.count).toBe(1)
-        await store.dispatch.pins.incrementAsync(3)
-        pinsData = store.getState().pins
-        expect(pinsData.count).toBe(4)
+        expect(pinsData.all.length).not.toBe(0)
       })
     })
-  })
-
-  it('should have real tests', () => {
-    expect(false).toBeTruthy()
   })
 })

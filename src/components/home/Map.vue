@@ -1,92 +1,68 @@
 <template>
   <q-page class="map-page" @style-fn="pageStyle">
-    <div class="map">
-      <!-- <GmapMap
-        @click="clickMap"
-        :center="{lat: this.lat, lng: this.lng}"
-        :zoom="zoom"
-        map-type-id="roadmap"
-        class="google-map"
-        style="
-      width: 100%;
-      height: 100%;
-  background-color: #000000;
-  "
-        v-bind:options="mapStyle"
-      >
-        <GmapMarker
-          :key="index"
-          v-for="(m, index) in fakePins"
-          :position="m.position"
-          :clickable="true"
-          :draggable="true"
-          @click="centerAt(m.position)"
-        />
-
-        <GmapMarker
-          ref="newPinRef"
-          :position="newPin.position"
-          :clickable="true"
-          :draggable="true"
-          @click="centerAt(newPin.position)"
-        />
-      </GmapMap>-->
-      <LMap
-        style="height: 100%; width: 100%"
-        :zoom="zoom"
-        :center="center"
-        @update:zoom="zoomUpdated"
-        @update:center="centerUpdated"
-        @update:bounds="boundsUpdated"
-      >
-        <div class="basetiles">
-          <LTileLayer :url="baseUrl"></LTileLayer>
-        </div>
-
-        <LMarker
-          v-for="(m, index) in fakePins"
-          :key="index"
-          @click="centerAt(m.position)"
-          :lat-lng="m.position"
+    <q-no-ssr>
+      <div class="map">
+        <LMap
+          style="height: 100%; width: 100%"
+          :zoom="zoom"
+          :center="center"
+          @update:zoom="zoomUpdated"
+          @update:center="centerUpdated"
+          @update:bounds="boundsUpdated"
+          :worldCopyJump="true"
+          :minZoom="4"
+          :maxZoom="16"
+          :noBlockingAnimations="true"
         >
-          <LIcon
-            class="bumpmap-marker-wrapper"
-            :icon-size="dynamicSize"
-            :icon-anchor="dynamicAnchor"
-          >
-            <div class="bumpmap-marker" v-bind:class="m.color">
-              <img class="marker-bg" :src="m.background">
-              <div class="marker-image" v-bind:style="markerImageStyle(m)"/>
-            </div>
-          </LIcon>
-        </LMarker>
-        <!-- <div class="lineTiles">
-          <LTileLayer :url="linesUrl"></LTileLayer>
-        </div>
-        -->
-        <!-- <div class="labelTiles">
-          <LTileLayer :url="labelsUrl" :opacity="0.7"></LTileLayer>
-        </div>-->
-      </LMap>
-    </div>
+          <div class="basetiles">
+            <LTileLayer :url="baseUrl"></LTileLayer>
+          </div>
+
+          <div v-if="pins.filtered && pins.filtered.length">
+            <PinMarker
+              served
+              v-for="pin in pins.filtered"
+              :key="pin.id"
+              :pin="pin"
+              :onClick="centerAt"
+              :size="dynamicSize"
+              :anchor="dynamicAnchor"
+              :imageStyle="markerImageStyle"
+            ></PinMarker>
+
+            <!-- <LMarker
+              ref="newPinRef"
+              :position="newPin.position"
+              :clickable="true"
+              :draggable="true"
+              @click="centerAt(newPin.position)"
+            />-->
+          </div>
+        </LMap>
+      </div>
+    </q-no-ssr>
   </q-page>
 </template>
 
 
 <script>
 import { interval } from 'rxjs'
+import throttle from 'lodash/throttle'
+import { pluck, map, reduce, max, min, prop, sortBy, filter } from 'rambda'
 import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
-import fakePins from './fake-pins'
 import { getGeoLocation } from '@/utils/geolocation'
+import PinMarker from '@/components/home/PinMarker.vue'
+import { dispatch } from '@/state'
 
 export default {
-  name: 'GMap',
+  name: 'Map',
   components: {
     LMap,
     LTileLayer,
     LMarker,
     LIcon,
+    PinMarker,
   },
   computed: {
     dynamicSize() {
@@ -99,9 +75,9 @@ export default {
   data() {
     return {
       center: [53, -2],
-      zoom: 3,
+      zoom: 4,
       bounds: null,
-      iconSize: 72,
+      iconSize: 48,
       linesUrl:
         'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}{r}.png',
       labelsUrl:
@@ -121,30 +97,18 @@ export default {
         zoomControl: false,
       },
       sessionLength: 0,
-      fakePins,
-      newPin: {
-        exists: false,
-        topic: null,
-        body: null,
-        createdAt: null,
-        author: null,
-        score: null,
-        position: {
-          lat: 53,
-          lng: -2,
-        },
-      },
+      ...this.mapState('pins'),
     }
   },
   watch: {
     zoom: function(val) {
       console.log(`zoom = ${val}`)
-      if (val < 3) {
+      if (val < 6) {
         this.iconSize = 48
-      } else if (val >= 3 && val < 9) {
+      } else if (val >= 6 && val < 9) {
         this.iconSize = 64
       } else if (val >= 9 && val < 12) {
-        this.iconSize = 72
+        this.iconSize = 96
       } else if (val >= 12 && val < 16) {
         this.iconSize = 128
       } else if (val >= 16) {
@@ -153,24 +117,28 @@ export default {
     },
   },
   methods: {
-    markerImageStyle(marker) {
-      const diameter = 0.75 * this.iconSize
-      return {
-        top: '0px',
-        width: `${diameter}px`,
-        height: `${diameter}px`,
-        backgroundImage: `url(${marker.image ? marker.image : ''})`,
-      }
-    },
     basemapTileClass() {
       return 'basemap-tiles'
     },
     zoomUpdated(zoom) {
+      console.debug('zoomUpdated')
       this.zoom = zoom
+      if (this.zoom !== this.pins.zoom) {
+        this.updateContextZoom(zoom)
+      }
     },
-    centerUpdated(center) {
+    centerUpdated({ lat, lng }) {
+      const center = [lat, lng]
+      console.debug('centerUpdated')
       this.center = center
+      this.updateContextCenter(center)
     },
+    updateContextCenter: throttle(function updateContextCenter(center) {
+      dispatch.pins.updateContext({ center, zoom: this.zoom })
+    }, 300),
+    updateContextZoom: throttle(function updateContextZoom(zoom) {
+      dispatch.pins.updateContext({ zoom, center: this.center })
+    }, 300),
     boundsUpdated(bounds) {
       this.bounds = bounds
     },
@@ -208,7 +176,7 @@ export default {
         },
       }
     },
-    centerAt({ lat, lng }) {
+    centerAt([lat, lng]) {
       this.zoom = 7
       this.center = [lat, lng]
     },
@@ -223,47 +191,44 @@ export default {
     },
   },
   mounted() {
-    console.log('fake pins: ', this.fakePins)
     this.$subscribeTo(interval(60000), () => {
       this.sessionLength += 1
       this.printSessionLength()
     })
 
-    this.$subscribeTo(interval(3333), () => {
-      console.debug(
-        `newPin.position =\t${this.newPin.position.lat} ${
-          this.newPin.position.lng
-        }`,
-      )
-      if (this.$refs.newPinRef) {
-        const { $markerObject } = this.$refs.newPinRef
-        const { position } = $markerObject
-        const lat = position.lat()
-        const lng = position.lng()
-        console.log(`ref pos:\t${lat} ${lng}`)
-      }
-    })
+    // this.$subscribeTo(interval(3333), () => {
+    //   console.debug(
+    //     `newPin.position =\t${this.newPin.position.lat} ${
+    //       this.newPin.position.lng
+    //     }`,
+    //   )
+    //   if (this.$refs.newPinRef) {
+    //     const { $markerObject } = this.$refs.newPinRef
+    //     const { position } = $markerObject
+    //     const lat = position.lat()
+    //     const lng = position.lng()
+    //     console.log(`ref pos:\t${lat} ${lng}`)
+    //   }
+    // })
 
     getGeoLocation().then(
       ({ lat, lng }) => {
         const [currentLng, currentLat] = this.center
         const latitude = lat || currentLat
         const longitude = lng || currentLng
-        this.center = [longitude, latitude]
+        this.center = [latitude, longitude]
       },
       error => {
         console.error('geolocation get error', error)
       },
     )
+    dispatch.pins.fetchAll()
   },
 }
 </script>
 
 <style lang="scss">
 .map {
-  .marker-bg {
-    height: 100%;
-  }
   .leaflet-tile-container {
     img {
       // filter: grayscale(1) invert(0.95) brightness(0.37) contrast(2.2);
@@ -280,83 +245,6 @@ export default {
   height: 100%;
   .vue2leaflet-map {
     background-color: #191919;
-  }
-
-  .bumpmap-marker {
-    // transform: translateX(-50%) translateY(-50%);
-    display: flex;
-    justify-content: center;
-    position: relative;
-    height: 100%;
-    text-align: center;
-    transition: all 1s ease-in-out;
-  }
-  .leaflet-marker-icon {
-    // transform: translateX(-50%) translateY(-50%);
-  }
-
-  .marker-title {
-    display: inline-block;
-    font-size: 2em;
-    width: 100px;
-    position: relative;
-    top: -30px;
-    text-align: center;
-    transition: all 1s ease-in-out;
-  }
-
-  .marker-bg {
-    position: relative;
-    z-index: 5;
-    display: inline-block;
-    height: 100%;
-    margin: 0 auto;
-    transition: all 1s ease-in-out;
-  }
-
-  .purple .marker-image {
-    box-shadow: 0 0 0 2pt rgba(68, 53, 91, 1);
-  }
-  .white .marker-image {
-    box-shadow: 0 0 0 2pt rgba(255, 255, 255, 1);
-  }
-  .sky .marker-image {
-    box-shadow: 0 0 0 2pt rgba(54, 173, 216, 1);
-  }
-  .blue .marker-image {
-    box-shadow: 0 0 0 2pt rgba(45, 112, 249, 1);
-  }
-  .black .marker-image {
-    box-shadow: 0 0 0 2pt rgba(34, 30, 34, 1);
-  }
-  .darkgrey .marker-image {
-    box-shadow: 0 0 0 2pt rgba(76, 91, 92, 1);
-  }
-  .lightgrey .marker-image {
-    box-shadow: 0 0 0 2pt rgba(218, 219, 219, 1);
-  }
-  .yellow .marker-image {
-    box-shadow: 0 0 0 2pt rgba(249, 200, 14, 1);
-  }
-  .red .marker-image {
-    box-shadow: 0 0 0 2pt rgba(224, 26, 79, 1);
-  }
-  .orange .marker-image {
-    box-shadow: 0 0 0 2pt rgba(244, 96, 54, 1);
-  }
-  .green .marker-image {
-    box-shadow: 0 0 0 2pt rgba(151, 219, 79, 1);
-  }
-
-  .marker-image {
-    display: inline-block;
-    z-index: 6;
-    border-radius: 100%;
-    margin: 0 auto;
-    background-size: cover;
-    background-position: center;
-    top: 0;
-    position: absolute;
   }
 
   .leaflet-control-attribution.leaflet-control {
