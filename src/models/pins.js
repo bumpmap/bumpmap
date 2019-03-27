@@ -1,3 +1,6 @@
+import { pluck, map } from 'rambda'
+import { mean } from 'ramda'
+
 import { fetchAllPins } from '@/components/home/fake-pins.js'
 export const MAX_DISTANCES = [
   320,
@@ -21,6 +24,8 @@ export const MAX_DISTANCES = [
   0.02,
   0.02,
 ]
+
+export const PROPORTION_PER_ZOOM = [25, 30]
 
 export const initialState = {
   zoom: 0,
@@ -83,12 +88,25 @@ export const pins = {
       const resultCenter = center || state.center
       const all = pins || state.all
       const collection = withDistances(all, resultCenter)
+      const filteredByDistance = filterPinsByDistance(
+        collection,
+        resultZoom,
+        MAX_DISTANCES,
+      )
+      const scores = pluck('score')(filteredByDistance)
+      const meanScore = mean(scores)
+
+      const withSize = map(pin => ({
+        ...pin,
+        size: Math.floor(1000 + (pin.score - meanScore)),
+      }))(filteredByDistance)
       return {
         ...state,
         all,
+        meanScore,
         zoom: resultZoom,
         center: resultCenter,
-        filtered: filterPinsByDistance(collection, resultZoom, MAX_DISTANCES),
+        filtered: withSize,
       }
     },
   },

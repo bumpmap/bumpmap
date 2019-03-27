@@ -1,8 +1,5 @@
-let id = 0
-
 import uuid from 'uuid/v4'
 
-import { words } from 'lodash'
 import { find, propEq, map } from 'rambda'
 
 const colors = [
@@ -15,71 +12,70 @@ const colors = [
   { color: 'orange', name: 'marker-orange' },
 ]
 
-const images = [
-  { index: 1, name: 'London', url: '/img/dummy/01.gif' },
-  { index: 2, name: 'Berlin', url: '/img/dummy/02.jpg' },
-  { index: 3, name: 'Tokyo', url: '/img/dummy/03.jpg' },
-  { index: 4, name: 'New York', url: '/img/dummy/04.jpg' },
-  { index: 5, name: 'Manila', url: '/img/dummy/05.jpg' },
-  { index: 6, name: 'Mumbai', url: '/img/dummy/06.png' },
-  { index: 7, name: 'Moscow', url: '/img/dummy/07.png' },
-  { index: 8, name: 'Rome', url: '/img/dummy/08.jpg' },
-  { index: 9, name: 'Rio de Janeiro', url: '/img/dummy/09.png' },
-  { index: 10, name: 'Los Angeles', url: '/img/dummy/10.png' },
-  { index: 11, name: 'Stockholm', url: '/img/dummy/11.jpg' },
-  { index: 12, name: 'Copenhagen', url: '/img/dummy/12.jpg' },
-  { index: 13, name: 'Lagos', url: '/img/dummy/13.jpg' },
-  { index: 14, name: 'Uganda', url: '/img/dummy/14.jpg' },
-  { index: 15, name: 'Sydney', url: '/img/dummy/15.jpg' },
-  { index: 16, name: 'Adelaide', url: '/img/dummy/16.jpg' },
-  { index: 17, name: 'Wellington', url: '/img/dummy/17.jpg' },
-  { index: 18, name: 'Mexico', url: '/img/dummy/18.jpg' },
-  { index: 19, name: 'Hong Kong', url: '/img/dummy/19.jpg' },
-  { index: 20, name: 'Shanghai', url: '/img/dummy/20.jpg' },
-  { index: 21, name: 'Kerala', url: '/img/dummy/21.jpg' },
-  { index: 22, name: 'Seoul', url: '/img/dummy/22.jpg' },
-  { index: 23, name: 'Pyongyang', url: '/img/dummy/23.jpg' },
-  { index: 24, name: 'Montaperto', url: '/img/dummy/24.jpg' },
-  { index: 25, name: 'Vienna', url: '/img/dummy/25.jpg' },
-  { index: 26, name: 'Paris', url: '/img/dummy/26.jpg' },
-  { index: 27, name: 'Brussels', url: '/img/dummy/27.jpg' },
-  { index: 28, name: 'Amsterdam', url: '/img/dummy/28.jpg' },
-  { index: 29, name: 'New Orleans', url: '/img/dummy/29.jpg' },
-  { index: 30, name: 'Toronto', url: '/img/dummy/30.jpg' },
-  { index: 31, name: 'Miami', url: '/img/dummy/31.jpg' },
-  { index: 32, name: 'Flint', url: '/img/dummy/32.jpg' },
-  { index: 33, name: 'Edinburgh', url: '/img/dummy/33.jpg' },
-  { index: 34, name: 'Watford', url: '/img/dummy/34.jpg' },
-  { index: 35, name: 'Barnet', url: '/img/dummy/35.gif' },
-  { index: 36, name: 'Edgware', url: '/img/dummy/36.gif' },
-  { index: 37, name: 'Mill Hill', url: '/img/dummy/37.gif' },
-  { index: 38, name: 'Croydon', url: '/img/dummy/38.gif' },
-  { index: 39, name: 'Brick Lane', url: '/img/dummy/39.gif' },
-  { index: 40, name: 'Westminster', url: '/img/dummy/40.gif' },
-  { index: 41, name: 'Shoreditch', url: '/img/dummy/41.gif' },
-  { index: 42, name: 'Camden Town', url: '/img/dummy/42.gif' },
-  { index: 43, name: 'Kentish Town', url: '/img/dummy/43.gif' },
-  { index: 44, name: 'Brixton', url: '/img/dummy/44.gif' },
-  { index: 45, name: 'Cambridge', url: '/img/dummy/45.gif' },
-  { index: 46, name: 'Oxford', url: '/img/dummy/46.gif' },
-  { index: 47, name: 'Bristol', url: '/img/dummy/47.gif' },
-  { index: 48, name: 'Kyoto', url: '/img/dummy/48.gif' },
-  { index: 49, name: 'Canary Wharf', url: '/img/dummy/49.gif' },
-  { index: 50, name: 'Cape Town', url: '/img/dummy/50.gif' },
-  { index: 51, name: 'Johannesburg', url: '/img/dummy/51.gif' },
-  { index: 52, name: 'Baghdad', url: '/img/dummy/52.gif' },
-  { index: 53, name: 'Dubai', url: '/img/dummy/53.gif' },
-  { index: 54, name: 'Athens', url: '/img/dummy/54.gif' },
-  { index: 55, name: 'St. Albans', url: '/img/dummy/55.gif' },
-  { index: 56, name: 'Lyon', url: '/img/dummy/56.gif' },
-  { index: 57, name: 'Munich', url: '/img/dummy/57.gif' },
-  { index: 58, name: 'Bern', url: '/img/dummy/58.gif' },
-  { index: 59, name: 'Milan', url: '/img/dummy/59.gif' },
+const pinData = [
+  { index: 1, score: 420, name: 'London', url: '/img/dummy/01.gif' },
+  { index: 2, score: 617, name: 'Berlin', url: '/img/dummy/02.jpg' },
+  { index: 3, score: 162, name: 'Tokyo', url: '/img/dummy/03.jpg' },
+  { index: 4, score: 859, name: 'New York', url: '/img/dummy/04.jpg' },
+  { index: 5, score: 215, name: 'Manila', url: '/img/dummy/05.jpg' },
+  { index: 6, score: 26, name: 'Mumbai', url: '/img/dummy/06.png' },
+  { index: 7, score: 40, name: 'Moscow', url: '/img/dummy/07.png' },
+  { index: 8, score: 196, name: 'Rome', url: '/img/dummy/08.jpg' },
+  { index: 9, score: 436, name: 'Rio de Janeiro', url: '/img/dummy/09.png' },
+  { index: 10, score: 914, name: 'Los Angeles', url: '/img/dummy/10.png' },
+  { index: 11, score: 160, name: 'Stockholm', url: '/img/dummy/11.jpg' },
+  { index: 12, score: 360, name: 'Copenhagen', url: '/img/dummy/12.jpg' },
+  { index: 13, score: 155, name: 'Lagos', url: '/img/dummy/13.jpg' },
+  { index: 14, score: 198, name: 'Uganda', url: '/img/dummy/14.jpg' },
+  { index: 15, score: 313, name: 'Sydney', url: '/img/dummy/15.jpg' },
+  { index: 16, score: 457, name: 'Adelaide', url: '/img/dummy/16.jpg' },
+  { index: 17, score: 399, name: 'Wellington', url: '/img/dummy/17.jpg' },
+  { index: 18, score: 210, name: 'Mexico', url: '/img/dummy/18.jpg' },
+  { index: 19, score: 119, name: 'Hong Kong', url: '/img/dummy/19.jpg' },
+  { index: 20, score: 468, name: 'Shanghai', url: '/img/dummy/20.jpg' },
+  { index: 21, score: 249, name: 'Kerala', url: '/img/dummy/21.jpg' },
+  { index: 22, score: 717, name: 'Seoul', url: '/img/dummy/22.jpg' },
+  { index: 23, score: 152, name: 'Pyongyang', url: '/img/dummy/23.jpg' },
+  { index: 24, score: 367, name: 'Montaperto', url: '/img/dummy/24.jpg' },
+  { index: 25, score: 459, name: 'Vienna', url: '/img/dummy/25.jpg' },
+  { index: 26, score: 37, name: 'Paris', url: '/img/dummy/26.jpg' },
+  { index: 27, score: 868, name: 'Brussels', url: '/img/dummy/27.jpg' },
+  { index: 28, score: 785, name: 'Amsterdam', url: '/img/dummy/28.jpg' },
+  { index: 29, score: 27, name: 'New Orleans', url: '/img/dummy/29.jpg' },
+  { index: 30, score: 603, name: 'Toronto', url: '/img/dummy/30.jpg' },
+  { index: 31, score: 437, name: 'Miami', url: '/img/dummy/31.jpg' },
+  { index: 32, score: 50, name: 'Flint', url: '/img/dummy/32.jpg' },
+  { index: 33, score: 816, name: 'Edinburgh', url: '/img/dummy/33.jpg' },
+  { index: 34, score: 170, name: 'Watford', url: '/img/dummy/34.jpg' },
+  { index: 35, score: 705, name: 'Barnet', url: '/img/dummy/35.gif' },
+  { index: 36, score: 878, name: 'Edgware', url: '/img/dummy/36.gif' },
+  { index: 37, score: 893, name: 'Mill Hill', url: '/img/dummy/37.gif' },
+  { index: 38, score: 913, name: 'Croydon', url: '/img/dummy/38.gif' },
+  { index: 39, score: 172, name: 'Brick Lane', url: '/img/dummy/39.gif' },
+  { index: 40, score: 717, name: 'Westminster', url: '/img/dummy/40.gif' },
+  { index: 41, score: 456, name: 'Shoreditch', url: '/img/dummy/41.gif' },
+  { index: 42, score: 201, name: 'Camden Town', url: '/img/dummy/42.gif' },
+  { index: 43, score: 326, name: 'Kentish Town', url: '/img/dummy/43.gif' },
+  { index: 44, score: 607, name: 'Brixton', url: '/img/dummy/44.gif' },
+  { index: 45, score: 590, name: 'Cambridge', url: '/img/dummy/45.gif' },
+  { index: 46, score: 851, name: 'Oxford', url: '/img/dummy/46.gif' },
+  { index: 47, score: 51, name: 'Bristol', url: '/img/dummy/47.gif' },
+  { index: 48, score: 446, name: 'Kyoto', url: '/img/dummy/48.gif' },
+  { index: 49, score: 135, name: 'Canary Wharf', url: '/img/dummy/49.gif' },
+  { index: 50, score: 180, name: 'Cape Town', url: '/img/dummy/50.gif' },
+  { index: 51, score: 184, name: 'Johannesburg', url: '/img/dummy/51.gif' },
+  { index: 52, score: 925, name: 'Baghdad', url: '/img/dummy/52.gif' },
+  { index: 53, score: 549, name: 'Dubai', url: '/img/dummy/53.gif' },
+  { index: 54, score: 769, name: 'Athens', url: '/img/dummy/54.gif' },
+  { index: 55, score: 912, name: 'St. Albans', url: '/img/dummy/55.gif' },
+  { index: 56, score: 36, name: 'Lyon', url: '/img/dummy/56.gif' },
+  { index: 57, score: 331, name: 'Munich', url: '/img/dummy/57.gif' },
+  { index: 58, score: 101, name: 'Bern', url: '/img/dummy/58.gif' },
+  { index: 59, score: 594, name: 'Milan', url: '/img/dummy/59.gif' },
 ]
 
 function getRandomColor() {
   const index = Math.floor(Math.random() * colors.length)
-  console.log()
   return colors[index]
 }
 
@@ -169,18 +165,11 @@ const cities = [
   { name: 'Milan', coordinates: [45.463501855252474, 9.185256958007812] },
 ]
 
-// const reversed = map(city => ({
-//   ...city,
-//   coordinates: city.coordinates.reverse(),
-// }))(cities)
-
-// console.debug('reversed', JSON.stringify(reversed))
-
 function generateFakePins() {
   return cities.map(city => {
     const { name, coordinates } = city
 
-    const { url } = find(propEq('name', name))(images)
+    const { url, score } = find(propEq('name', name))(pinData)
     const random = getRandomColor()
     const { color } = random
     const imageName = random.name
@@ -191,7 +180,7 @@ function generateFakePins() {
         'Per ea omnis decore, eu mei appareat tincidunt. Te cum aeque repudiandae delicatissimi, cu populo dictas ponderum vel, dolor consequat ut vix.',
       createdAt: Date.now(),
       author: 'rai',
-      score: Math.round(Math.random() * 100),
+      score,
       coordinates,
       image: url,
       color,

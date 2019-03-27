@@ -117,15 +117,6 @@ export default {
     },
   },
   methods: {
-    markerImageStyle(marker) {
-      const diameter = 0.85 * this.iconSize
-      return {
-        top: '0px',
-        width: `${diameter}px`,
-        height: `${diameter}px`,
-        backgroundImage: `url(${marker.image ? marker.image : ''})`,
-      }
-    },
     basemapTileClass() {
       return 'basemap-tiles'
     },
@@ -200,7 +191,6 @@ export default {
     },
   },
   mounted() {
-    console.log('fake pins: ', this.pins)
     this.$subscribeTo(interval(60000), () => {
       this.sessionLength += 1
       this.printSessionLength()

@@ -5,7 +5,7 @@
     :riseOnHover="true"
     :riseOffset="1000"
   >
-    <LIcon :icon-size="size" :icon-anchor="anchor">
+    <LIcon :icon-size="adjustedSize" :icon-anchor="anchor">
       <div class="bumpmap-marker" v-bind:class="pin.color">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
@@ -52,10 +52,31 @@ import { LMarker, LIcon } from 'vue2-leaflet'
 
 export default {
   name: 'PinMarker',
-  props: ['pin', 'onClick', 'size', 'anchor', 'served', 'imageStyle'],
+  props: ['pin', 'onClick', 'size', 'anchor', 'served'],
   components: {
     LMarker,
     LIcon,
+  },
+  computed: {
+    adjustedSize() {
+      console.log('this.pin.size :', this.pin.size)
+      const proportion = 0.5 + this.pin.size / 2000
+      const [baseX, baseY] = this.size
+      const adjusted = [baseX * proportion, baseY * proportion]
+      console.log('adjustedSize :', adjusted)
+      return adjusted
+    },
+  },
+  methods: {
+    imageStyle(marker) {
+      const diameter = 0.85 * this.adjustedSize[0]
+      return {
+        top: '0px',
+        width: `${diameter}px`,
+        height: `${diameter}px`,
+        backgroundImage: `url(${marker.image ? marker.image : ''})`,
+      }
+    },
   },
   data() {
     return {}
