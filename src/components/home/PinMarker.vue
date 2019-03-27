@@ -59,11 +59,9 @@ export default {
   },
   computed: {
     adjustedSize() {
-      console.log('this.pin.size :', this.pin.size)
       const proportion = 0.5 + this.pin.size / 2000
       const [baseX, baseY] = this.size
       const adjusted = [baseX * proportion, baseY * proportion]
-      console.log('adjustedSize :', adjusted)
       return adjusted
     },
   },
