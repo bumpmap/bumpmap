@@ -13,6 +13,7 @@
           :minZoom="4"
           :maxZoom="16"
           :noBlockingAnimations="true"
+          ref="map"
         >
           <div class="basetiles">
             <LTileLayer :url="baseUrl"></LTileLayer>
@@ -116,9 +117,6 @@ export default {
     },
   },
   methods: {
-    basemapTileClass() {
-      return 'basemap-tiles'
-    },
     zoomUpdated(zoom) {
       console.debug('zoomUpdated')
       this.zoom = zoom
@@ -147,46 +145,30 @@ export default {
       // based on the QLayout "view" prop configuration
       return '100vh'
     },
-    placePin(lat, lng) {
-      this.newPin = {
-        exists: true,
-        topic: `New Pin`,
-        body: `Insert text here.`,
-        createdAt: Date.now(),
-        author: 'rai',
-        score: Math.round(Math.random() * 100),
-        position: {
-          lat: lat,
-          lng: lng,
-        },
-      }
+    centerAt(coords) {
+      console.log(`centerAt(${coords})`)
+      this.setView(coords, this.calculateZoomIn())
     },
-    cancelPlacePin() {
-      this.newPin = {
-        exists: false,
-        topic: null,
-        body: null,
-        createdAt: null,
-        author: null,
-        score: null,
-        position: {
-          lat: 53,
-          lng: -2,
-        },
-      }
-    },
-    centerAt([lat, lng]) {
-      this.zoom = 7
-      this.center = [lat, lng]
-    },
-    clickMap(evt) {
-      const { latLng } = evt
-      const { lat, lng } = latLng
-      console.log(`map clicked @ (${lat()}, ${lng()})`)
-      this.placePin(lat(), lng())
+    setView(center, zoom, options) {
+      console.debug(`setView('${center}', '${zoom}', '${options})'`)
+      this.$refs.map.mapObject.setView(center, zoom, options)
     },
     printSessionLength() {
       console.debug(`map session length: ${this.sessionLength} minute`)
+    },
+    zoomIn() {
+      console.debug('zoomIn')
+      this.zoom = calculateZoomIn()
+    },
+    calculateZoomIn() {
+      console.debug('zoomIn')
+      if (this.zoom < 7) {
+        return 7
+      } else if (this.zoom < 16) {
+        return this.zoom + 1
+      } else {
+        return this.zoom
+      }
     },
   },
   mounted() {

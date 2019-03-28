@@ -4,8 +4,18 @@
     :lat-lng="pin.coordinates"
     :riseOnHover="true"
     :riseOffset="1000"
+    ref="marker"
   >
-    <LIcon :icon-size="adjustedSize" :icon-anchor="adjustedAnchor">
+    <LPopup if="pin.topic" class="pin-popup-content" :permanent="true">
+      <a href="https://4chan.org">{{pin.topic}}</a>
+    </LPopup>
+    <LTooltip if="pin.topic" class="pin-tooltip-content" :open="true">{{pin.topic}}</LTooltip>
+    <LIcon
+      :icon-size="adjustedSize"
+      :icon-anchor="adjustedAnchor"
+      :popup-anchor="adjustedPopupAnchor"
+      :tooltip-anchor="adjustedTooltipAnchor"
+    >
       <div class="bumpmap-marker" v-bind:class="pin.color">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
@@ -48,7 +58,7 @@
 </template>
 
 <script>
-import { LMarker, LIcon } from 'vue2-leaflet'
+import { LMarker, LIcon, LPopup, LTooltip } from 'vue2-leaflet'
 
 export default {
   name: 'PinMarker',
@@ -56,22 +66,45 @@ export default {
   components: {
     LMarker,
     LIcon,
+    LPopup,
+    LTooltip,
   },
   computed: {
     adjustedSize() {
-      const proportion = 0.25 + this.pin.size / 1500
+      return this.calculateAdjustedSize()
+    },
+    adjustedAnchor() {
+      return this.calculateAdjustedAnchor()
+    },
+    adjustedPopupAnchor() {
+      const proportion = this.calculateProportion()
+      const [anchorX, anchorY] = this.calculateAdjustedAnchor()
+      const [sizeX, sizeY] = this.calculateAdjustedAnchor()
+      return [-1, 0 - (sizeY + 7.5)]
+    },
+    adjustedTooltipAnchor() {
+      const proportion = this.calculateProportion()
+      const [anchorX, anchorY] = this.calculateAdjustedAnchor()
+      const [sizeX, sizeY] = this.calculateAdjustedAnchor()
+      return [20, 0 - 0.75 * sizeY]
+    },
+  },
+  methods: {
+    calculateProportion() {
+      return 0.25 + this.pin.size / 1500
+    },
+    calculateAdjustedSize() {
+      const proportion = this.calculateProportion()
       const [baseX, baseY] = this.size
       const adjusted = [baseX * proportion, baseY * proportion]
       return adjusted
     },
-    adjustedAnchor() {
-      const proportion = 0.25 + this.pin.size / 1500
+    calculateAdjustedAnchor() {
+      const proportion = this.calculateProportion()
       const [baseX, baseY] = this.anchor
       const adjusted = [baseX * proportion, baseY * proportion]
       return adjusted
     },
-  },
-  methods: {
     imageStyle(marker) {
       const diameter = 0.85 * this.adjustedSize[0]
       return {
@@ -84,6 +117,9 @@ export default {
   },
   data() {
     return {}
+  },
+  mounted() {
+    this.$refs.marker.mapObject.openTooltip()
   },
 }
 </script>
@@ -258,6 +294,35 @@ export default {
     text-align: center;
     text-overflow: hidden;
     margin: 0 auto;
+  }
+
+  .pin-popup-content,
+  .pin-tooltip-content {
+    padding: 10px;
+  }
+  .pin-popup-content {
+    display: flex;
+    width: 100%;
+    font-size: 2em;
+    text-align: center;
+    justify-content: center;
+  }
+  .pin-tooltip-content {
+    font-size: 1.5em;
+    text-align: center;
+  }
+
+  .leaflet-popup {
+    max-width: 300px;
+    width: 80vw;
+    text-align: center;
+  }
+
+  .leaflet-popup a {
+    display: flex;
+    text-decoration: none;
+    font-weight: 500;
+    color: #000;
   }
 }
 </style>
