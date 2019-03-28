@@ -1,11 +1,41 @@
 <template>
   <LMarker
-    @click="onClick(pin.coordinates)"
+    @click="handleClick"
     :lat-lng="pin.coordinates"
     :riseOnHover="true"
     :riseOffset="1000"
+    ref="marker"
+    @mouseover="mouseOver($event)"
   >
-    <LIcon :icon-size="adjustedSize" :icon-anchor="anchor">
+    <LPopup
+      :autoclose="false"
+      v-if="pin.topic"
+      class="pin-popup-content"
+      :permanent="true"
+      @mouseover="mouseOver($event)"
+      :keep-in-view="true"
+      :keepInView="true"
+    >
+      <router-link :to="{name: 'PinDetail', params: {pinId: pin.id}}">{{pin.topic}}</router-link>
+    </LPopup>
+    <div v-if="!focused">
+      <LTooltip
+        :opacity="0.5"
+        class="pin-tooltip-content"
+        @mouseover="mouseOver($event)"
+        ref="tooltip"
+      >
+        <span v-if="!focused" class="pin-tooltip-topic">{{pin.topic}}</span>
+      </LTooltip>
+    </div>
+
+    <LIcon
+      :icon-size="adjustedSize"
+      :icon-anchor="adjustedAnchor"
+      :popup-anchor="adjustedPopupAnchor"
+      :tooltip-anchor="adjustedTooltipAnchor"
+      @mouseover="mouseOver($event)"
+    >
       <div class="bumpmap-marker" v-bind:class="pin.color">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
@@ -35,8 +65,8 @@
               ></feColorMatrix>
             </filter>
           </defs>
-          <g fill="none" fill-rule="evenodd">
-            <g fill-rule="nonzero">
+          <g fill="none" filrule="evenodd">
+            <g filrule="nonzero">
               <use fill="black" filter="url(#b)" xlink:href="#a"></use>
               <use class="bumpmap-marker-body" xlink:href="#a"></use>
             </g>
@@ -48,24 +78,91 @@
 </template>
 
 <script>
-import { LMarker, LIcon } from 'vue2-leaflet'
+import { LMarker, LIcon, LPopup, LTooltip } from 'vue2-leaflet'
 
 export default {
   name: 'PinMarker',
-  props: ['pin', 'onClick', 'size', 'anchor', 'served'],
+  props: ['pin', 'onClick', 'size', 'anchor', 'served', 'focused'],
   components: {
     LMarker,
     LIcon,
+    LPopup,
+    LTooltip,
+  },
+  watch: {
+    focused: function(val) {
+      console.debug(`focused changed to ${val}`)
+    },
   },
   computed: {
     adjustedSize() {
-      const proportion = 0.5 + this.pin.size / 2000
+      return this.calculateAdjustedSize()
+    },
+    adjustedAnchor() {
+      return this.calculateAdjustedAnchor()
+    },
+    adjustedPopupAnchor() {
+      const proportion = this.calculateProportion()
+      const [anchorX, anchorY] = this.calculateAdjustedAnchor()
+      const [sizeX, sizeY] = this.calculateAdjustedSize()
+      return [-1, 0 - 1.1 * sizeY]
+    },
+    adjustedTooltipAnchor() {
+      const proportion = this.calculateProportion()
+      const [anchorX, anchorY] = this.calculateAdjustedAnchor()
+      const [sizeX, sizeY] = this.calculateAdjustedSize()
+      return [0.66 * sizeX, 0 - sizeY]
+    },
+  },
+  methods: {
+    clickMarkerImage(event) {
+      console.log('clickMarkerImage')
+    },
+    mouseOver(event) {
+      if (this.focused) {
+        this.$refs.marker.mapObject.closeTooltip()
+      }
+    },
+    mouseEnter(event) {
+      console.debug('mouseEnter', event)
+    },
+    mouseLeave(event) {
+      console.debug('mouseLeave', event)
+    },
+    handleClick() {
+      console.log('PinMarker.handleClick()')
+      this.onClick(this.pin)
+      this.$nextTick(() => {
+        this.$refs.marker.mapObject.closeTooltip()
+      })
+
+      if (this.pin.focused) {
+        console.log('pin already focused. navigating to detail page')
+        this.$router.push({ name: 'PinDetail', params: { pinId: this.pin.id } })
+      }
+    },
+    openTooltip() {
+      this.$refs.marker.mapObject.openTooltip()
+    },
+    closeTooltip() {
+      this.$refs.marker.mapObject.closeTooltip()
+    },
+    calculateProportion() {
+      const focusRatio = this.pin.focused ? 3 : 1
+      return focusRatio * (0.25 + this.pin.size / 1500)
+    },
+    calculateAdjustedSize() {
+      const proportion = this.calculateProportion()
       const [baseX, baseY] = this.size
       const adjusted = [baseX * proportion, baseY * proportion]
       return adjusted
     },
-  },
-  methods: {
+    calculateAdjustedAnchor() {
+      const proportion = this.calculateProportion()
+      const [baseX, baseY] = this.anchor
+      const adjusted = [baseX * proportion, baseY * proportion]
+      return adjusted
+    },
     imageStyle(marker) {
       const diameter = 0.85 * this.adjustedSize[0]
       return {
@@ -79,6 +176,14 @@ export default {
   data() {
     return {}
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.marker.mapObject.on('mouseover', this.mouseOver, {
+        capture: true,
+        passive: false,
+      })
+    })
+  },
 }
 </script>
 
@@ -87,6 +192,7 @@ export default {
 .leaflet-map-pane {
   .marker-bg {
     height: 100%;
+    pointer-events: none;
   }
 
   .bumpmap-marker {
@@ -242,6 +348,7 @@ export default {
     background-position: center;
     top: 0;
     position: absolute;
+    pointer-events: auto;
   }
 
   .distance {
@@ -252,6 +359,60 @@ export default {
     text-align: center;
     text-overflow: hidden;
     margin: 0 auto;
+  }
+
+  .pin-popup-content,
+  .pin-tooltip-content {
+    padding: 10px;
+  }
+  .pin-popup-content {
+    display: flex;
+    width: 100%;
+    font-size: 1.5em;
+    text-align: center;
+    justify-content: center;
+  }
+  .pin-tooltip-content {
+    font-size: 1.1em;
+    text-align: center;
+  }
+
+  .leaflet-popup {
+    max-width: 300px;
+    width: 80vw;
+    text-align: center;
+  }
+
+  .leaflet-tooltip {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.8);
+
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    &:before {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .pin-tooltip-topic {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 0;
+  }
+
+  .leaflet-popup a {
+    display: flex;
+    text-decoration: none;
+    font-weight: 500;
+    color: #000;
+  }
+  .leaflet-marker-icon {
+    pointer-events: none;
   }
 }
 </style>

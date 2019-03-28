@@ -9,10 +9,13 @@
           @update:zoom="zoomUpdated"
           @update:center="centerUpdated"
           @update:bounds="boundsUpdated"
+          @click="clickMap"
           :worldCopyJump="true"
           :minZoom="4"
           :maxZoom="16"
           :noBlockingAnimations="true"
+          :no-blocking-animations="true"
+          ref="map"
         >
           <div class="basetiles">
             <LTileLayer :url="baseUrl"></LTileLayer>
@@ -22,12 +25,12 @@
             <PinMarker
               served
               v-for="pin in pins.filtered"
+              :focused="pin.focused"
               :key="pin.id"
               :pin="pin"
-              :onClick="centerAt"
+              :onClick="clickMarker"
               :size="dynamicSize"
               :anchor="dynamicAnchor"
-              :imageStyle="markerImageStyle"
             ></PinMarker>
 
             <!-- <LMarker
@@ -53,7 +56,7 @@ import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
 import PinMarker from '@/components/home/PinMarker.vue'
-import { dispatch } from '@/state'
+import { store, dispatch } from '@/state'
 
 export default {
   name: 'Map',
@@ -116,10 +119,13 @@ export default {
       }
     },
   },
+  created() {
+    const { pins } = store.getState()
+    const { zoom, center } = pins
+    this.center = center
+    this.zoom = zoom
+  },
   methods: {
-    basemapTileClass() {
-      return 'basemap-tiles'
-    },
     zoomUpdated(zoom) {
       console.debug('zoomUpdated')
       this.zoom = zoom
@@ -148,46 +154,46 @@ export default {
       // based on the QLayout "view" prop configuration
       return '100vh'
     },
-    placePin(lat, lng) {
-      this.newPin = {
-        exists: true,
-        topic: `New Pin`,
-        body: `Insert text here.`,
-        createdAt: Date.now(),
-        author: 'rai',
-        score: Math.round(Math.random() * 100),
-        position: {
-          lat: lat,
-          lng: lng,
-        },
-      }
+    centerAt(coords) {
+      console.log(`centerAt(${coords})`)
+      this.setView(coords, this.calculateZoomIn())
     },
-    cancelPlacePin() {
-      this.newPin = {
-        exists: false,
-        topic: null,
-        body: null,
-        createdAt: null,
-        author: null,
-        score: null,
-        position: {
-          lat: 53,
-          lng: -2,
-        },
-      }
-    },
-    centerAt([lat, lng]) {
-      this.zoom = 7
-      this.center = [lat, lng]
-    },
-    clickMap(evt) {
-      const { latLng } = evt
-      const { lat, lng } = latLng
-      console.log(`map clicked @ (${lat()}, ${lng()})`)
-      this.placePin(lat(), lng())
+    setView(center, zoom, options) {
+      console.debug(`setView('${center}', '${zoom}', '${options})'`)
+      this.$refs.map.mapObject.setView(center, zoom, options)
     },
     printSessionLength() {
       console.debug(`map session length: ${this.sessionLength} minute`)
+    },
+    zoomIn() {
+      console.debug('zoomIn')
+      this.zoom = calculateZoomIn()
+    },
+    calculateZoomIn() {
+      console.debug('zoomIn')
+      if (this.zoom < 7) {
+        return 7
+      } else if (this.zoom < 16) {
+        return this.zoom + 1
+      } else {
+        return this.zoom
+      }
+    },
+    clickMap() {
+      console.debug('clickMap')
+      dispatch.pins.updateContext({ focus: false })
+    },
+    clickMarker(pin) {
+      if (!pin.focused) {
+        const zoom = this.calculateZoomIn()
+        this.centerAt(pin.coordinates)
+        dispatch.pins.updateContext({
+          zoom,
+          focus: pin.id,
+          center: pin.coordinates,
+        })
+      }
+      console.debug(`clickMarker(${pin.id})`, pin)
     },
   },
   mounted() {
@@ -195,21 +201,6 @@ export default {
       this.sessionLength += 1
       this.printSessionLength()
     })
-
-    // this.$subscribeTo(interval(3333), () => {
-    //   console.debug(
-    //     `newPin.position =\t${this.newPin.position.lat} ${
-    //       this.newPin.position.lng
-    //     }`,
-    //   )
-    //   if (this.$refs.newPinRef) {
-    //     const { $markerObject } = this.$refs.newPinRef
-    //     const { position } = $markerObject
-    //     const lat = position.lat()
-    //     const lng = position.lng()
-    //     console.log(`ref pos:\t${lat} ${lng}`)
-    //   }
-    // })
 
     getGeoLocation().then(
       ({ lat, lng }) => {

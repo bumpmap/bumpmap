@@ -10,10 +10,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-alert': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     semi: [2, 'never'],
-    'max-len': [
-      'error',
-      { code: 120, ignoreStrings: true, ignoreRegExpLiterals: true },
-    ],
+    'max-len': 'off',
     'no-useless-escape': 'off',
     'arrow-parens': 'off',
   },
