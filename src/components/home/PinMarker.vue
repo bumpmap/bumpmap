@@ -7,7 +7,7 @@
     ref="marker"
   >
     <LPopup :autoclose="false" if="pin.topic" class="pin-popup-content" :permanent="true">
-      <a href="https://4chan.org">{{pin.topic}}</a>
+      <a href="https://4chan.org">{{pin.id}} {{pin.topic}}</a>
     </LPopup>
     <LTooltip :opacity="1" if="pin.topic" class="pin-tooltip-content" :open="true">
       <span class="pin-tooltip-topic">{{pin.topic}}</span>
@@ -312,12 +312,12 @@ export default {
   .pin-popup-content {
     display: flex;
     width: 100%;
-    font-size: 2em;
+    font-size: 1.5em;
     text-align: center;
     justify-content: center;
   }
   .pin-tooltip-content {
-    font-size: 1.5em;
+    font-size: 1.1em;
     text-align: center;
   }
 

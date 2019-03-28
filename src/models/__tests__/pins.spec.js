@@ -1,8 +1,13 @@
 import { init } from '@rematch/core'
 import { pins, initialState } from '@/models/pins'
 import { withDefaultReducers } from 'rematch-default-reducers'
-import { MAX_DISTANCES, withDistances, filterPinsByDistance } from '../pins'
-import { fakePins } from '@/components/home/fake-pins.js'
+import {
+  MAX_DISTANCES,
+  withDistances,
+  filterPinsByDistance,
+  withFocus,
+} from '../pins'
+import { fakePins } from '../../components/home/fake-pins'
 
 describe('models/pins', () => {
   it('exists', () => {
@@ -65,7 +70,6 @@ describe('models/pins', () => {
           .toBeDefined()
           .toBeFunction()
       })
-
       it('returns the collection filtered by distance based off maxDistances', () => {
         const result = withDistances(collection, center)
         expect(result)
@@ -83,27 +87,86 @@ describe('models/pins', () => {
         })
       })
     })
+
+    describe('withFocus', () => {
+      it('exists', () => {
+        expect(withFocus)
+          .toBeDefined()
+          .toBeFunction()
+      })
+      it('returns the collection with a given id focus set to true, rest false', () => {
+        const result = withFocus(collection, 'PIN30')
+        expect(result)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(result.length).toEqual(collection.length)
+        result.forEach(pin => {
+          expect(pin).toBeDefined()
+          expect(pin.focused)
+            .toBeDefined()
+            .toBeBoolean()
+          const expected = pin.id === 'PIN30'
+          expect(pin.focused).toEqual(expected)
+        })
+
+        const again = withFocus(result, 'PIN15')
+
+        expect(again)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(again.length).toEqual(collection.length)
+        again.forEach(pin => {
+          expect(pin).toBeDefined()
+          expect(pin.focused)
+            .toBeDefined()
+            .toBeBoolean()
+          const expected = pin.id === 'PIN15'
+          expect(pin.focused).toEqual(expected)
+        })
+      })
+    })
   })
 
   describe('reducers', () => {
-    describe.skip('increment', () => {
-      it('reducer: my reducerName should do something', () => {
+    describe('focusOn', () => {
+      it('should focus on a given id', () => {
         const store = init({
           models: withDefaultReducers({ pins }),
         })
 
-        const initialValue = initialState.count
-        store.dispatch.pins.increment(3)
-        const result1 = store.getState().pins.count
-        expect(result1).toBe(initialValue + 3)
+        const fakes = [...fakePins]
 
-        store.dispatch.pins.increment(1000)
-        const result2 = store.getState().pins.count
-        expect(result2).toBe(result1 + 1000)
+        const initialState = store.getState().pins
+        let { focusedOn, filtered, all } = initialState
+        expect(focusedOn)
+          .toBeDefined()
+          .toBeString()
+          .toBeEmpty()
+        expect(filtered)
+          .toBeDefined()
+          .toBeArray()
+          .toBeEmpty()
 
-        store.dispatch.pins.increment(1000000)
-        const result3 = store.getState().pins.count
-        expect(result3).toBe(result2 + 1000000)
+        store.dispatch.pins.updateContext({ pins: fakes, zoom: 0 })
+
+        const withFakePins = store.getState().pins
+        focusedOn = withFakePins.focusedOn
+        all = withFakePins.all
+        filtered = withFakePins.filtered
+        expect(focusedOn)
+          .toBeDefined()
+          .toBeString()
+          .toBeEmpty()
+        expect(all)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
+        expect(filtered)
+          .toBeDefined()
+          .toBeArray()
+          .not.toBeEmpty()
       })
     })
   })

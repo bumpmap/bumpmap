@@ -14,6 +14,7 @@
           :minZoom="4"
           :maxZoom="16"
           :noBlockingAnimations="true"
+          :no-blocking-animations="true"
           ref="map"
         >
           <div class="basetiles">
@@ -173,8 +174,18 @@ export default {
     },
     clickMap() {
       console.debug('clickMap')
+      dispatch.pins.updateContext({ focus: false })
     },
     clickMarker(pin) {
+      if (!pin.focused) {
+        const zoom = this.calculateZoomIn()
+        this.centerAt(pin.coordinates)
+        dispatch.pins.updateContext({
+          zoom,
+          focus: pin.id,
+          center: pin.coordinates,
+        })
+      }
       console.debug(`clickMarker(${pin.id})`, pin)
     },
   },
