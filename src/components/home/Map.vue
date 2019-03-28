@@ -27,7 +27,6 @@
               :onClick="centerAt"
               :size="dynamicSize"
               :anchor="dynamicAnchor"
-              :imageStyle="markerImageStyle"
             ></PinMarker>
 
             <!-- <LMarker

@@ -1,6 +1,6 @@
 {
   "name": "bumpmap",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --host 192.168.68.123 --port 1337",
@@ -10,7 +10,7 @@
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "deploy:client": "firebase deploy --only hosting"
+    "deploy:client": "vue-cli-service build && firebase deploy --only hosting"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
