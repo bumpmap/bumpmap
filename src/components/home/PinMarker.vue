@@ -16,7 +16,7 @@
       :keep-in-view="true"
       :keepInView="true"
     >
-      <a href="https://4chan.org">{{pin.id}} {{pin.topic}}</a>
+      <router-link :to="{name: 'PinDetail', params: {pinId: pin.id}}">{{pin.topic}}</router-link>
     </LPopup>
     <div v-if="!focused">
       <LTooltip

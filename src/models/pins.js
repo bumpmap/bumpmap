@@ -1,7 +1,7 @@
 import { pluck, map, empty } from 'rambda'
 import { mean } from 'ramda'
 
-import { fetchAllPins } from '@/components/home/fake-pins.js'
+import { fetchPin, fetchAllPins } from '@/components/home/fake-pins.js'
 export const MAX_DISTANCES = [
   320,
   320,
@@ -93,6 +93,16 @@ export function filterPinsByDistance(collection, zoom, maxDistances) {
 export const pins = {
   state: { ...initialState }, // initial state
   reducers: {
+    addToLibrary(state, { id, data }) {
+      const library = {
+        ...state.library,
+      }
+      library[id] = data
+      return {
+        ...state,
+        library,
+      }
+    },
     updateContext(state, { pins, zoom, center, focus }) {
       const resultZoom = zoom || state.zoom
       const resultCenter = center || state.center
@@ -112,9 +122,17 @@ export const pins = {
         ...pin,
         size: Math.floor(1000 + (pin.score - meanScore)),
       }))(filteredByDistance)
+
+      const library = {}
+
+      all.forEach(pin => {
+        library[pin.id] = pin
+      })
+
       return {
         ...state,
         all,
+        library,
         meanScore,
         focusedOn,
         focused: !!focusedOn,
@@ -134,6 +152,10 @@ export const pins = {
         zoom: this.zoom,
         center: this.center,
       })
+    },
+    async fetchPin(id, rootState) {
+      const data = await fetchPin(id)
+      dispatch.pins.addToLibrary({ id, data })
     },
   }),
 }

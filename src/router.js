@@ -3,6 +3,7 @@ import Vue from 'vue'
 const Explorer = () => import('@/views/Explorer.vue')
 const Join = () => import('@/views/auth/Join.vue')
 const Login = () => import('@/views/auth/Login.vue')
+const PinDetail = () => import('@/views/PinDetail.vue')
 import { store } from '@/state'
 import { contains } from 'rambda'
 
@@ -26,6 +27,11 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login,
+    },
+    {
+      path: '/pin/:pinId',
+      name: 'PinDetail',
+      component: PinDetail,
     },
   ],
 })
