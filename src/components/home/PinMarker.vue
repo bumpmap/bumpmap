@@ -1,6 +1,6 @@
 <template>
   <LMarker
-    @click="onClick(pin.coordinates)"
+    @click="handleClick"
     :lat-lng="pin.coordinates"
     :riseOnHover="true"
     :riseOffset="1000"
@@ -92,6 +92,10 @@ export default {
     },
   },
   methods: {
+    handleClick() {
+      console.log('PinMarker.handleClick()')
+      this.onClick(this.pin)
+    },
     openTooltip() {
       this.$refs.marker.mapObject.openTooltip()
     },

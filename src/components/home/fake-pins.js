@@ -499,7 +499,7 @@ function generateFakePins() {
     const imageName = random.name
     return {
       id,
-      topic: `Hello from ${name}`,
+      topic: `${uuid()}@${name}`,
       body:
         'Per ea omnis decore, eu mei appareat tincidunt. Te cum aeque repudiandae delicatissimi, cu populo dictas ponderum vel, dolor consequat ut vix.',
       createdAt: Date.now(),

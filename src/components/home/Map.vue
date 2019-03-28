@@ -174,8 +174,8 @@ export default {
     clickMap() {
       console.debug('clickMap')
     },
-    clickMarker() {
-      console.debug('clickMarker')
+    clickMarker(pin) {
+      console.debug(`clickMarker(${pin.id})`, pin)
     },
   },
   mounted() {
@@ -183,21 +183,6 @@ export default {
       this.sessionLength += 1
       this.printSessionLength()
     })
-
-    // this.$subscribeTo(interval(3333), () => {
-    //   console.debug(
-    //     `newPin.position =\t${this.newPin.position.lat} ${
-    //       this.newPin.position.lng
-    //     }`,
-    //   )
-    //   if (this.$refs.newPinRef) {
-    //     const { $markerObject } = this.$refs.newPinRef
-    //     const { position } = $markerObject
-    //     const lat = position.lat()
-    //     const lng = position.lng()
-    //     console.log(`ref pos:\t${lat} ${lng}`)
-    //   }
-    // })
 
     getGeoLocation().then(
       ({ lat, lng }) => {
