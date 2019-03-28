@@ -1,7 +1,10 @@
 <template>
   <q-page>
-    <div v-if="ready && pin && pin.id" class="pin-detail">
-      <div class="row q-ma-md">
+    <div
+      v-if="ready && pin && pin.id"
+      class="pin-detail container relative-position flex flex-center"
+    >
+      <div class="row q-mt-md">
         <div class="op-image-container col col-xs-12 col-md-6 col-lg-5 q-pa-xs">
           <div class="relative-position container flex flex-center" v-ripple>
             <a :href="pin.image" target="_blank">
@@ -10,7 +13,7 @@
           </div>
         </div>
         <div class="col col-xs-12 col-md-6 col-lg-7">
-          <q-card bordered class="q-pa-xs q-ma-sm">
+          <q-card bordered class="q-pa-xs q-mb-md">
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
@@ -23,9 +26,9 @@
                 <q-item-label caption class="author">~{{pin.author}}</q-item-label>
               </q-item-section>
             </q-item>
-            <q-card-section class="op-body q-my-lg q-pa-lg">{{pin.body}}</q-card-section>
+            <q-card-section class="op-body q-my-xl q-pa-xl">{{pin.body}}</q-card-section>
           </q-card>
-          <q-card class="q-pa-sm q-ma-sm">
+          <q-card class="q-pa-sm q-my-sm">
             <q-card-section>
               <div class="column">
                 <q-chat-message
