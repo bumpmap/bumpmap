@@ -2,10 +2,14 @@
   <q-page>
     <div v-if="ready && pin && pin.id" class="pin-detail">
       <div class="row q-ma-md">
-        <div class="op-image-container col col-xs-12 col-md-6 col-lg-4 q-pa-sm">
-          <img class="op-image" :src="pin.image" alt="pin.topic">
+        <div class="op-image-container col col-xs-12 col-md-6 col-lg-5 q-pa-xs">
+          <div class="relative-position container flex flex-center" v-ripple>
+            <a :href="pin.image" target="_blank">
+              <img class="op-image" :src="pin.image" alt="pin.topic">
+            </a>
+          </div>
         </div>
-        <div class="col col-xs-12 col-md-6 col-lg-8">
+        <div class="col col-xs-12 col-md-6 col-lg-7">
           <q-card bordered class="q-pa-xs q-ma-sm">
             <q-item>
               <q-item-section avatar>
@@ -109,6 +113,7 @@ export default {
   }
   .op-image-container,
   .op-image {
+    cursor: pointer;
     border-radius: 5px;
   }
   .op-body {
