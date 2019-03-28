@@ -1,7 +1,7 @@
-import { pluck, map } from 'rambda'
+import { pluck, map, empty } from 'rambda'
 import { mean } from 'ramda'
 
-import { fetchAllPins } from '@/components/home/fake-pins.js'
+import { fetchPin, fetchAllPins } from '@/components/home/fake-pins.js'
 export const MAX_DISTANCES = [
   320,
   320,
@@ -32,6 +32,8 @@ export const initialState = {
   center: [-2, 53],
   all: [],
   filtered: [],
+  focused: false,
+  focusedOn: '',
   newPin: {
     exists: false,
     saved: false,
@@ -47,6 +49,14 @@ export const initialState = {
       color: 'white',
     },
   },
+}
+
+export function withFocus(collection, id) {
+  if (!id) {
+    return collection.map(pin => ({ ...pin, focused: false }))
+  }
+
+  return collection.map(pin => ({ ...pin, focused: pin.id === id }))
 }
 
 /**
@@ -83,11 +93,23 @@ export function filterPinsByDistance(collection, zoom, maxDistances) {
 export const pins = {
   state: { ...initialState }, // initial state
   reducers: {
-    updateContext(state, { pins, zoom, center }) {
+    addToLibrary(state, { id, data }) {
+      const library = {
+        ...state.library,
+      }
+      library[id] = data
+      return {
+        ...state,
+        library,
+      }
+    },
+    updateContext(state, { pins, zoom, center, focus }) {
       const resultZoom = zoom || state.zoom
       const resultCenter = center || state.center
       const all = pins || state.all
-      const collection = withDistances(all, resultCenter)
+
+      const focusedOn = focus ? focus : focus === false ? '' : state.focusedOn
+      const collection = withFocus(withDistances(all, resultCenter), focusedOn)
       const filteredByDistance = filterPinsByDistance(
         collection,
         resultZoom,
@@ -100,10 +122,20 @@ export const pins = {
         ...pin,
         size: Math.floor(1000 + (pin.score - meanScore)),
       }))(filteredByDistance)
+
+      const library = {}
+
+      all.forEach(pin => {
+        library[pin.id] = pin
+      })
+
       return {
         ...state,
         all,
+        library,
         meanScore,
+        focusedOn,
+        focused: !!focusedOn,
         zoom: resultZoom,
         center: resultCenter,
         filtered: withSize,
@@ -120,6 +152,10 @@ export const pins = {
         zoom: this.zoom,
         center: this.center,
       })
+    },
+    async fetchPin(id, rootState) {
+      const data = await fetchPin(id)
+      dispatch.pins.addToLibrary({ id, data })
     },
   }),
 }
