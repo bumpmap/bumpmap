@@ -115,6 +115,9 @@ export default {
     },
   },
   methods: {
+    clickMarkerImage(event) {
+      console.log('clickMarkerImage')
+    },
     mouseOver(event) {
       if (this.focused) {
         this.$refs.marker.mapObject.closeTooltip()
@@ -132,6 +135,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.marker.mapObject.closeTooltip()
       })
+
+      if (this.pin.focused) {
+        console.log('pin already focused. navigating to detail page')
+        this.$router.push({ name: 'PinDetail', params: { pinId: this.pin.id } })
+      }
     },
     openTooltip() {
       this.$refs.marker.mapObject.openTooltip()

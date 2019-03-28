@@ -56,7 +56,7 @@ import { LMap, LTileLayer, LMarker, LIcon } from 'vue2-leaflet'
 import styles from './mapstyles'
 import { getGeoLocation } from '@/utils/geolocation'
 import PinMarker from '@/components/home/PinMarker.vue'
-import { dispatch } from '@/state'
+import { store, dispatch } from '@/state'
 
 export default {
   name: 'Map',
@@ -118,6 +118,12 @@ export default {
         this.iconSize = 256
       }
     },
+  },
+  created() {
+    const { pins } = store.getState()
+    const { zoom, center } = pins
+    this.center = center
+    this.zoom = zoom
   },
   methods: {
     zoomUpdated(zoom) {
