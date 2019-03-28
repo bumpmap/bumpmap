@@ -5,18 +5,36 @@
     :riseOnHover="true"
     :riseOffset="1000"
     ref="marker"
+    @mouseover="mouseOver($event)"
   >
-    <LPopup :autoclose="false" if="pin.topic" class="pin-popup-content" :permanent="true">
+    <LPopup
+      :autoclose="false"
+      v-if="pin.topic"
+      class="pin-popup-content"
+      :permanent="true"
+      @mouseover="mouseOver($event)"
+      :keep-in-view="true"
+      :keepInView="true"
+    >
       <a href="https://4chan.org">{{pin.id}} {{pin.topic}}</a>
     </LPopup>
-    <LTooltip :opacity="1" if="pin.topic" class="pin-tooltip-content" :open="true">
-      <span class="pin-tooltip-topic">{{pin.topic}}</span>
-    </LTooltip>
+    <div v-if="!focused">
+      <LTooltip
+        :opacity="0.5"
+        class="pin-tooltip-content"
+        @mouseover="mouseOver($event)"
+        ref="tooltip"
+      >
+        <span v-if="!focused" class="pin-tooltip-topic">{{pin.topic}}</span>
+      </LTooltip>
+    </div>
+
     <LIcon
       :icon-size="adjustedSize"
       :icon-anchor="adjustedAnchor"
       :popup-anchor="adjustedPopupAnchor"
       :tooltip-anchor="adjustedTooltipAnchor"
+      @mouseover="mouseOver($event)"
     >
       <div class="bumpmap-marker" v-bind:class="pin.color">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
@@ -47,8 +65,8 @@
               ></feColorMatrix>
             </filter>
           </defs>
-          <g fill="none" fill-rule="evenodd">
-            <g fill-rule="nonzero">
+          <g fill="none" filrule="evenodd">
+            <g filrule="nonzero">
               <use fill="black" filter="url(#b)" xlink:href="#a"></use>
               <use class="bumpmap-marker-body" xlink:href="#a"></use>
             </g>
@@ -64,12 +82,17 @@ import { LMarker, LIcon, LPopup, LTooltip } from 'vue2-leaflet'
 
 export default {
   name: 'PinMarker',
-  props: ['pin', 'onClick', 'size', 'anchor', 'served'],
+  props: ['pin', 'onClick', 'size', 'anchor', 'served', 'focused'],
   components: {
     LMarker,
     LIcon,
     LPopup,
     LTooltip,
+  },
+  watch: {
+    focused: function(val) {
+      console.debug(`focused changed to ${val}`)
+    },
   },
   computed: {
     adjustedSize() {
@@ -82,19 +105,33 @@ export default {
       const proportion = this.calculateProportion()
       const [anchorX, anchorY] = this.calculateAdjustedAnchor()
       const [sizeX, sizeY] = this.calculateAdjustedSize()
-      return [-1, 0 - (sizeY + 7.5)]
+      return [-1, 0 - 1.1 * sizeY]
     },
     adjustedTooltipAnchor() {
       const proportion = this.calculateProportion()
       const [anchorX, anchorY] = this.calculateAdjustedAnchor()
       const [sizeX, sizeY] = this.calculateAdjustedSize()
-      return [0.66 * sizeX, 0 - 0.75 * sizeY]
+      return [0.66 * sizeX, 0 - sizeY]
     },
   },
   methods: {
+    mouseOver(event) {
+      if (this.focused) {
+        this.$refs.marker.mapObject.closeTooltip()
+      }
+    },
+    mouseEnter(event) {
+      console.debug('mouseEnter', event)
+    },
+    mouseLeave(event) {
+      console.debug('mouseLeave', event)
+    },
     handleClick() {
       console.log('PinMarker.handleClick()')
       this.onClick(this.pin)
+      this.$nextTick(() => {
+        this.$refs.marker.mapObject.closeTooltip()
+      })
     },
     openTooltip() {
       this.$refs.marker.mapObject.openTooltip()
@@ -103,7 +140,8 @@ export default {
       this.$refs.marker.mapObject.closeTooltip()
     },
     calculateProportion() {
-      return 0.25 + this.pin.size / 1500
+      const focusRatio = this.pin.focused ? 3 : 1
+      return focusRatio * (0.25 + this.pin.size / 1500)
     },
     calculateAdjustedSize() {
       const proportion = this.calculateProportion()
@@ -130,6 +168,14 @@ export default {
   data() {
     return {}
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.marker.mapObject.on('mouseover', this.mouseOver, {
+        capture: true,
+        passive: false,
+      })
+    })
+  },
 }
 </script>
 
@@ -138,6 +184,7 @@ export default {
 .leaflet-map-pane {
   .marker-bg {
     height: 100%;
+    pointer-events: none;
   }
 
   .bumpmap-marker {
@@ -293,6 +340,7 @@ export default {
     background-position: center;
     top: 0;
     position: absolute;
+    pointer-events: auto;
   }
 
   .distance {
@@ -354,6 +402,9 @@ export default {
     text-decoration: none;
     font-weight: 500;
     color: #000;
+  }
+  .leaflet-marker-icon {
+    pointer-events: none;
   }
 }
 </style>

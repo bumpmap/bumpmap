@@ -25,6 +25,7 @@
             <PinMarker
               served
               v-for="pin in pins.filtered"
+              :focused="pin.focused"
               :key="pin.id"
               :pin="pin"
               :onClick="clickMarker"
