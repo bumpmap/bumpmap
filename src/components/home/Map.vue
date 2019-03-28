@@ -9,6 +9,7 @@
           @update:zoom="zoomUpdated"
           @update:center="centerUpdated"
           @update:bounds="boundsUpdated"
+          @click="clickMap"
           :worldCopyJump="true"
           :minZoom="4"
           :maxZoom="16"
@@ -25,7 +26,7 @@
               v-for="pin in pins.filtered"
               :key="pin.id"
               :pin="pin"
-              :onClick="centerAt"
+              :onClick="clickMarker"
               :size="dynamicSize"
               :anchor="dynamicAnchor"
             ></PinMarker>
@@ -169,6 +170,12 @@ export default {
       } else {
         return this.zoom
       }
+    },
+    clickMap() {
+      console.debug('clickMap')
+    },
+    clickMarker() {
+      console.debug('clickMarker')
     },
   },
   mounted() {

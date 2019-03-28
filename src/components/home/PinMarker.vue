@@ -6,10 +6,12 @@
     :riseOffset="1000"
     ref="marker"
   >
-    <LPopup if="pin.topic" class="pin-popup-content" :permanent="true">
+    <LPopup :autoclose="false" if="pin.topic" class="pin-popup-content" :permanent="true">
       <a href="https://4chan.org">{{pin.topic}}</a>
     </LPopup>
-    <LTooltip if="pin.topic" class="pin-tooltip-content" :open="true">{{pin.topic}}</LTooltip>
+    <LTooltip :opacity="1" if="pin.topic" class="pin-tooltip-content" :open="true">
+      <span class="pin-tooltip-topic">{{pin.topic}}</span>
+    </LTooltip>
     <LIcon
       :icon-size="adjustedSize"
       :icon-anchor="adjustedAnchor"
@@ -79,17 +81,23 @@ export default {
     adjustedPopupAnchor() {
       const proportion = this.calculateProportion()
       const [anchorX, anchorY] = this.calculateAdjustedAnchor()
-      const [sizeX, sizeY] = this.calculateAdjustedAnchor()
+      const [sizeX, sizeY] = this.calculateAdjustedSize()
       return [-1, 0 - (sizeY + 7.5)]
     },
     adjustedTooltipAnchor() {
       const proportion = this.calculateProportion()
       const [anchorX, anchorY] = this.calculateAdjustedAnchor()
-      const [sizeX, sizeY] = this.calculateAdjustedAnchor()
-      return [20, 0 - 0.75 * sizeY]
+      const [sizeX, sizeY] = this.calculateAdjustedSize()
+      return [0.66 * sizeX, 0 - 0.75 * sizeY]
     },
   },
   methods: {
+    openTooltip() {
+      this.$refs.marker.mapObject.openTooltip()
+    },
+    closeTooltip() {
+      this.$refs.marker.mapObject.closeTooltip()
+    },
     calculateProportion() {
       return 0.25 + this.pin.size / 1500
     },
@@ -117,9 +125,6 @@ export default {
   },
   data() {
     return {}
-  },
-  mounted() {
-    this.$refs.marker.mapObject.openTooltip()
   },
 }
 </script>
@@ -316,6 +321,28 @@ export default {
     max-width: 300px;
     width: 80vw;
     text-align: center;
+  }
+
+  .leaflet-tooltip {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.8);
+
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    &:before {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .pin-tooltip-topic {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 0;
   }
 
   .leaflet-popup a {
