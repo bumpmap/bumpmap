@@ -20,7 +20,8 @@
               </q-item-section>
             </q-item>
             <q-card-section class="op-body q-my-lg q-pa-lg">{{pin.body}}</q-card-section>
-
+          </q-card>
+          <q-card class="q-pa-sm q-ma-sm">
             <q-card-section>
               <div class="column">
                 <q-chat-message
