@@ -5,7 +5,7 @@
     :riseOnHover="true"
     :riseOffset="1000"
   >
-    <LIcon :icon-size="adjustedSize" :icon-anchor="anchor">
+    <LIcon :icon-size="adjustedSize" :icon-anchor="adjustedAnchor">
       <div class="bumpmap-marker" v-bind:class="pin.color">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
@@ -59,8 +59,14 @@ export default {
   },
   computed: {
     adjustedSize() {
-      const proportion = 0.5 + this.pin.size / 2000
+      const proportion = 0.25 + this.pin.size / 1500
       const [baseX, baseY] = this.size
+      const adjusted = [baseX * proportion, baseY * proportion]
+      return adjusted
+    },
+    adjustedAnchor() {
+      const proportion = 0.25 + this.pin.size / 1500
+      const [baseX, baseY] = this.anchor
       const adjusted = [baseX * proportion, baseY * proportion]
       return adjusted
     },
