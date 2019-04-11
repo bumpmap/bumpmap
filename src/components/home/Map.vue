@@ -179,8 +179,9 @@ export default {
         return this.zoom
       }
     },
-    clickMap() {
-      console.debug('clickMap')
+    clickMap({ originalEvent, latlng, cointerPoint, layerPoint, target }) {
+      console.debug('clickMap', latlng)
+
       dispatch.pins.updateContext({ focus: false })
     },
     clickMarker(pin) {

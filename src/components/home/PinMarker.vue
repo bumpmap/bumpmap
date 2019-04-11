@@ -36,7 +36,7 @@
       :tooltip-anchor="adjustedTooltipAnchor"
       @mouseover="mouseOver($event)"
     >
-      <div class="bumpmap-marker" v-bind:class="pin.color">
+      <div class="bumpmap-marker" v-bind:class="[pin.color, explorer.addMode ? 'unfocused' : '']">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
           class="marker-bg"
@@ -119,7 +119,7 @@ export default {
       console.log('clickMarkerImage')
     },
     mouseOver(event) {
-      if (this.focused) {
+      if (this.focused || this.explorer.addMode) {
         this.$refs.marker.mapObject.closeTooltip()
       }
     },
@@ -174,7 +174,7 @@ export default {
     },
   },
   data() {
-    return {}
+    return this.mapState('explorer')
   },
   mounted() {
     this.$nextTick(() => {
@@ -203,6 +203,17 @@ export default {
     height: 100%;
     text-align: center;
     transition: all 1s ease-in-out;
+    opacity: 1;
+    &.unfocused {
+      transition: all 1s ease-in-out;
+      transition: opacity 1s ease-in-out;
+      opacity: 0.35;
+      filter: blur(3px);
+      pointer-events: none;
+      * {
+        pointer-events: none;
+      }
+    }
   }
   .leaflet-marker-icon {
     // transform: translateX(-50%) translateY(-50%);
