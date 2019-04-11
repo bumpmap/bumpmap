@@ -202,6 +202,17 @@ export default {
   .newpin .marker-bg {
     pointer-events: auto;
     cursor: pointer;
+    #directions {
+      transition: opacity 1s ease-in-out;
+      opacity: 0;
+      .hovering & {
+        opacity: 1;
+      }
+    }
+
+    &:hover #directions {
+      opacity: 1;
+    }
   }
 
   .bumpmap-marker {
@@ -225,6 +236,16 @@ export default {
       * {
         pointer-events: none;
       }
+    }
+  }
+
+  .bumpmap-marker-confirm {
+    position: absolute;
+    top: 0;
+    right: -20px;
+    .confirm-button {
+      pointer-events: auto;
+      cursor: pointer;
     }
   }
   .leaflet-marker-icon {

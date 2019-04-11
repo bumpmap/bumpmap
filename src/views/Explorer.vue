@@ -21,7 +21,7 @@
               text-color="positive"
               icon="check_circle"
               label="Confirm"
-              @click="clickAddPin"
+              @click="clickConfirm"
               class="q-pa-md q-px-lg gt-sm q-mx-xs"
             />
 
@@ -135,6 +135,10 @@ export default {
       } else {
         dispatch.pins.stopAddMode()
       }
+    },
+    clickConfirm() {
+      console.debug('clickConfirm')
+      dispatch.pins.confirmNewPin()
     },
   },
 }

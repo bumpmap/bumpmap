@@ -1,5 +1,6 @@
 import { pluck, map, empty } from 'rambda'
 import { mean } from 'ramda'
+import uuid from 'uuid/v4'
 
 import { fetchPin, fetchAllPins } from '@/components/home/fake-pins.js'
 export const MAX_DISTANCES = [
@@ -197,6 +198,24 @@ export const pins = {
     async fetchPin(id, rootState) {
       const data = await fetchPin(id)
       dispatch.pins.addToLibrary({ id, data })
+    },
+    async confirmNewPin(payload, state) {
+      const { pins } = state
+      const { newPin, all } = pins
+      const { data } = newPin
+      const id = uuid()
+      const newPinData = {
+        ...data,
+        id,
+        createdAt: new Date(),
+        author: 'rai',
+        topic: id,
+        body: `this is post ${id}`,
+      }
+
+      const withNewPin = [...all, newPinData]
+      dispatch.pins.updateContext({ pins: withNewPin })
+      dispatch.pins.stopAddMode()
     },
   }),
 }
