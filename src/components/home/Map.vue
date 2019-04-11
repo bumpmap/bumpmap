@@ -23,7 +23,7 @@
 
           <div v-if="pins.filtered && pins.filtered.length">
             <PinMarker
-              served
+              :served="true"
               v-for="pin in pins.filtered"
               :focused="pin.focused"
               :key="pin.id"
@@ -32,7 +32,6 @@
               :size="dynamicSize"
               :anchor="dynamicAnchor"
             ></PinMarker>
-
             <!-- <LMarker
               ref="newPinRef"
               :position="newPin.position"
@@ -41,6 +40,16 @@
               @click="centerAt(newPin.position)"
             />-->
           </div>
+
+          <PinMarker
+            :served="false"
+            v-if="pins.addMode"
+            focused="true"
+            :pin="pins.newPin.data"
+            :onClick="clickNewPinMarker"
+            :size="dynamicSize"
+            :anchor="dynamicAnchor"
+          ></PinMarker>
         </LMap>
       </div>
     </q-no-ssr>
@@ -100,7 +109,7 @@ export default {
         zoomControl: false,
       },
       sessionLength: 0,
-      ...this.mapState('pins'),
+      ...this.mapState('pins', 'explorer'),
     }
   },
   watch: {
@@ -195,6 +204,9 @@ export default {
         })
       }
       console.debug(`clickMarker(${pin.id})`, pin)
+    },
+    clickNewPinMarker(...args) {
+      console.debug(`clickNewPinMarker`, args)
     },
   },
   mounted() {

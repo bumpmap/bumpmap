@@ -27,28 +27,31 @@ export const MAX_DISTANCES = [
 
 export const PROPORTION_PER_ZOOM = [25, 30]
 
+export const defaultNewPin = {
+  exists: false,
+  saved: false,
+  data: {
+    id: '',
+    topic: '',
+    body: '',
+    createdAt: Date.now(),
+    author: '',
+    score: 0,
+    coordinates: [53, -2],
+    image: '',
+    color: 'white',
+  },
+}
+
 export const initialState = {
   zoom: 0,
-  center: [-2, 53],
+  center: [53, -2],
   all: [],
   filtered: [],
   focused: false,
   focusedOn: '',
-  newPin: {
-    exists: false,
-    saved: false,
-    data: {
-      id: '',
-      topic: '',
-      body: '',
-      createdAt: Date.now(),
-      author: '',
-      score: 0,
-      coordinates: [-2, 53],
-      image: '',
-      color: 'white',
-    },
-  },
+  addMode: false,
+  newPin: { ...defaultNewPin },
 }
 
 export function withFocus(collection, id) {
@@ -93,6 +96,35 @@ export function filterPinsByDistance(collection, zoom, maxDistances) {
 export const pins = {
   state: { ...initialState }, // initial state
   reducers: {
+    toggleAddMode(state) {
+      const { addMode } = state
+      return { ...state, addMode: !addMode }
+    },
+    startAddMode(state, { center }) {
+      const { newPin } = state
+      return {
+        ...state,
+        addMode: true,
+        newPin: {
+          ...newPin,
+          exists: true,
+          saved: false,
+          data: {
+            ...defaultNewPin.data,
+            coordinates: center,
+          },
+        },
+      }
+    },
+    stopAddMode(state) {
+      return {
+        ...state,
+        addMode: false,
+        newPin: {
+          ...defaultNewPin,
+        },
+      }
+    },
     addToLibrary(state, { id, data }) {
       const library = {
         ...state.library,

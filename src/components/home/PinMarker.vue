@@ -36,7 +36,7 @@
       :tooltip-anchor="adjustedTooltipAnchor"
       @mouseover="mouseOver($event)"
     >
-      <div class="bumpmap-marker" v-bind:class="[pin.color, explorer.addMode ? 'unfocused' : '']">
+      <div class="bumpmap-marker" v-bind:class="[pin.color, focusClass]">
         <div class="marker-image" v-bind:style="imageStyle(pin)"/>
         <svg
           class="marker-bg"
@@ -113,13 +113,20 @@ export default {
       const [sizeX, sizeY] = this.calculateAdjustedSize()
       return [0.66 * sizeX, 0 - sizeY]
     },
+    focusClass() {
+      console.debug(`this.served = ${this.served}`)
+      console.debug(`this.pins.addMode = ${this.pins.addMode}`)
+      const result = this.served && this.pins.addMode ? 'unfocused' : ''
+      console.debug(`result: ${result}`)
+      return result
+    },
   },
   methods: {
     clickMarkerImage(event) {
       console.log('clickMarkerImage')
     },
     mouseOver(event) {
-      if (this.focused || this.explorer.addMode) {
+      if (this.focused || this.pins.addMode) {
         this.$refs.marker.mapObject.closeTooltip()
       }
     },
@@ -174,7 +181,7 @@ export default {
     },
   },
   data() {
-    return this.mapState('explorer')
+    return this.mapState('explorer', 'pins')
   },
   mounted() {
     this.$nextTick(() => {

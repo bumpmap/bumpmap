@@ -9,13 +9,13 @@
               enter-active-class="bounceInDown"
               leave-active-class="bounceOutUp"
             >
-              <Welcome v-show="explorer.welcome && !explorer.addMode"/>
+              <Welcome v-show="explorer.welcome && !pins.addMode"/>
             </transition>
           </q-page-sticky>
           <q-page-sticky position="bottom-right" :offset="[36, 36]">
             <q-btn
               rounded
-              v-show="explorer.addMode"
+              v-show="pins.addMode"
               outline
               size="xl"
               text-color="positive"
@@ -32,8 +32,8 @@
             >
               <q-btn
                 rounded
-                :push="!explorer.addMode"
-                :outline="explorer.addMode"
+                :push="!pins.addMode"
+                :outline="pins.addMode"
                 size="xl"
                 :color="addPinColor"
                 :text-color="addPinTextColor"
@@ -99,37 +99,42 @@ export default {
       foo: 'bar',
       ...this.mapState({
         explorer: 'explorer',
+        pins: 'pins',
       }),
     }
   },
   mounted() {
-    dispatch.explorer.resetAddMode()
+    dispatch.pins.resetAddMode()
   },
   destroyed() {
-    dispatch.explorer.resetAddMode()
+    dispatch.pins.resetAddMode()
     dispatch.explorer.resetWelcome()
   },
   computed: {
     addPinLabel() {
-      return this.explorer.addMode ? 'CANCEL' : 'NEW PIN'
+      return this.pins.addMode ? 'CANCEL' : 'NEW PIN'
     },
     addPinIcon() {
       return {
-        desktop: this.explorer.addMode ? 'clear' : 'add_location',
-        mobile: this.explorer.addMode ? 'clear' : 'fas fa-plus',
+        desktop: this.pins.addMode ? 'clear' : 'add_location',
+        mobile: this.pins.addMode ? 'clear' : 'fas fa-plus',
       }
     },
     addPinTextColor() {
-      return this.explorer.addMode ? 'negative' : 'black'
+      return this.pins.addMode ? 'negative' : 'black'
     },
     addPinColor() {
-      return this.explorer.addMode ? 'black' : 'white'
+      return this.pins.addMode ? 'black' : 'white'
     },
   },
   methods: {
     clickAddPin(...args) {
       console.debug('clickAddPin', args)
-      dispatch.explorer.toggleAddMode()
+      if (!this.pins.addMode) {
+        dispatch.pins.startAddMode({ center: this.pins.center })
+      } else {
+        dispatch.pins.stopAddMode()
+      }
     },
   },
 }
