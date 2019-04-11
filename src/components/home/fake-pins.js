@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 
-import { find, propEq, map } from 'rambda'
+import { find, propEq, map, take } from 'rambda'
 
 const colors = [
   { color: 'white', name: 'marker-white' },

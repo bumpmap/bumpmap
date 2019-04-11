@@ -36,9 +36,9 @@ export const defaultNewPin = {
     body: '',
     createdAt: Date.now(),
     author: '',
-    score: 0,
+    score: 100,
     coordinates: [53, -2],
-    image: '',
+    image: '/img/dummy/59.gif',
     color: 'white',
   },
 }
@@ -161,6 +161,8 @@ export const pins = {
         library[pin.id] = pin
       })
 
+      const { newPin } = state
+
       return {
         ...state,
         all,
@@ -171,6 +173,13 @@ export const pins = {
         zoom: resultZoom,
         center: resultCenter,
         filtered: withSize,
+        newPin: {
+          ...newPin,
+          data: {
+            ...newPin.data,
+            coordinates: resultCenter,
+          },
+        },
       }
     },
   },

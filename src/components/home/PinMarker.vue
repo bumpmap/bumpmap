@@ -114,10 +114,8 @@ export default {
       return [0.66 * sizeX, 0 - sizeY]
     },
     focusClass() {
-      console.debug(`this.served = ${this.served}`)
-      console.debug(`this.pins.addMode = ${this.pins.addMode}`)
       const result = this.served && this.pins.addMode ? 'unfocused' : ''
-      console.debug(`result: ${result}`)
+
       return result
     },
   },
@@ -201,6 +199,10 @@ export default {
     height: 100%;
     pointer-events: none;
   }
+  .newpin .marker-bg {
+    pointer-events: auto;
+    cursor: pointer;
+  }
 
   .bumpmap-marker {
     // transform: translateX(-50%) translateY(-50%);
@@ -211,6 +213,9 @@ export default {
     text-align: center;
     transition: all 1s ease-in-out;
     opacity: 1;
+    .newpin-marker {
+      pointer-events: auto;
+    }
     &.unfocused {
       transition: all 1s ease-in-out;
       transition: opacity 1s ease-in-out;
