@@ -13,6 +13,18 @@
             </transition>
           </q-page-sticky>
           <q-page-sticky position="bottom-right" :offset="[36, 36]">
+            <q-btn
+              rounded
+              v-show="explorer.addMode"
+              outline
+              size="xl"
+              text-color="positive"
+              icon="check_circle"
+              label="Confirm"
+              @click="clickAddPin"
+              class="q-pa-md q-px-lg gt-sm q-mx-xs"
+            />
+
             <transition
               name="bounce"
               enter-active-class="bounceInDown"
@@ -28,7 +40,7 @@
                 :icon="addPinIcon.desktop"
                 :label="addPinLabel"
                 @click="clickAddPin"
-                class="q-pa-md q-px-lg gt-sm"
+                class="q-pa-md q-px-lg gt-sm q-mx-xs"
               />
             </transition>
           </q-page-sticky>
@@ -108,7 +120,7 @@ export default {
       }
     },
     addPinTextColor() {
-      return this.explorer.addMode ? 'white' : 'black'
+      return this.explorer.addMode ? 'negative' : 'black'
     },
     addPinColor() {
       return this.explorer.addMode ? 'black' : 'white'
