@@ -9,7 +9,7 @@
               enter-active-class="bounceInDown"
               leave-active-class="bounceOutUp"
             >
-              <Welcome v-show="explorer.welcome"/>
+              <Welcome v-show="explorer.welcome && !explorer.addMode"/>
             </transition>
           </q-page-sticky>
           <q-page-sticky position="bottom-right" :offset="[36, 36]">
@@ -19,13 +19,15 @@
               leave-active-class="bounceOutUp"
             >
               <q-btn
-                push
                 rounded
+                :push="!explorer.addMode"
+                :outline="explorer.addMode"
                 size="xl"
-                color="white"
-                text-color="dark"
-                icon="add_location"
-                label="New Pin"
+                :color="addPinColor"
+                :text-color="addPinTextColor"
+                :icon="addPinIcon.desktop"
+                :label="addPinLabel"
+                @click="clickAddPin"
                 class="q-pa-md q-px-lg gt-sm"
               />
             </transition>
@@ -39,12 +41,13 @@
             >
               <q-btn
                 v-show="!explorer.welcome"
+                @click="clickAddPin"
                 push
                 round
                 size="lg"
                 color="white"
                 text-color="black"
-                icon="fas fa-plus"
+                :icon="addPinIcon.mobile"
                 class="q-pa-xs q-px-xs"
               />
             </transition>
@@ -87,9 +90,35 @@ export default {
       }),
     }
   },
-  mounted() {},
+  mounted() {
+    dispatch.explorer.resetAddMode()
+  },
   destroyed() {
+    dispatch.explorer.resetAddMode()
     dispatch.explorer.resetWelcome()
+  },
+  computed: {
+    addPinLabel() {
+      return this.explorer.addMode ? 'CANCEL' : 'NEW PIN'
+    },
+    addPinIcon() {
+      return {
+        desktop: this.explorer.addMode ? 'clear' : 'add_location',
+        mobile: this.explorer.addMode ? 'clear' : 'fas fa-plus',
+      }
+    },
+    addPinTextColor() {
+      return this.explorer.addMode ? 'white' : 'black'
+    },
+    addPinColor() {
+      return this.explorer.addMode ? 'black' : 'white'
+    },
+  },
+  methods: {
+    clickAddPin(...args) {
+      console.debug('clickAddPin', args)
+      dispatch.explorer.toggleAddMode()
+    },
   },
 }
 </script>
